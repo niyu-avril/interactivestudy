@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apakah Thumb Rule Masih Relevan di 2026?</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,"SF Pro Display","SF Pro Text","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useCallback}=React;
+
+const SCREENS=[
+{name:'iPhone 5',w:58,h:100,inch:'4.0"',year:2013,era:'classic',note:'Era riset Hoober. Peta thumb zone dibuat untuk ukuran ini.'},
+{name:'iPhone 15',w:68,h:148,inch:'6.1"',year:2024,era:'modern',note:'Zona hijau kini hanya ~30% area layar. Mayoritas UI masuk zona kuning–merah.'},
+{name:'iPhone 16 Pro Max',w:72,h:162,inch:'6.9"',year:2025,era:'modern',note:'Pojok atas hampir tidak terjangkau satu tangan. One-handed mode jadi kebutuhan.'},
+{name:'Galaxy Z Fold',w:130,h:158,inch:'7.6"',year:2025,era:'foldable',note:'Thumb zone berubah drastis saat dilipat vs dibuka. Tidak ada satu peta tunggal.'},
+];
+
+const TABS=[
+{id:'zone',label:'Thumb Zone'},
+{id:'hold',label:'Hold Styles'},
+{id:'gesture',label:'Gesture Conflicts'},
+{id:'modern',label:'Modern Approach'},
+];
+
+const c={
+bg:'#FAFAFA',surface:'#FFFFFF',surfaceAlt:'#F5F5F7',
+border:'#E8E8EC',borderLight:'#F0F0F4',
+text:'#1D1D1F',textSecondary:'#6E6E73',textTertiary:'#AEAEB2',
+accent:'#0071E3',accentSoft:'#EDF4FE',
+green:'#34C759',greenSoft:'#E8F8ED',greenBorder:'#B8E6C4',
+yellow:'#FF9F0A',yellowSoft:'#FFF5E6',yellowBorder:'#FFD699',
+red:'#FF3B30',redSoft:'#FFECEB',redBorder:'#FFB3AE',
+purple:'#AF52DE',purpleSoft:'#F5EDFB',
+};
+
+const s={
+card:{background:c.surface,borderRadius:12,border:`1px solid ${c.border}`,boxShadow:'0 1px 3px rgba(0,0,0,0.04)'},
+label:{fontSize:11,fontWeight:600,color:c.textTertiary,letterSpacing:'0.5px',textTransform:'uppercase'},
+body:{fontSize:13,color:c.textSecondary,lineHeight:1.6},
+heading:{fontSize:17,fontWeight:700,color:c.text,letterSpacing:'-0.3px'},
+};
+
+function PhoneFrame({screen,scale=1.8,children}){
+const sw=screen.w*scale;
+const sh=screen.h*scale;
+return(
+<div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:8}}>
+<div style={{width:sw+12,background:'#1D1D1F',borderRadius:18,padding:'22px 6px 22px',display:'flex',flexDirection:'column',alignItems:'center',boxShadow:'0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08)'}}>
+<div style={{width:36,height:4,background:'#3A3A3C',borderRadius:2,marginBottom:8}}/>
+<div style={{width:sw,height:sh,background:'#F2F2F7',borderRadius:10,position:'relative',overflow:'hidden'}}>
+{children}
+</div>
+<div style={{width:28,height:4,background:'#3A3A3C',borderRadius:2,marginTop:8}}/>
+</div>
+<div style={{textAlign:'center'}}>
+<div style={{fontSize:13,fontWeight:600,color:c.text}}>{screen.name}</div>
+<div style={{fontSize:12,color:c.textTertiary}}>{screen.inch} · {screen.year}</div>
+</div>
+</div>
+);
+}
+
+function ThumbZoneOverlay({w,h,scale}){
+const cx=w*scale*0.48;
+const cy=h*scale*0.92;
+const r=Math.min(w,h)*scale*0.55;
+return(
+<svg width={w*scale} height={h*scale} style={{position:'absolute',top:0,left:0}}>
+<defs>
+<radialGradient id="tz" cx={cx} cy={cy} r={r} gradientUnits="userSpaceOnUse">
+<stop offset="0%" stopColor={c.green} stopOpacity="0.28"/>
+<stop offset="40%" stopColor={c.yellow} stopOpacity="0.22"/>
+<stop offset="75%" stopColor={c.red} stopOpacity="0.18"/>
+<stop offset="100%" stopColor={c.red} stopOpacity="0.22"/>
+</radialGradient>
+</defs>
+<rect width={w*scale} height={h*scale} fill="url(#tz)"/>
+</svg>
+);
+}
+
+function Pill({children,color,bg,border}){
+return(
+<span style={{display:'inline-flex',alignItems:'center',gap:4,padding:'3px 10px',borderRadius:100,fontSize:11,fontWeight:600,color,background:bg,border:`1px solid ${border}`}}>
+{children}
+</span>
+);
+}
+
+function Callout({children,icon='💡',style:st}){
+return(
+<div style={{...s.card,padding:16,display:'flex',gap:12,...st}}>
+<span style={{fontSize:18,flexShrink:0,marginTop:1}}>{icon}</span>
+<div style={{...s.body,fontSize:12}}>{children}</div>
+</div>
+);
+}
+
+function ThumbZoneTab(){
+const[sel,setSel]=useState(0);
+const sc=SCREENS[sel];
+const baseScale=sel===3?1.1:1.6;
+return(
+<div style={{display:'flex',flexDirection:'column',gap:24}}>
+<div>
+<p style={s.label}>Compare Devices</p>
+<p style={{...s.body,margin:'4px 0 0'}}>Peta thumb zone Hoober 2013 dibuat untuk layar 4". Lihat bagaimana zona hijau menyusut di layar modern.</p>
+</div>
+<div style={{display:'flex',gap:8}}>
+{SCREENS.map((scr,i)=>(
+<button key={i} onClick={()=>setSel(i)} style={{flex:1,padding:'10px 4px',borderRadius:10,fontSize:11,fontWeight:600,cursor:'pointer',transition:'all 0.2s',background:sel===i?c.text:c.surface,color:sel===i?'#fff':c.textSecondary,border:sel===i?'none':`1px solid ${c.border}`}}>{scr.inch}</button>
+))}
+</div>
+<div style={{display:'flex',justifyContent:'center',padding:'8px 0'}}>
+<PhoneFrame screen={sc} scale={baseScale}>
+<ThumbZoneOverlay w={sc.w} h={sc.h} scale={baseScale}/>
+<div style={{position:'absolute',bottom:6,left:'50%',transform:'translateX(-50%)',display:'flex',gap:12}}>
+{['⌂','◎','◻','▷'].map((e,i)=>(
+<div key={i} style={{width:20,height:20,background:'rgba(0,0,0,0.06)',borderRadius:6,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'#8E8E93'}}>{e}</div>
+))}
+</div>
+<div style={{position:'absolute',top:8,right:8}}>
+<div style={{width:16,height:16,borderRadius:4,border:'1.5px dashed rgba(255,59,48,0.5)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:7,color:c.red}}>⋯</div>
+</div>
+<div style={{position:'absolute',bottom:32,left:'50%',transform:'translateX(-50%)',fontSize:9,fontWeight:600,color:'rgba(52,199,89,0.8)'}}>Easy</div>
+<div style={{position:'absolute',top:'40%',left:'50%',transform:'translate(-50%,-50%)',fontSize:9,fontWeight:600,color:'rgba(255,159,10,0.7)'}}>Stretch</div>
+<div style={{position:'absolute',top:8,left:8,fontSize:9,fontWeight:600,color:'rgba(255,59,48,0.7)'}}>Hard</div>
+</PhoneFrame>
+</div>
+<div style={{display:'flex',gap:8,justifyContent:'center'}}>
+<Pill color="#1B7D3A" bg={c.greenSoft} border={c.greenBorder}>● Mudah</Pill>
+<Pill color="#9A6300" bg={c.yellowSoft} border={c.yellowBorder}>● Stretch</Pill>
+<Pill color="#CC2F26" bg={c.redSoft} border={c.redBorder}>● Sulit</Pill>
+</div>
+<Callout icon={sel===0?'📱':sel===3?'📂':'⚠️'}>
+<span style={{fontWeight:600,color:c.text}}>{sc.name} ({sc.inch})</span><br/>
+{sc.note}
+</Callout>
+</div>
+);
+}
+
+function HoldStylesTab(){
+const[year,setYear]=useState(2026);
+const data=year===2013
+?[{k:'one',v:49},{k:'cradle',v:36},{k:'two',v:15}]
+:[{k:'one',v:26},{k:'cradle',v:40},{k:'two',v:34}];
+const meta={one:{label:'Satu Tangan',sub:'Jempol saja',icon:'👆'},cradle:{label:'Cradle',sub:'Dua tangan, satu jempol',icon:'🤲'},two:{label:'Dua Jempol',sub:'Dua tangan aktif',icon:'👐'}};
+const max=Math.max(...data.map(d=>d.v));
+return(
+<div style={{display:'flex',flexDirection:'column',gap:24}}>
+<div>
+<p style={s.label}>Behavior Shift</p>
+<p style={{...s.body,margin:'4px 0 0'}}>Cara user memegang smartphone bergeser signifikan seiring layar membesar.</p>
+</div>
+<div style={{...s.card,display:'inline-flex',padding:3,alignSelf:'flex-start'}}>
+{[2013,2026].map(y=>(
+<button key={y} onClick={()=>setYear(y)} style={{padding:'8px 20px',borderRadius:9,border:'none',cursor:'pointer',fontSize:13,fontWeight:600,transition:'all 0.2s',background:year===y?c.text:'transparent',color:year===y?'#fff':c.textTertiary}}>{y}</button>
+))}
+</div>
+<div style={{display:'flex',flexDirection:'column',gap:12}}>
+{data.map((d,i)=>{
+const m=meta[d.k];
+const isMax=d.v===max;
+return(
+<div key={d.k} style={{...s.card,padding:16,display:'flex',alignItems:'center',gap:16,borderColor:isMax?c.accent:c.border}}>
+<div style={{fontSize:28,width:48,height:48,display:'flex',alignItems:'center',justifyContent:'center',background:c.surfaceAlt,borderRadius:12,flexShrink:0}}>{m.icon}</div>
+<div style={{flex:1,minWidth:0}}>
+<div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:4}}>
+<div>
+<span style={{fontSize:14,fontWeight:600,color:c.text}}>{m.label}</span>
+<span style={{fontSize:11,color:c.textTertiary,marginLeft:8}}>{m.sub}</span>
+</div>
+<span style={{fontSize:20,fontWeight:700,color:isMax?c.accent:c.textSecondary,fontVariantNumeric:'tabular-nums'}}>{d.v}%</span>
+</div>
+<div style={{height:6,background:c.surfaceAlt,borderRadius:3,overflow:'hidden'}}>
+<div style={{height:'100%',width:`${d.v}%`,background:isMax?c.accent:c.borderLight,borderRadius:3,transition:'width 0.6s ease'}}/>
+</div>
+</div>
+</div>
+);})}
+</div>
+<Callout icon={year===2013?'📋':'📈'}>
+{year===2013
+?<><span style={{fontWeight:600,color:c.text}}>Riset Hoober (2013):</span> 49% user memegang satu tangan di era iPhone 4–5. Ini jadi fondasi seluruh konsep thumb zone.</>
+:<><span style={{fontWeight:600,color:c.text}}>Kondisi 2026:</span> Penggunaan dua tangan mendominasi. Asumsi "satu tangan" yang jadi dasar thumb rule sudah tidak representatif untuk mayoritas user.</>}
+</Callout>
+</div>
+);
+}
+
+function GestureConflictsTab(){
+const[show,setShow]=useState(false);
+const sc=SCREENS[1];
+const bs=1.7;
+return(
+<div style={{display:'flex',flexDirection:'column',gap:24}}>
+<div>
+<p style={s.label}>System vs App</p>
+<p style={{...s.body,margin:'4px 0 0'}}>Full-screen gesture navigation membuat zona bawah layar "berbagi fungsi" antara OS dan app.</p>
+</div>
+<button onClick={()=>setShow(!show)} style={{...s.card,padding:'10px 16px',cursor:'pointer',fontSize:13,fontWeight:600,textAlign:'center',background:show?c.redSoft:c.surface,color:show?c.red:c.text,border:`1px solid ${show?c.redBorder:c.border}`,transition:'all 0.2s',alignSelf:'stretch'}}>
+{show?'Conflict zones ditampilkan':'Tampilkan conflict zones'}
+</button>
+<div style={{display:'flex',justifyContent:'center',padding:'4px 0'}}>
+<PhoneFrame screen={sc} scale={bs}>
+<div style={{position:'absolute',top:6,left:6,right:6,height:22,background:'rgba(0,0,0,0.03)',borderRadius:6,display:'flex',alignItems:'center',padding:'0 8px'}}>
+<span style={{fontSize:9,color:'#AEAEB2'}}>Search…</span>
+</div>
+{[0,1,2,3].map(i=>(
+<div key={i} style={{position:'absolute',top:36+i*48,left:8,right:8,height:40,background:'rgba(0,0,0,0.02)',borderRadius:8,border:'1px solid rgba(0,0,0,0.04)',padding:8}}>
+<div style={{width:'55%',height:5,background:'rgba(0,0,0,0.06)',borderRadius:3}}/>
+<div style={{width:'35%',height:4,background:'rgba(0,0,0,0.03)',borderRadius:2,marginTop:5}}/>
+</div>
+))}
+<div style={{position:'absolute',bottom:0,left:0,right:0,height:34,background:'rgba(255,255,255,0.95)',display:'flex',alignItems:'center',justifyContent:'space-around',borderTop:'1px solid rgba(0,0,0,0.06)'}}>
+{['⌂','◎','◻','♡','≡'].map((e,i)=><span key={i} style={{fontSize:13,color:i===0?c.accent:'#AEAEB2'}}>{e}</span>)}
+</div>
+<div style={{position:'absolute',bottom:42,right:10,width:32,height:32,borderRadius:16,background:c.accent,display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,color:'#fff',boxShadow:'0 2px 12px rgba(0,113,227,0.3)'}}>+</div>
+{show&&<>
+<div style={{position:'absolute',bottom:0,left:0,right:0,height:12,background:'rgba(255,59,48,0.12)',borderTop:'1.5px dashed rgba(255,59,48,0.5)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+<span style={{fontSize:7,color:c.red,fontWeight:700,letterSpacing:0.5}}>SWIPE UP · HOME</span>
+</div>
+<div style={{position:'absolute',top:0,bottom:0,left:0,width:10,background:'rgba(255,59,48,0.08)',borderRight:'1.5px dashed rgba(255,59,48,0.4)',display:'flex',alignItems:'center',justifyContent:'center',writingMode:'vertical-rl'}}>
+<span style={{fontSize:6,color:c.red,fontWeight:700}}>BACK ←</span>
+</div>
+<div style={{position:'absolute',top:0,bottom:0,right:0,width:10,background:'rgba(255,59,48,0.08)',borderLeft:'1.5px dashed rgba(255,59,48,0.4)'}}/>
+<div style={{position:'absolute',bottom:12,left:0,right:0,height:22,background:'rgba(255,159,10,0.08)',borderTop:'1px dashed rgba(255,159,10,0.5)',borderBottom:'1px dashed rgba(255,159,10,0.5)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+<span style={{fontSize:7,color:'#9A6300',fontWeight:600}}>OVERLAP ZONE</span>
+</div>
+</>}
+</PhoneFrame>
+</div>
+<div style={{display:'flex',flexDirection:'column',gap:8}}>
+{[
+{label:'Swipe up (Home)',desc:'Bentrok dengan bottom tab bar dan pull-up sheet',color:c.red,bg:c.redSoft,border:c.redBorder},
+{label:'Swipe dari tepi (Back)',desc:'Bentrok dengan drawer navigation dan horizontal scroll',color:c.red,bg:c.redSoft,border:c.redBorder},
+{label:'Overlap zone',desc:'Area abu-abu dimana tap bisa salah trigger antara UI dan gesture',color:'#9A6300',bg:c.yellowSoft,border:c.yellowBorder},
+].map((item,i)=>(
+<div key={i} style={{...s.card,padding:'12px 16px',display:'flex',alignItems:'flex-start',gap:12,borderColor:show?item.border:c.border,transition:'border-color 0.3s'}}>
+<div style={{width:8,height:8,borderRadius:4,background:item.color,marginTop:4,flexShrink:0}}/>
+<div>
+<div style={{fontSize:13,fontWeight:600,color:c.text}}>{item.label}</div>
+<div style={{fontSize:12,color:c.textSecondary,marginTop:1}}>{item.desc}</div>
+</div>
+</div>
+))}
+</div>
+</div>
+);
+}
+
+function ModernApproachTab(){
+const[open,setOpen]=useState(0);
+const tips=[
+{n:'01',icon:'📊',title:'Heatmap Analytics',desc:'Gunakan data analitik heatmap dari user nyata di app spesifik kamu. Jauh lebih akurat dari peta generik 2013 yang tidak memperhitungkan variasi device dan perilaku.'},
+{n:'02',icon:'📱',title:'Bottom Sheet Pattern',desc:'Desain bottom sheet & floating action yang bisa disesuaikan konteks. Konten penting naik ke zona mudah dijangkau secara adaptif.'},
+{n:'03',icon:'📐',title:'Multi-Device Testing',desc:'Test di minimal tiga ukuran: small (6"), large (6.7"), dan foldable. Satu desain statis tidak mencakup keragaman device 2026.'},
+{n:'04',icon:'',title:'Platform Conventions',desc:'Apple HIG dan Material Design 3 sudah mempertimbangkan reach secara lebih modern. Ikuti konvensi platform sebagai baseline.'},
+{n:'05',icon:'♿',title:'Accessibility First',desc:'Gabungkan thumb zone dengan accessibility guidelines dan gesture conflict mapping untuk coverage yang menyeluruh dan inklusif.'},
+];
+return(
+<div style={{display:'flex',flexDirection:'column',gap:24}}>
+<div>
+<p style={s.label}>What to do instead</p>
+<p style={{...s.body,margin:'4px 0 0'}}>Lima pendekatan yang lebih relevan dari peta Hoober klasik.</p>
+</div>
+<div style={{display:'flex',flexDirection:'column',gap:8}}>
+{tips.map((t,i)=>{
+const isOpen=open===i;
+return(
+<div key={i} onClick={()=>setOpen(isOpen?-1:i)} style={{...s.card,padding:'14px 16px',cursor:'pointer',transition:'all 0.2s',borderColor:isOpen?c.accent:c.border}}>
+<div style={{display:'flex',alignItems:'center',gap:12}}>
+<span style={{fontSize:12,fontWeight:700,color:isOpen?c.accent:c.textTertiary,fontVariantNumeric:'tabular-nums',fontFamily:'ui-monospace, monospace',minWidth:20}}>{t.n}</span>
+<span style={{fontSize:14,fontWeight:600,color:c.text,flex:1}}>{t.title}</span>
+<span style={{fontSize:14,color:c.textTertiary,transition:'transform 0.2s',transform:isOpen?'rotate(90deg)':'none'}}>›</span>
+</div>
+{isOpen&&(
+<div style={{marginTop:12,paddingTop:12,borderTop:`1px solid ${c.borderLight}`,...s.body,fontSize:12}}>
+{t.desc}
+</div>
+)}
+</div>
+);})}
+</div>
+<div style={{...s.card,padding:20,background:c.surfaceAlt,borderColor:c.borderLight}}>
+<p style={{margin:0,fontSize:11,fontWeight:700,color:c.textTertiary,letterSpacing:'0.5px',textTransform:'uppercase'}}>Takeaway</p>
+<p style={{margin:'8px 0 0',fontSize:14,color:c.text,lineHeight:1.65,fontWeight:400}}>
+Thumb rule bukan prinsip yang mati, tapi prinsip yang perlu di-evolusi. Spiritnya — <em style={{fontStyle:'italic'}}>"desain untuk bagaimana manusia benar-benar memegang device"</em> — sangat relevan. Petanya yang lama harus diganti dengan riset kontemporer dan data spesifik produk.
+</p>
+</div>
+</div>
+);
+}
+
+function App(){
+const[tab,setTab]=useState(0);
+return(
+<div style={{minHeight:'100vh',background:c.bg,fontFamily:'-apple-system, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif',WebkitFontSmoothing:'antialiased'}}>
+<div style={{padding:'40px 24px 32px',borderBottom:`1px solid ${c.border}`,background:c.surface}}>
+<p style={{...s.label,margin:0,fontSize:10}}>Interactive Study</p>
+<h1 style={{margin:'6px 0 0',fontSize:24,fontWeight:750,color:c.text,letterSpacing:'-0.5px',lineHeight:1.2}}>
+Apakah Thumb Rule<br/>Masih Relevan di 2026?
+</h1>
+<p style={{margin:'10px 0 0',fontSize:14,color:c.textSecondary,lineHeight:1.5}}>
+Eksplorasi interaktif tentang bagaimana prinsip desain thumb zone Hoober 2013 bertahan, dan tidak di era layar 6"+ dan gesture navigation.
+</p>
+</div>
+<div style={{position:'sticky',top:0,zIndex:10,background:c.surface,borderBottom:`1px solid ${c.border}`}}>
+<div style={{display:'flex',padding:'0 16px',overflowX:'auto',gap:0}}>
+{TABS.map((t,i)=>(
+<button key={t.id} onClick={()=>setTab(i)} style={{padding:'12px 14px',border:'none',cursor:'pointer',fontSize:12,fontWeight:600,whiteSpace:'nowrap',background:'transparent',color:tab===i?c.text:c.textTertiary,borderBottom:tab===i?`2px solid ${c.text}`:'2px solid transparent',transition:'all 0.15s',marginBottom:-1}}>{t.label}</button>
+))}
+</div>
+</div>
+<div style={{padding:24,maxWidth:480,margin:'0 auto'}}>
+{tab===0&&<ThumbZoneTab/>}
+{tab===1&&<HoldStylesTab/>}
+{tab===2&&<GestureConflictsTab/>}
+{tab===3&&<ModernApproachTab/>}
+</div>
+<div style={{padding:'24px 24px 40px',borderTop:`1px solid ${c.border}`,textAlign:'center'}}>
+<p style={{margin:0,fontSize:11,color:c.textTertiary}}>Based on Steven Hoober's research (2013, 2020)</p>
+<p style={{margin:'2px 0 0',fontSize:11,color:c.textTertiary}}>Adapted for 2026 context</p>
+</div>
+</div>
+);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
