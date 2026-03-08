@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figma + Claude Code — Setup Tutorial</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: #FAFAFA;
+    font-family: -apple-system, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: #1D1D1F;
+  }
+  .label { font-size: 11px; font-weight: 600; color: #AEAEB2; letter-spacing: 0.5px; text-transform: uppercase; }
+  .body-text { font-size: 13px; color: #6E6E73; line-height: 1.65; }
+  .heading { font-size: 17px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.3px; }
+  .card { background: #FFFFFF; border-radius: 12px; border: 1px solid #E8E8EC; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600;
+  }
+  .callout {
+    background: #F5F5F7; border-radius: 12px; border: 1px solid #F0F0F4;
+    padding: 16px; display: flex; gap: 12; font-size: 12px; color: #6E6E73; line-height: 1.65;
+  }
+  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  /* Terminal */
+  .terminal { background: #1D1D1F; border-radius: 10px; overflow: hidden; border: 1px solid #2C2C2E; box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+  .terminal-bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: #2C2C2E; }
+  .terminal-dot { width: 10px; height: 10px; border-radius: 5px; display: inline-block; }
+  .terminal-title { font-size: 10px; color: #8E8E93; margin-left: 8px; font-family: ui-monospace, monospace; }
+  .terminal-body { padding: 12px 14px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11.5px; line-height: 1.7; color: #E5E5EA; overflow-x: auto; }
+  .t-ln { display: block; }
+  .t-g { color: #28C840; }
+  .t-y { color: #FEBC2E; }
+  .t-r { color: #FF6B6B; }
+  .t-dim { color: #636366; }
+  .t-blue { color: #64ACFF; }
+  .t-pink { color: #FF8FAB; }
+  .t-tag { background: #3A3A3C; padding: 1px 4px; border-radius: 2px; }
+  /* Browser Frame */
+  .browser { border-radius: 10px; overflow: hidden; border: 1px solid #E8E8EC; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .browser-bar { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: #F5F5F7; border-bottom: 1px solid #E8E8EC; }
+  .browser-dots { display: flex; gap: 4px; }
+  .browser-dot { width: 8px; height: 8px; border-radius: 4px; display: inline-block; }
+  .browser-url { flex: 1; background: #fff; border-radius: 4px; padding: 3px 8px; font-size: 10px; color: #6E6E73; border: 1px solid #E8E8EC; }
+  /* Tabs */
+  .tab-bar { position: sticky; top: 0; z-index: 10; background: #FFFFFF; border-bottom: 1px solid #E8E8EC; }
+  .tab-nav { display: flex; padding: 0 16px; overflow-x: auto; gap: 0; }
+  .tab-btn {
+    padding: 12px 12px; border: none; cursor: pointer; font-size: 12px; font-weight: 600;
+    white-space: nowrap; background: transparent; color: #AEAEB2;
+    border-bottom: 2px solid transparent; transition: all 0.15s; margin-bottom: -1px;
+  }
+  .tab-btn.active { color: #1D1D1F; border-bottom-color: #1D1D1F; }
+  .tab-content { display: none; }
+  .tab-content.active { display: flex; flex-direction: column; gap: 24px; }
+  /* Step Buttons */
+  .step-nav { display: flex; gap: 6px; }
+  .step-nav-btn {
+    flex: 1; padding: 8px 4px; border-radius: 8px; border: 1px solid #E8E8EC; cursor: pointer;
+    font-size: 11px; font-weight: 600; background: #FFFFFF; color: #AEAEB2;
+    transition: all 0.2s;
+  }
+  .step-nav-btn.active { background: #1D1D1F; color: #fff; border-color: #1D1D1F; }
+  .action-btn {
+    flex: 1; padding: 10px 16px; border-radius: 10px; border: 1px solid #E8E8EC;
+    background: #FFFFFF; font-size: 13px; font-weight: 600; color: #6E6E73; cursor: pointer;
+  }
+  .action-btn.primary { background: #1D1D1F; color: #fff; border: none; }
+  .step-done {
+    flex: 1; padding: 10px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
+    text-align: center;
+  }
+  /* Claude Desktop App */
+  .claude-app { border-radius: 10px; overflow: hidden; border: 1px solid #E8E8EC; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .claude-app-bar { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: #F5F5F7; border-bottom: 1px solid #E8E8EC; }
+  .claude-app-body { display: flex; min-height: 140px; background: #FAF8F5; }
+  .claude-sidebar { width: 80px; border-right: 1px solid #E8E8EC; padding: 8px; font-size: 9px; color: #AEAEB2; }
+  .claude-main { flex: 1; padding: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  /* Figma Canvas */
+  .figma-canvas { border-radius: 10px; overflow: hidden; border: 1px solid #E8E8EC; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .figma-bar { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: #2C2C2E; border-bottom: 1px solid #3A3A3C; }
+  .figma-body { display: flex; height: 200px; }
+  .figma-layers { width: 100px; background: #2C2C2E; padding: 8px; border-right: 1px solid #3A3A3C; }
+  .figma-canvas-area { flex: 1; background: #1a1a1a; padding: 12px; display: flex; align-items: center; justify-content: center; }
+  /* Accordion */
+  .accordion-item { cursor: pointer; transition: all 0.2s; }
+  .accordion-body { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid #F0F0F4; font-size: 12px; color: #6E6E73; line-height: 1.65; }
+  .accordion-body.open { display: block; }
+  /* Workflow dir toggle */
+  .dir-toggle { display: inline-flex; padding: 3px; align-self: stretch; }
+  .dir-btn {
+    flex: 1; padding: 8px 12px; border-radius: 9px; border: none; cursor: pointer;
+    font-size: 12px; font-weight: 600; transition: all 0.2s; background: transparent; color: #AEAEB2;
+  }
+  .dir-btn.active { background: #1D1D1F; color: #fff; }
+  /* Progress steps */
+  .prog-steps { display: flex; gap: 4px; }
+  .prog-btn {
+    flex: 1; padding: 6px 0; border-radius: 6px; border: 1px solid #E8E8EC;
+    cursor: pointer; font-size: 10px; font-weight: 600;
+    background: #FFFFFF; color: #AEAEB2; transition: all 0.2s;
+  }
+  .prog-btn.active { background: #1D1D1F; color: #fff; border-color: #1D1D1F; }
+  .prog-btn.done { background: #E8F8ED; color: #1B7D3A; border-color: #B8E6C4; }
+  /* MCP Diagram */
+  .mcp-node { border-radius: 10px; padding: 10px 12px; text-align: center; min-width: 72px; }
+  /* Footer */
+  footer { padding: 24px 24px 40px; border-top: 1px solid #E8E8EC; }
+  /* Scrollbar */
+  ::-webkit-scrollbar { height: 4px; width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #AEAEB2; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div style="padding: 40px 24px 32px; border-bottom: 1px solid #E8E8EC; background: #FFFFFF;">
+  <p class="label" style="font-size:10px;">Setup Tutorial</p>
+  <h1 style="margin: 6px 0 0; font-size: 24px; font-weight: 750; color: #1D1D1F; letter-spacing: -0.5px; line-height: 1.2;">Figma + Claude Code</h1>
+  <p style="margin: 10px 0 0; font-size: 14px; color: #6E6E73; line-height: 1.5;">Panduan setup integrasi dua arah antara Claude Code dan Figma via MCP — dari install hingga workflow.</p>
+  <div style="display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap;">
+    <span class="pill" style="color:#1B7D3A; background:#E8F8ED; border:1px solid #B8E6C4;">Beginner friendly</span>
+    <span class="pill" style="color:#6E6E73; background:#F5F5F7; border:1px solid #E8E8EC;">~5 min setup</span>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">Overview</button>
+    <button class="tab-btn" onclick="switchTab(1)">Install</button>
+    <button class="tab-btn" onclick="switchTab(2)">Connect MCP</button>
+    <button class="tab-btn" onclick="switchTab(3)">Workflow</button>
+    <button class="tab-btn" onclick="switchTab(4)">Tips</button>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div style="padding: 24px; max-width: 480px; margin: 0 auto;">
+
+  <!-- ═══ OVERVIEW TAB ═══ -->
+  <div id="tab-0" class="tab-content active">
+    <div>
+      <p class="label">What is this</p>
+      <h2 style="font-size:20px; font-weight:700; color:#1D1D1F; letter-spacing:-0.3px; margin-top:6px; line-height:1.3;">Code to Canvas</h2>
+      <p class="body-text" style="margin-top:8px;">Integrasi dua arah antara Claude Code dan Figma. Bangun UI di terminal, kirim langsung ke Figma sebagai frame yang bisa diedit — bukan screenshot, tapi layer dan komponen sesungguhnya.</p>
+    </div>
+
+    <!-- Claude Desktop App mockup -->
+    <div class="claude-app">
+      <div class="claude-app-bar">
+        <div class="browser-dots">
+          <span class="browser-dot" style="background:#FF5F57;"></span>
+          <span class="browser-dot" style="background:#FEBC2E;"></span>
+          <span class="browser-dot" style="background:#28C840;"></span>
+        </div>
+        <div style="flex:1; display:flex; justify-content:center; gap:8px;">
+          <span style="font-size:10px; color:#AEAEB2;">Chat</span>
+          <span style="font-size:10px; color:#AEAEB2;">Cowork</span>
+          <span style="font-size:10px; color:#1D1D1F; font-weight:700; padding:2px 6px; border-bottom:1.5px solid #1D1D1F;">Code</span>
+        </div>
+      </div>
+      <div class="claude-app-body">
+        <div class="claude-sidebar">
+          <div style="color:#0071E3; margin-bottom:4px;">+ New session</div>
+          <div>Search</div><div>Plugins</div>
+          <div style="margin-top:8px; font-size:8px;">Sessions</div>
+        </div>
+        <div class="claude-main">
+          <div style="font-size:28px;">🍊</div>
+          <div class="card" style="padding:8px 14px; margin-top:8px; display:inline-block;">
+            <span style="font-size:11px; color:#AEAEB2;">create a travel website homepage and send it to Figma</span>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:6px; justify-content:center;">
+            <span style="font-size:9px; color:#AEAEB2;">Figma-claude-app</span>
+            <span style="font-size:9px; color:#AEAEB2;">Sonnet 4.6</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:11px; text-align:center; color:#AEAEB2; margin-top:-16px;">Claude Code desktop app — tersedia via terminal maupun app</p>
+
+    <!-- Stack explanation -->
+    <div>
+      <p class="label">Understanding the stack</p>
+      <p class="body-text" style="margin-top:4px;">Sebelum setup, penting untuk paham 3 komponen utama.</p>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div class="card" style="padding:14px 16px; display:flex; gap:12px; align-items:flex-start;">
+        <span style="font-size:18px; margin-top:1px;">⌨️</span>
+        <div>
+          <div style="font-size:13px; font-weight:600; color:#1D1D1F;">Claude Code</div>
+          <div style="font-size:12px; color:#6E6E73; margin-top:2px; line-height:1.5;">Agentic coding tool dari Anthropic yang hidup di terminal. Bisa build fitur, debug, navigasi codebase, dan otomasi task — sekarang juga bisa bicara langsung ke Figma.</div>
+          <div style="margin-top:6px;"><span class="pill" style="color:#6E6E73; background:#F5F5F7; border:1px solid #E8E8EC; font-size:10px;">AI Agent</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:14px 16px; display:flex; gap:12px; align-items:flex-start;">
+        <span style="font-size:18px; margin-top:1px;">🔌</span>
+        <div>
+          <div style="font-size:13px; font-weight:600; color:#1D1D1F;">MCP (Model Context Protocol)</div>
+          <div style="font-size:12px; color:#6E6E73; margin-top:2px; line-height:1.5;">Standar terbuka yang memungkinkan AI tools terhubung ke berbagai data source dan aplikasi. Ibaratkan sebagai "USB universal" — satu protokol, banyak koneksi.</div>
+          <div style="margin-top:6px;"><span class="pill" style="color:#6E6E73; background:#F5F5F7; border:1px solid #E8E8EC; font-size:10px;">Protocol</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:14px 16px; display:flex; gap:12px; align-items:flex-start;">
+        <span style="font-size:18px; margin-top:1px;">🎨</span>
+        <div>
+          <div style="font-size:13px; font-weight:600; color:#1D1D1F;">Figma MCP Server</div>
+          <div style="font-size:12px; color:#6E6E73; margin-top:2px; line-height:1.5;">Server yang menjembatani Figma dengan AI tools. Bisa membaca komponen, variabel, style, dan layout — lalu mengirim UI dari browser ke canvas sebagai editable layers.</div>
+          <div style="margin-top:6px;"><span class="pill" style="color:#6E6E73; background:#F5F5F7; border:1px solid #E8E8EC; font-size:10px;">Bridge</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MCP Diagram -->
+    <div class="card" style="padding:20px;">
+      <p class="label" style="font-size:10px; margin-bottom:12px;">How MCP connects them</p>
+      <div style="display:flex; align-items:center; gap:6px; justify-content:center;">
+        <div style="background:#1D1D1F; border-radius:10px; padding:10px 12px; text-align:center; min-width:72px;">
+          <div style="font-size:18px;">⌨️</div>
+          <div style="font-size:10px; font-weight:600; color:#E5E5EA; margin-top:3px;">Claude Code</div>
+          <div style="font-size:8px; color:#E5E5EA; opacity:0.6; margin-top:1px;">AI Agent</div>
+        </div>
+        <div style="font-size:10px; color:#AEAEB2;">⇄</div>
+        <div style="background:#EDF4FE; border-radius:10px; padding:10px 12px; text-align:center; border:1px solid #B3D4F7; min-width:72px;">
+          <div style="font-size:18px;">🔌</div>
+          <div style="font-size:10px; font-weight:600; color:#0071E3; margin-top:3px;">MCP Protocol</div>
+          <div style="font-size:8px; color:#0071E3; opacity:0.6; margin-top:1px;">Universal Adapter</div>
+        </div>
+        <div style="font-size:10px; color:#AEAEB2;">⇄</div>
+        <div style="background:#F5F5F7; border-radius:10px; padding:10px 12px; text-align:center; border:1px solid #E8E8EC; min-width:72px;">
+          <div style="font-size:18px;">🎨</div>
+          <div style="font-size:10px; font-weight:600; color:#1D1D1F; margin-top:3px;">Figma</div>
+          <div style="font-size:8px; color:#1D1D1F; opacity:0.6; margin-top:1px;">Design Tool</div>
+        </div>
+      </div>
+      <div style="margin-top:14px; display:flex; flex-direction:column; gap:6px;">
+        <div style="padding:8px 12px; background:#F5F5F7; border-radius:8px;">
+          <div style="font-size:11px; font-weight:600; color:#1D1D1F;">Apa itu MCP?</div>
+          <div style="font-size:11px; color:#6E6E73; margin-top:2px; line-height:1.5;">Model Context Protocol — standar terbuka yang memungkinkan AI tools terhubung ke aplikasi eksternal. Seperti USB tapi untuk AI.</div>
+        </div>
+        <div style="padding:8px 12px; background:#F5F5F7; border-radius:8px;">
+          <div style="font-size:11px; font-weight:600; color:#1D1D1F;">Kenapa butuh MCP?</div>
+          <div style="font-size:11px; color:#6E6E73; margin-top:2px; line-height:1.5;">Tanpa MCP, Claude Code tidak bisa membaca desain Figma atau mengirim UI ke canvas. MCP menjadi "jembatan" antara keduanya.</div>
+        </div>
+        <div style="padding:8px 12px; background:#F5F5F7; border-radius:8px;">
+          <div style="font-size:11px; font-weight:600; color:#1D1D1F;">Apa yang dikirim MCP?</div>
+          <div style="font-size:11px; color:#6E6E73; margin-top:2px; line-height:1.5;">Bukan screenshot — MCP mengirim komponen, variabel, style, dan layout structure. Claude memahami design system secara semantik.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two-way pipeline -->
+    <div>
+      <p class="label">Two-way pipeline</p>
+      <p class="body-text" style="margin-top:4px;">Dua arah, bukan satu arah. Ini yang membedakan.</p>
+    </div>
+    <div class="card" style="padding:20px; display:flex; flex-direction:column; gap:14px; align-items:center;">
+      <div style="display:flex; gap:16px; align-items:center;">
+        <div style="text-align:center;">
+          <div style="background:#1D1D1F; border-radius:10px; padding:10px 14px;">
+            <div style="font-size:20px;">⌨️</div>
+            <div style="font-size:10px; font-weight:600; color:#E5E5EA; margin-top:3px;">Claude Code</div>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <span class="pill" style="color:#1B7D3A; background:#E8F8ED; border:1px solid #B8E6C4; font-size:9px;">push →</span>
+          <div style="width:40px; height:1px; background:#E8E8EC;"></div>
+          <span class="pill" style="color:#0071E3; background:#EDF4FE; border:1px solid #B3D4F7; font-size:9px;">← pull</span>
+        </div>
+        <div style="text-align:center;">
+          <div style="background:#F5F5F7; border-radius:10px; padding:10px 14px; border:1px solid #E8E8EC;">
+            <div style="font-size:20px;">🎨</div>
+            <div style="font-size:10px; font-weight:600; color:#1D1D1F; margin-top:3px;">Figma</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <span class="pill" style="color:#1B7D3A; background:#E8F8ED; border:1px solid #B8E6C4;">Code → Figma</span>
+        <span class="pill" style="color:#0071E3; background:#EDF4FE; border:1px solid #B3D4F7;">Figma → Code</span>
+      </div>
+    </div>
+
+    <!-- Key capabilities -->
+    <div><p class="label">Key capabilities</p></div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div class="card" style="padding:12px 16px; display:flex; gap:12px; align-items:flex-start;">
+        <span style="font-size:16px; margin-top:1px;">🔄</span>
+        <div>
+          <div style="font-size:13px; font-weight:600; color:#1D1D1F;">Two-way sync</div>
+          <div style="font-size:12px; color:#6E6E73; margin-top:2px; line-height:1.5;">Push kode ke Figma, pull desain ke Claude Code. Loop iterasi tanpa kehilangan context.</div>
+        </div>
+      </div>
+      <div class="card" style="padding:12px 16px; display:flex; gap:12px; align-items:flex-start;">
+        <span style="font-size:16px; margin-top:1px;">🧩</span>
+        <div>
+          <div style="font-size:13px; font-weight:600; color:#1D1D1F;">Editable layers</div>
+          <div style="font-size:12px; color:#6E6E73; margin-top:2px; line-height:1.5;">Bukan gambar flat — frame dengan auto-layout, text, dan komponen yang bisa diedit.</div>
+        </div>
+      </div>
+      <div class="card" style="padding:12px 16px; display:flex; gap:12px; align-items:flex-start;">
+        <span style="font-size:16px; margin-top:1px;">📐</span>
+        <div>
+          <div style="font-size:13px; font-weight:600; color:#1D1D1F;">Multi-screen capture</div>
+          <div style="font-size:12px; color:#6E6E73; margin-top:2px; line-height:1.5;">Capture seluruh flow (onboarding, checkout, settings) dalam satu sesi.</div>
+        </div>
+      </div>
+      <div class="card" style="padding:12px 16px; display:flex; gap:12px; align-items:flex-start;">
+        <span style="font-size:16px; margin-top:1px;">👥</span>
+        <div>
+          <div style="font-size:13px; font-weight:600; color:#1D1D1F;">Team collaboration</div>
+          <div style="font-size:12px; color:#6E6E73; margin-top:2px; line-height:1.5;">Tim annotate, duplikat, dan explore variant langsung di canvas bersama.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ INSTALL TAB ═══ -->
+  <div id="tab-1" class="tab-content">
+    <div>
+      <p class="label">Step 1 of 2</p>
+      <p class="body-text" style="margin-top:4px;">Install Claude Code dan plugin Figma.</p>
+    </div>
+    <div class="step-nav" id="install-nav">
+      <button class="step-nav-btn active" onclick="installStep(0)">Install</button>
+      <button class="step-nav-btn" onclick="installStep(1)">Launch</button>
+      <button class="step-nav-btn" onclick="installStep(2)">Plugin</button>
+    </div>
+
+    <!-- Step 0: Install Claude Code -->
+    <div id="install-0">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span style="font-size:11px; font-weight:700; color:#0071E3; font-family:ui-monospace,monospace;">1/3</span>
+        <h3 class="heading" style="font-size:16px;">Install Claude Code</h3>
+      </div>
+      <p class="body-text" style="margin-bottom:16px;">Jalankan satu command di terminal untuk menginstall Claude Code.</p>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot" style="background:#FF5F57;"></span>
+          <span class="terminal-dot" style="background:#FEBC2E;"></span>
+          <span class="terminal-dot" style="background:#28C840;"></span>
+          <span class="terminal-title">Terminal — zsh</span>
+        </div>
+        <div class="terminal-body">
+          <span class="t-ln"><span class="t-dim">ngereige@MXHWL27PQ9 ~ %</span> curl -fsSL https://claude.ai/install.sh | bash</span>
+          <span class="t-ln">Setting up Claude Code...</span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln"><span class="t-g">✓ Claude Code successfully installed!</span></span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln">  Version: <span class="t-blue">2.1.50</span></span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln">  Next: Run <span class="t-y">claude --help</span> to get started</span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln"><span class="t-y">⚠ Setup notes:</span></span>
+          <span class="t-ln">  • Native installation exists but ~/.local/bin is</span>
+          <span class="t-ln">    not in your PATH. Run:</span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln">  echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc</span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln"><span class="t-g">☑ Installation complete!</span></span>
+          <span class="t-ln"><span class="t-dim">ngereige@MXHWL27PQ9 ~ % █</span></span>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:16px; display:flex; gap:12px;">
+        <span class="callout-icon">💡</span>
+        <div>Pastikan Node.js sudah terinstall. Jika PATH belum disetting, jalankan perintah echo yang ditampilkan.</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Launch -->
+    <div id="install-1" style="display:none;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span style="font-size:11px; font-weight:700; color:#0071E3; font-family:ui-monospace,monospace;">2/3</span>
+        <h3 class="heading" style="font-size:16px;">Launch Claude Code</h3>
+      </div>
+      <p class="body-text" style="margin-bottom:16px;">Ketik "claude" di terminal untuk memulai. macOS mungkin minta izin akses.</p>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="terminal-dot" style="background:#FF5F57;"></span>
+            <span class="terminal-dot" style="background:#FEBC2E;"></span>
+            <span class="terminal-dot" style="background:#28C840;"></span>
+            <span class="terminal-title">Terminal — zsh</span>
+          </div>
+          <div class="terminal-body">
+            <span class="t-ln"><span class="t-dim">ngereige@MXHWL27PQ9 ~ %</span> claude</span>
+            <span class="t-ln">&nbsp;</span>
+            <div style="border:1px solid #FF8FAB; border-radius:4px; padding:6px 8px; margin-bottom:8px; display:flex; gap:12px; font-size:11px;">
+              <div style="text-align:center;">
+                <span style="color:#FF8FAB;">Claude Code v2.1.50</span>
+                <div style="margin-top:4px; font-weight:700; color:#E5E5EA;">Welcome back!</div>
+                <div style="margin-top:4px; font-size:16px;">🍊</div>
+                <div style="color:#8E8E93; margin-top:2px; font-size:10px;">Sonnet 4.6 · Claude Pro</div>
+              </div>
+              <div>
+                <span style="color:#FEBC2E;">Tips for getting started</span>
+                <div style="color:#E5E5EA; font-size:10px;">Run /init to create a CLAUDE.md file...</div>
+                <div style="margin-top:4px;"><span style="color:#FF8FAB;">Recent activity</span></div>
+                <div style="color:#8E8E93; font-size:10px;">No recent activity</div>
+              </div>
+            </div>
+            <span class="t-ln">&nbsp;</span>
+            <span class="t-ln">> <span class="t-dim">Try "fix lint errors"</span>          █</span>
+            <span class="t-ln">&nbsp;</span>
+            <span class="t-ln"><span class="t-dim">? for shortcuts</span></span>
+          </div>
+        </div>
+        <div class="card" style="padding:12px; display:flex; gap:10px; align-items:center;">
+          <div style="font-size:24px;">🤚</div>
+          <div>
+            <div style="font-size:12px; font-weight:600; color:#1D1D1F;">"Terminal" would like to access data from other apps.</div>
+            <div style="font-size:11px; color:#AEAEB2; margin-top:2px;">Klik "Allow" jika muncul dialog ini di macOS.</div>
+          </div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:16px; display:flex; gap:12px;">
+        <span class="callout-icon">💡</span>
+        <div>Bisa juga menggunakan Claude Code Desktop App — tampilan lebih visual dengan sidebar sessions.</div>
+      </div>
+    </div>
+
+    <!-- Step 2: Plugin -->
+    <div id="install-2" style="display:none;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span style="font-size:11px; font-weight:700; color:#0071E3; font-family:ui-monospace,monospace;">3/3</span>
+        <h3 class="heading" style="font-size:16px;">Install Figma Plugin</h3>
+      </div>
+      <p class="body-text" style="margin-bottom:16px;">Install plugin resmi Figma langsung dari marketplace Claude Code.</p>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot" style="background:#FF5F57;"></span>
+          <span class="terminal-dot" style="background:#FEBC2E;"></span>
+          <span class="terminal-dot" style="background:#28C840;"></span>
+          <span class="terminal-title">Claude Code</span>
+        </div>
+        <div class="terminal-body">
+          <span class="t-ln"><span class="t-tag">/plugin install figma@claude-plugin-directory</span></span>
+          <span class="t-ln">  Plugin 'figma@claude-plugins-official' is already installed.</span>
+          <span class="t-ln">  Use '/plugin' to manage existing plugins.</span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln">> <span class="t-tag">/plugin</span> █</span>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:16px; display:flex; gap:12px;">
+        <span class="callout-icon">💡</span>
+        <div>Alternatif: gunakan command <code>claude mcp add --transport http figma https://mcp.figma.com/mcp</code> di terminal biasa.</div>
+      </div>
+    </div>
+
+    <!-- Install nav buttons -->
+    <div style="display:flex; gap:8px;" id="install-btns">
+      <button id="install-back" class="action-btn" onclick="installNav(-1)" style="display:none;">← Back</button>
+      <button id="install-next" class="action-btn primary" onclick="installNav(1)">Next →</button>
+      <div id="install-done" class="step-done" style="display:none; background:#E8F8ED; color:#1B7D3A; border:1px solid #B8E6C4;">✓ Install done — next: Connect MCP</div>
+    </div>
+  </div>
+
+  <!-- ═══ CONNECT MCP TAB ═══ -->
+  <div id="tab-2" class="tab-content">
+    <div>
+      <p class="label">Step 2 of 2</p>
+      <p class="body-text" style="margin-top:4px;">Hubungkan Claude Code ke Figma via MCP authentication.</p>
+    </div>
+    <div class="step-nav" id="connect-nav">
+      <button class="step-nav-btn active" onclick="connectStep(0)">Auth</button>
+      <button class="step-nav-btn" onclick="connectStep(1)">OAuth</button>
+      <button class="step-nav-btn" onclick="connectStep(2)">Verify</button>
+    </div>
+
+    <!-- Connect Step 0: Enable & Auth -->
+    <div id="connect-0">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span style="font-size:11px; font-weight:700; color:#0071E3; font-family:ui-monospace,monospace;">1/3</span>
+        <h3 class="heading" style="font-size:16px;">Enable & Authenticate</h3>
+      </div>
+      <p class="body-text" style="margin-bottom:16px;">Ketik /plugin, pilih figma-remote-mcp, lalu pilih Authenticate.</p>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot" style="background:#FF5F57;"></span>
+          <span class="terminal-dot" style="background:#FEBC2E;"></span>
+          <span class="terminal-dot" style="background:#28C840;"></span>
+          <span class="terminal-title">Claude Code</span>
+        </div>
+        <div class="terminal-body">
+          <span class="t-ln"><span class="t-tag">/plugin</span></span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln"><span class="t-blue">Plugins</span>  Discover  <span class="t-tag">Installed</span>  Marketplaces</span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln"><b>Figma-remote-mcp MCP Server</b></span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln">Status: <span class="t-dim">○ disabled</span></span>
+          <span class="t-ln">Auth: <span class="t-r">✕ not authenticated</span></span>
+          <span class="t-ln">URL: <span class="t-blue">https://mcp.figma.com/mcp</span></span>
+          <span class="t-ln">Config: <span class="t-dim">/Users/ngereige/.claude.json</span></span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln">  > 1. <span class="t-blue">Enable</span></span>
+          <span class="t-ln">    2. Authenticate</span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln"><span class="t-dim">↑↓ to navigate · Enter to select · Esc to back</span></span>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:16px; display:flex; gap:12px;">
+        <span class="callout-icon">💡</span>
+        <div>Pilih "Enable" dulu, lalu "Authenticate". Browser akan terbuka otomatis.</div>
+      </div>
+    </div>
+
+    <!-- Connect Step 1: OAuth -->
+    <div id="connect-1" style="display:none;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span style="font-size:11px; font-weight:700; color:#0071E3; font-family:ui-monospace,monospace;">2/3</span>
+        <h3 class="heading" style="font-size:16px;">Allow Access di Figma</h3>
+      </div>
+      <p class="body-text" style="margin-bottom:16px;">Klik "Agree & Allow Access" pada halaman OAuth Figma.</p>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="card" style="padding:24px; text-align:center; max-width:280px; margin:0 auto;">
+          <div style="font-size:13px; font-weight:700; color:#1D1D1F; line-height:1.4;">Claude Code would like to access your account and be able to:</div>
+          <div style="display:flex; align-items:center; gap:6px; margin:12px 0; justify-content:center;">
+            <span style="color:#34C759; font-size:12px;">✓</span>
+            <span style="font-size:11px; color:#6E6E73;">Connect to Figma's remote MCP server</span>
+          </div>
+          <div style="font-size:10px; color:#AEAEB2; line-height:1.5; margin:8px 0 16px;">This MCP connection will provide Claude Code read and write access to your Figma account.</div>
+          <div style="background:#0071E3; color:#fff; border-radius:8px; padding:10px 16px; font-size:12px; font-weight:600;">Agree & Allow Access</div>
+          <div style="font-size:11px; color:#0071E3; margin-top:10px;">Switch accounts</div>
+        </div>
+        <div style="text-align:center; font-size:18px; color:#AEAEB2;">↓</div>
+        <div class="card" style="padding:20px; text-align:center;">
+          <div style="font-size:20px; font-weight:800; color:#1D1D1F;">Authentication Successful</div>
+          <div style="font-size:12px; color:#6E6E73; margin-top:6px;">You can close this window. Return to Claude Code.</div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:16px; display:flex; gap:12px;">
+        <span class="callout-icon">💡</span>
+        <div>Pastikan kamu login ke akun Figma yang benar sebelum klik Allow Access.</div>
+      </div>
+    </div>
+
+    <!-- Connect Step 2: Verify -->
+    <div id="connect-2" style="display:none;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span style="font-size:11px; font-weight:700; color:#0071E3; font-family:ui-monospace,monospace;">3/3</span>
+        <h3 class="heading" style="font-size:16px;">Verify Connection</h3>
+      </div>
+      <p class="body-text" style="margin-bottom:16px;">Kembali ke Claude Code, ketik /plugin untuk memastikan status connected.</p>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot" style="background:#FF5F57;"></span>
+          <span class="terminal-dot" style="background:#FEBC2E;"></span>
+          <span class="terminal-dot" style="background:#28C840;"></span>
+          <span class="terminal-title">Claude Code</span>
+        </div>
+        <div class="terminal-body">
+          <span class="t-ln"><span class="t-tag">/plugin</span></span>
+          <span class="t-ln">  <span class="t-g">Authentication successful. Connected to figma-remote-mcp.</span></span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln"><span class="t-tag">/plugin</span></span>
+          <span class="t-ln"><span class="t-blue">Plugins</span>  Discover  <span class="t-tag">Installed</span>  Marketplaces</span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln">  <span class="t-dim">○</span> Search...</span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln">  <span class="t-dim">Local</span></span>
+          <span class="t-ln">  > figma-remote-mcp <span class="t-tag">MCP</span> · <span class="t-g">✓ connected</span></span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln">  <span class="t-dim">claudeai</span></span>
+          <span class="t-ln">  claude.ai Figma <span class="t-tag">MCP</span> · <span class="t-g">✓ connected</span></span>
+          <span class="t-ln">&nbsp;</span>
+          <span class="t-ln"><span class="t-dim">type to search · Space to toggle · Enter to details</span></span>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:16px; display:flex; gap:12px;">
+        <span class="callout-icon">💡</span>
+        <div>Jika masih disconnected, restart Claude Code dan ulangi proses authenticate.</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:8px;">
+      <button id="connect-back" class="action-btn" onclick="connectNav(-1)" style="display:none;">← Back</button>
+      <button id="connect-next" class="action-btn primary" onclick="connectNav(1)">Next →</button>
+      <div id="connect-done" class="step-done" style="display:none; background:#E8F8ED; color:#1B7D3A; border:1px solid #B8E6C4;">✓ Setup complete!</div>
+    </div>
+  </div>
+
+  <!-- ═══ WORKFLOW TAB ═══ -->
+  <div id="tab-3" class="tab-content">
+    <div>
+      <p class="label">In action</p>
+      <p class="body-text" style="margin-top:4px;">Dua arah: push kode ke Figma, atau pull desain ke Claude Code.</p>
+    </div>
+
+    <!-- Direction toggle -->
+    <div class="card dir-toggle" style="display:flex;">
+      <button class="dir-btn active" id="dir-push" onclick="switchDir('push')">📤 Code → Figma</button>
+      <button class="dir-btn" id="dir-pull" onclick="switchDir('pull')">📥 Figma → Code</button>
+    </div>
+
+    <!-- Progress steps -->
+    <div class="prog-steps" id="workflow-prog"></div>
+
+    <!-- Workflow step content -->
+    <div id="workflow-content"></div>
+
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <button id="wf-back" class="action-btn" onclick="workflowNav(-1)" style="display:none;">← Back</button>
+      <button id="wf-next" class="action-btn primary" onclick="workflowNav(1)">Next →</button>
+      <div id="wf-done" class="step-done" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TIPS TAB ═══ -->
+  <div id="tab-4" class="tab-content">
+    <div>
+      <p class="label">Pro tips</p>
+      <p class="body-text" style="margin-top:4px;">Lima tips untuk workflow yang lebih efektif.</p>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="terminal-dot" style="background:#FF5F57;"></span>
+        <span class="terminal-dot" style="background:#FEBC2E;"></span>
+        <span class="terminal-dot" style="background:#28C840;"></span>
+        <span class="terminal-title">Claude Code — /plugin Discover</span>
+      </div>
+      <div class="terminal-body">
+        <span class="t-ln"><span class="t-tag">/plugin</span></span>
+        <span class="t-ln"><span class="t-blue">Plugins</span>  <span class="t-tag">Discover</span>  Installed  Marketplaces</span>
+        <span class="t-ln">&nbsp;</span>
+        <span class="t-ln">Discover plugins (1/55)</span>
+        <span class="t-ln">  <span class="t-dim">○</span> Search...</span>
+        <span class="t-ln">&nbsp;</span>
+        <span class="t-ln">> ○ <b>frontend-design</b> · claude-plugins-official · 211.2K installs</span>
+        <span class="t-ln">    <span class="t-dim">Create distinctive, production-grade frontend interfaces...</span></span>
+        <span class="t-ln">  ○ <b>context7</b> · claude-plugins-official · 127.1K installs</span>
+        <span class="t-ln">    <span class="t-dim">Upstash Context7 MCP server for documentation...</span></span>
+        <span class="t-ln">  ○ <b>code-review</b> · claude-plugins-official · 104K installs</span>
+        <span class="t-ln">    <span class="t-dim">Automated code review for pull requests...</span></span>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:8px;" id="tips-accordion"></div>
+
+    <div class="card" style="padding:20px; background:#F5F5F7; border-color:#F0F0F4;">
+      <p class="label" style="font-size:10px;">Supported clients</p>
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
+        <span class="pill" style="color:#1D1D1F; background:#FFFFFF; border:1px solid #E8E8EC;">Claude Code</span>
+        <span class="pill" style="color:#1D1D1F; background:#FFFFFF; border:1px solid #E8E8EC;">VS Code</span>
+        <span class="pill" style="color:#1D1D1F; background:#FFFFFF; border:1px solid #E8E8EC;">Cursor</span>
+        <span class="pill" style="color:#1D1D1F; background:#FFFFFF; border:1px solid #E8E8EC;">Windsurf</span>
+        <span class="pill" style="color:#1D1D1F; background:#FFFFFF; border:1px solid #E8E8EC;">Codex</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="text-align:center; margin-bottom:16px;">
+    <p style="font-size:11px; color:#AEAEB2;">Based on Figma Developer Docs & Anthropic documentation</p>
+    <p style="font-size:11px; color:#AEAEB2; margin-top:2px;">Code to Canvas — Feb 2026</p>
+  </div>
+  <div class="card" style="padding:14px; display:flex; gap:12px; align-items:center; max-width:400px; margin:0 auto;">
+    <div style="width:36px; height:36px; border-radius:8px; background:#FF0000; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+      <span style="color:#fff; font-size:16px; font-weight:800;">▶</span>
+    </div>
+    <div style="flex:1;">
+      <div style="font-size:11px; font-weight:600; color:#1D1D1F;">Inspiration & Credits</div>
+      <a href="https://www.youtube.com/watch?v=CJIivdkGT5Y" target="_blank" rel="noopener noreferrer"
+         style="font-size:11px; color:#0071E3; text-decoration:none; line-height:1.4; display:block; margin-top:2px;">
+        Watch the original video tutorial →
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─── COLORS ───
+const COLORS = {
+  accent: '#0071E3', accentSoft: '#EDF4FE', accentBorder: '#B3D4F7',
+  green: '#34C759', greenSoft: '#E8F8ED', greenBorder: '#B8E6C4',
+  yellow: '#FF9F0A', yellowSoft: '#FFF5E6', yellowBorder: '#FFD699',
+  red: '#FF3B30', redSoft: '#FFECEB', redBorder: '#FFB3AE',
+  purple: '#AF52DE', purpleSoft: '#F5EDFB', purpleBorder: '#D4A5F0',
+  text: '#1D1D1F', textSec: '#6E6E73', textTer: '#AEAEB2',
+  border: '#E8E8EC', borderLight: '#F0F0F4', surface: '#FFFFFF', surfaceAlt: '#F5F5F7'
+};
+
+// ─── TABS ───
+let currentTab = 0;
+function switchTab(i) {
+  document.querySelectorAll('.tab-content').forEach((el, idx) => {
+    el.classList.toggle('active', idx === i);
+  });
+  document.querySelectorAll('.tab-btn').forEach((el, idx) => {
+    el.classList.toggle('active', idx === i);
+  });
+  currentTab = i;
+}
+
+// ─── INSTALL TAB ───
+let installCurrent = 0;
+function installStep(i) {
+  installCurrent = i;
+  [0,1,2].forEach(j => {
+    document.getElementById('install-' + j).style.display = j === i ? 'block' : 'none';
+    const btn = document.querySelectorAll('#install-nav .step-nav-btn')[j];
+    btn.classList.toggle('active', j === i);
+  });
+  document.getElementById('install-back').style.display = i > 0 ? 'flex' : 'none';
+  document.getElementById('install-next').style.display = i < 2 ? 'flex' : 'none';
+  document.getElementById('install-done').style.display = i === 2 ? 'flex' : 'none';
+}
+function installNav(dir) { installStep(Math.max(0, Math.min(2, installCurrent + dir))); }
+
+// ─── CONNECT TAB ───
+let connectCurrent = 0;
+function connectStep(i) {
+  connectCurrent = i;
+  [0,1,2].forEach(j => {
+    document.getElementById('connect-' + j).style.display = j === i ? 'block' : 'none';
+    document.querySelectorAll('#connect-nav .step-nav-btn')[j].classList.toggle('active', j === i);
+  });
+  document.getElementById('connect-back').style.display = i > 0 ? 'flex' : 'none';
+  document.getElementById('connect-next').style.display = i < 2 ? 'flex' : 'none';
+  document.getElementById('connect-done').style.display = i === 2 ? 'flex' : 'none';
+}
+function connectNav(dir) { connectStep(Math.max(0, Math.min(2, connectCurrent + dir))); }
+
+// ─── WORKFLOW TAB ───
+let wfDir = 'push';
+let wfStep = 0;
+
+const pushSteps = [
+  {
+    title: 'Prompt Claude Code',
+    desc: 'Tulis prompt dan paste link file Figma. Claude mulai membangun UI.',
+    visual: `<div class="claude-app">
+      <div class="claude-app-bar">
+        <div class="browser-dots"><span class="browser-dot" style="background:#FF5F57;"></span><span class="browser-dot" style="background:#FEBC2E;"></span><span class="browser-dot" style="background:#28C840;"></span></div>
+        <div style="flex:1;display:flex;justify-content:center;gap:8px;">
+          <span style="font-size:10px;color:#AEAEB2;">Chat</span>
+          <span style="font-size:10px;color:#AEAEB2;">Cowork</span>
+          <span style="font-size:10px;color:#1D1D1F;font-weight:700;padding:2px 6px;border-bottom:1.5px solid #1D1D1F;">Code</span>
+        </div>
+      </div>
+      <div class="claude-app-body">
+        <div class="claude-sidebar"><div style="color:#0071E3;margin-bottom:4px;">+ New session</div><div>Search</div><div>Plugins</div></div>
+        <div class="claude-main" style="width:100%;padding:0 8px;">
+          <div class="card" style="padding:8px 10px;font-size:10px;color:#1D1D1F;line-height:1.5;width:100%;">
+            create a travel website homepage and send it to Figma:<span style="color:#64ACFF;">https://www.figma.com/design/Tts7s...</span>
+          </div>
+          <div style="margin-top:8px;font-size:9px;color:#AEAEB2;">&gt; Bash</div>
+          <div style="font-size:9px;color:#AEAEB2;">  ls /Users/ngereige/Desktop/Figma-claude-app</div>
+          <div style="margin-top:6px;font-size:10px;"><span style="color:#E8927C;">✦</span> <span style="color:#E8927C;">Transmuting...</span></div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    title: 'Build & Preview',
+    desc: 'Claude Code membangun halaman dan membuka preview di browser.',
+    visual: `<div class="claude-app">
+      <div class="claude-app-bar">
+        <div class="browser-dots"><span class="browser-dot" style="background:#FF5F57;"></span><span class="browser-dot" style="background:#FEBC2E;"></span><span class="browser-dot" style="background:#28C840;"></span></div>
+        <div style="flex:1;display:flex;justify-content:center;gap:8px;">
+          <span style="font-size:10px;color:#AEAEB2;">Chat</span><span style="font-size:10px;color:#AEAEB2;">Cowork</span>
+          <span style="font-size:10px;color:#1D1D1F;font-weight:700;padding:2px 6px;border-bottom:1.5px solid #1D1D1F;">Code</span>
+        </div>
+      </div>
+      <div class="claude-app-body">
+        <div class="claude-sidebar"><div style="color:#0071E3;margin-bottom:4px;">+ New session</div></div>
+        <div class="claude-main" style="width:100%;padding:0 8px;">
+          <div style="font-size:10px;font-weight:600;color:#1D1D1F;">Preview Screenshot</div>
+          <div style="margin-top:4px;border-radius:6px;overflow:hidden;border:1px solid #E8E8EC;width:100%;">
+            <div style="height:80px;background:linear-gradient(135deg,#D4956B,#E8B89D);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <span style="font-size:6px;color:#fff;font-weight:600;letter-spacing:1px;">Wanderlust</span>
+              <span style="font-size:11px;color:#fff;font-weight:800;margin-top:2px;text-align:center;line-height:1.1;">Discover the<br>World's Best Places</span>
+              <div style="display:flex;gap:4px;margin-top:4px;">
+                <div style="padding:2px 6px;background:#E8927C;border-radius:3px;font-size:6px;color:#fff;">Explore</div>
+                <div style="padding:2px 6px;border:1px solid rgba(255,255,255,0.5);border-radius:3px;font-size:6px;color:#fff;">Learn More</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    title: 'Sending to Figma',
+    desc: 'Claude mengirim rendered UI ke Figma sebagai editable layers.',
+    visual: `<div class="browser">
+      <div class="browser-bar">
+        <div class="browser-dots"><span class="browser-dot" style="background:#FF5F57;"></span><span class="browser-dot" style="background:#FEBC2E;"></span><span class="browser-dot" style="background:#28C840;"></span></div>
+        <div class="browser-url"><span style="color:#0071E3;margin-right:4px;font-size:9px;">⟳ Sending to Figma...</span>127.0.0.1:3456/</div>
+      </div>
+      <div style="height:160px;background:linear-gradient(135deg,#D4956B,#C9A08B,#E8C5B5);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
+        <div style="display:flex;gap:20px;font-size:9px;color:rgba(255,255,255,0.8);margin-bottom:12px;">
+          <span style="font-weight:700;color:#fff;">Wanderlust</span>
+          <span>Destinations</span><span>Experiences</span><span>About</span>
+        </div>
+        <div style="font-size:8px;letter-spacing:2px;color:rgba(255,255,255,0.7);text-transform:uppercase;">✦ Your journey starts here</div>
+        <div style="font-size:22px;font-weight:800;color:#fff;text-align:center;line-height:1.1;margin:6px 0;">Discover the<br>World's <span style="color:#E8927C;font-style:italic;">Hidden</span><br>Wonders</div>
+        <div style="display:flex;gap:6px;margin-top:8px;">
+          <div style="padding:5px 12px;background:#E8927C;border-radius:4px;font-size:9px;color:#fff;font-weight:600;">Explore Destinations</div>
+          <div style="padding:5px 12px;border:1px solid rgba(255,255,255,0.5);border-radius:4px;font-size:9px;color:#fff;">Watch Our Story</div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    title: 'Editable di Figma',
+    desc: 'Design muncul di Figma canvas sebagai frame dengan layer yang bisa diedit.',
+    visual: figmaCanvasHTML()
+  }
+];
+
+const pullSteps = [
+  {
+    title: 'Select Frame di Figma',
+    desc: 'Pilih frame atau komponen yang ingin di-implement di Figma, lalu copy URL dari address bar.',
+    visual: `<div style="display:flex;flex-direction:column;gap:12px;">
+      ${figmaCanvasHTML()}
+      <div class="card" style="padding:10px;display:flex;align-items:center;gap:8px;">
+        <span style="font-size:14px;">🎯</span>
+        <div style="flex:1;background:#F5F5F7;border-radius:6px;padding:4px 8px;font-size:10px;color:#0071E3;font-family:ui-monospace,monospace;border:1px solid #E8E8EC;">
+          figma.com/design/Tts7s...?node-id=<b>1:42</b>
+        </div>
+        <span style="font-size:9px;color:#34C759;font-weight:600;">Copied!</span>
+      </div>
+    </div>`
+  },
+  {
+    title: 'Paste ke Claude Code',
+    desc: 'Paste URL Figma dan deskripsikan apa yang ingin dibangun. MCP otomatis mengambil design context.',
+    visual: `<div class="terminal">
+      <div class="terminal-bar"><span class="terminal-dot" style="background:#FF5F57;"></span><span class="terminal-dot" style="background:#FEBC2E;"></span><span class="terminal-dot" style="background:#28C840;"></span><span class="terminal-title">Claude Code</span></div>
+      <div class="terminal-body">
+        <span class="t-ln">> Help me implement this Figma design as a</span>
+        <span class="t-ln">  React component with Tailwind CSS.</span>
+        <span class="t-ln">&nbsp;</span>
+        <span class="t-ln">  <span class="t-blue">https://figma.com/design/Tts7s...?node-id=1:42</span></span>
+        <span class="t-ln">&nbsp;</span>
+        <span class="t-ln"><span class="t-y">● Using get_design_context...</span></span>
+        <span class="t-ln"><span class="t-dim">  Reading components, variables, styles...</span></span>
+        <span class="t-ln"><span class="t-g">✓ Design context loaded</span></span>
+        <span class="t-ln">&nbsp;</span>
+        <span class="t-ln"><span class="t-dim">  Found: Navigation, Hero Section, Cards Grid,</span></span>
+        <span class="t-ln"><span class="t-dim">  Footer. 12 components, 8 color tokens, 3 fonts.</span></span>
+      </div>
+    </div>`
+  },
+  {
+    title: 'Claude Generate Code',
+    desc: 'Claude membaca komponen, variabel, dan layout dari Figma lalu menghasilkan kode yang match.',
+    visual: `<div class="terminal">
+      <div class="terminal-bar"><span class="terminal-dot" style="background:#FF5F57;"></span><span class="terminal-dot" style="background:#FEBC2E;"></span><span class="terminal-dot" style="background:#28C840;"></span><span class="terminal-title">Claude Code</span></div>
+      <div class="terminal-body">
+        <span class="t-ln"><span class="t-g">✓</span> Created <span class="t-blue">src/components/Hero.tsx</span></span>
+        <span class="t-ln"><span class="t-g">✓</span> Created <span class="t-blue">src/components/Navbar.tsx</span></span>
+        <span class="t-ln"><span class="t-g">✓</span> Created <span class="t-blue">src/components/CardGrid.tsx</span></span>
+        <span class="t-ln"><span class="t-g">✓</span> Created <span class="t-blue">src/components/Footer.tsx</span></span>
+        <span class="t-ln"><span class="t-g">✓</span> Updated <span class="t-blue">src/App.tsx</span></span>
+        <span class="t-ln">&nbsp;</span>
+        <span class="t-ln"><span class="t-g">✓</span> Started dev server on <span class="t-blue">http://localhost:5173</span></span>
+        <span class="t-ln">&nbsp;</span>
+        <span class="t-ln">  I've implemented the Figma design with:</span>
+        <span class="t-ln">  • Responsive layout matching the frame</span>
+        <span class="t-ln">  • Color tokens from your Figma variables</span>
+        <span class="t-ln">  • Auto-layout translated to Flexbox/Grid</span>
+        <span class="t-ln">&nbsp;</span>
+        <span class="t-ln">  Want me to adjust anything?</span>
+      </div>
+    </div>`
+  },
+  {
+    title: 'Preview & Iterate',
+    desc: 'Review hasil di browser. Minta penyesuaian, atau push kembali ke Figma untuk feedback tim.',
+    visual: `<div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="browser-dots"><span class="browser-dot" style="background:#FF5F57;"></span><span class="browser-dot" style="background:#FEBC2E;"></span><span class="browser-dot" style="background:#28C840;"></span></div>
+          <div class="browser-url">localhost:5173</div>
+        </div>
+        <div style="height:130px;background:linear-gradient(135deg,#D4956B,#C9A08B,#E8C5B5);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="display:flex;gap:20px;font-size:9px;color:rgba(255,255,255,0.8);margin-bottom:8px;">
+            <span style="font-weight:700;color:#fff;">Wanderlust</span><span>Destinations</span><span>Experiences</span><span>About</span>
+          </div>
+          <div style="font-size:18px;font-weight:800;color:#fff;text-align:center;line-height:1.1;">Discover the World's<br><span style="color:#E8927C;font-style:italic;">Hidden</span> Wonders</div>
+          <div style="display:flex;gap:4px;margin-top:6px;">
+            <div style="padding:4px 10px;background:#E8927C;border-radius:4px;font-size:8px;color:#fff;font-weight:600;">Explore</div>
+            <div style="padding:4px 10px;border:1px solid rgba(255,255,255,0.5);border-radius:4px;font-size:8px;color:#fff;">Our Story</div>
+          </div>
+        </div>
+      </div>
+      <div class="callout" style="display:flex;gap:12px;">
+        <span class="callout-icon">🔁</span>
+        <div><span style="font-weight:600;color:#1D1D1F;">Loop:</span> Iterate di code → push ke Figma → tim review → pull feedback → iterate lagi. Context terjaga di setiap siklus.</div>
+      </div>
+    </div>`
+  }
+];
+
+function figmaCanvasHTML() {
+  return `<div class="figma-canvas">
+    <div class="figma-bar">
+      <span style="font-size:10px;color:#E5E5EA;font-weight:600;">Figma</span>
+      <span style="font-size:9px;color:#8E8E93;">— Untitled</span>
+    </div>
+    <div class="figma-body">
+      <div class="figma-layers">
+        <div style="font-size:9px;color:#8E8E93;margin-bottom:6px;">Layers</div>
+        ${['Navigation','Body','  Section','  Section','  Container','Footer'].map((l,i) =>
+          `<div style="font-size:8px;color:${i===3?'#64ACFF':'#AEAEB2'};padding:2px 4px;background:${i===3?'rgba(100,172,255,0.12)':'transparent'};border-radius:2px;margin-bottom:1px;">${l}</div>`
+        ).join('')}
+      </div>
+      <div class="figma-canvas-area">
+        <div style="width:100px;border-radius:4px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:2px solid #64ACFF;">
+          <div style="height:40px;background:linear-gradient(135deg,#E8927C,#D4A574);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:7px;color:#fff;font-weight:700;">Discover the World's</span>
+          </div>
+          <div style="height:24px;background:#F5D6C8;display:flex;gap:4px;padding:4px;justify-content:center;">
+            <div style="width:20px;height:16px;background:#D4A574;border-radius:2px;"></div>
+            <div style="width:20px;height:16px;background:#A8D5BA;border-radius:2px;"></div>
+          </div>
+          <div style="height:24px;background:#8CBFB0;display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:5px;color:#fff;">Mountain Section</span>
+          </div>
+          <div style="height:16px;background:#1D3557;"></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderWorkflow() {
+  const steps = wfDir === 'push' ? pushSteps : pullSteps;
+  const cur = steps[wfStep];
+
+  // Progress
+  const progEl = document.getElementById('workflow-prog');
+  progEl.innerHTML = steps.map((s, i) => {
+    let cls = 'prog-btn';
+    if (i === wfStep) cls += ' active';
+    else if (i < wfStep) cls += ' done';
+    return `<button class="${cls}" onclick="wfJump(${i})">${i+1}</button>`;
+  }).join('');
+
+  // Content
+  document.getElementById('workflow-content').innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span style="font-size:11px;font-weight:700;color:#0071E3;font-family:ui-monospace,monospace;">${wfStep+1}/${steps.length}</span>
+      <h3 class="heading" style="font-size:16px;">${cur.title}</h3>
+    </div>
+    <p class="body-text" style="margin-bottom:16px;">${cur.desc}</p>
+    ${cur.visual}
+  `;
+
+  // Nav buttons
+  document.getElementById('wf-back').style.display = wfStep > 0 ? 'flex' : 'none';
+  document.getElementById('wf-next').style.display = wfStep < steps.length - 1 ? 'flex' : 'none';
+  const done = document.getElementById('wf-done');
+  if (wfStep === steps.length - 1) {
+    done.style.display = 'flex';
+    if (wfDir === 'push') {
+      done.style.background = '#E8F8ED'; done.style.color = '#1B7D3A'; done.style.border = '1px solid #B8E6C4';
+      done.textContent = '✓ Design delivered to Figma!';
+    } else {
+      done.style.background = '#EDF4FE'; done.style.color = '#0071E3'; done.style.border = '1px solid #B3D4F7';
+      done.textContent = '✓ Code generated from Figma!';
+    }
+  } else {
+    done.style.display = 'none';
+  }
+}
+
+function switchDir(d) {
+  wfDir = d; wfStep = 0;
+  document.getElementById('dir-push').classList.toggle('active', d === 'push');
+  document.getElementById('dir-pull').classList.toggle('active', d === 'pull');
+  renderWorkflow();
+}
+
+function wfJump(i) { wfStep = i; renderWorkflow(); }
+function workflowNav(dir) {
+  const steps = wfDir === 'push' ? pushSteps : pullSteps;
+  wfStep = Math.max(0, Math.min(steps.length - 1, wfStep + dir));
+  renderWorkflow();
+}
+
+// ─── TIPS ACCORDION ───
+const tipsData = [
+  { n: '01', title: 'Discover Plugins', desc: 'Ketik /plugin lalu tab ke "Discover" untuk melihat 55+ plugin termasuk frontend-design (211K installs), context7, code-review, dan superpowers.', tag: 'Explore', color: '#AF52DE', bg: '#F5EDFB', border: '#D4A5F0' },
+  { n: '02', title: 'Remote vs Desktop MCP', desc: 'Remote MCP (mcp.figma.com) bisa dipakai tanpa install desktop app. Desktop MCP jalan lokal di port 3845 — butuh Figma desktop app.', tag: 'Options', color: '#6E6E73', bg: '#F5F5F7', border: '#E8E8EC' },
+  { n: '03', title: 'Scope user vs project', desc: 'Tambah --scope user agar MCP tersedia di semua project: claude mcp add --scope user --transport http figma https://mcp.figma.com/mcp', tag: 'Config', color: '#0071E3', bg: '#EDF4FE', border: '#B3D4F7' },
+  { n: '04', title: 'Multi-screen capture', desc: 'Jangan capture satu per satu. Prompt Claude untuk build seluruh flow, lalu capture semua screen sekaligus — sequence terjaga.', tag: 'Workflow', color: '#1B7D3A', bg: '#E8F8ED', border: '#B8E6C4' },
+  { n: '05', title: 'Design system rules', desc: 'Buat design system rules di Claude Code berdasarkan codebase. Ini memastikan output konsisten dengan komponen dan token yang ada.', tag: 'Quality', color: '#9A6300', bg: '#FFF5E6', border: '#FFD699' },
+];
+
+let openTip = 0;
+function renderTips() {
+  const el = document.getElementById('tips-accordion');
+  el.innerHTML = tipsData.map((t, i) => `
+    <div class="card accordion-item" style="padding:14px 16px;border-color:${i===openTip?'#E8E8EC':'#F0F0F4'};" onclick="toggleTip(${i})">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:12px;font-weight:700;color:${i===openTip?'#1D1D1F':'#AEAEB2'};font-variant-numeric:tabular-nums;font-family:ui-monospace,monospace;min-width:20px;">${t.n}</span>
+        <span style="font-size:13px;font-weight:600;color:#1D1D1F;flex:1;">${t.title}</span>
+        <span class="pill" style="color:${t.color};background:${t.bg};border:1px solid ${t.border};">${t.tag}</span>
+      </div>
+      <div class="accordion-body${i===openTip?' open':''}">${t.desc}</div>
+    </div>
+  `).join('');
+}
+
+function toggleTip(i) {
+  openTip = openTip === i ? -1 : i;
+  renderTips();
+}
+
+// ─── INIT ───
+renderWorkflow();
+renderTips();
+</script>
+</body>
+</html>
