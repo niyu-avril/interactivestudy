@@ -97,6 +97,34 @@ a{text-decoration:none;color:inherit}
   background:#F5F5F7;padding:2px 8px;border-radius:100px;
   margin-left:4px;
 }
+
+/* New / highlighted card */
+.card.new{
+  border-color:#0071E3;
+  background:linear-gradient(135deg,#FFFFFF 60%,#EDF4FE 100%);
+  box-shadow:0 2px 12px rgba(0,113,227,0.10);
+  position:relative;
+}
+.card.new:hover{
+  border-color:#0071E3;
+  box-shadow:0 6px 24px rgba(0,113,227,0.16);
+}
+.new-badge{
+  position:absolute;top:14px;right:14px;
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;
+  background:linear-gradient(135deg,#0071E3,#AF52DE);
+  color:#fff;padding:3px 10px;border-radius:100px;
+}
+.new-badge-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#fff;
+  animation:pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.5;transform:scale(0.7)}
+}
 </style>
 </head>
 <body>
@@ -111,6 +139,24 @@ a{text-decoration:none;color:inherit}
 
 <div class="container">
   <div class="grid">
+
+    <!-- 30 Hari Belajar AI — FEATURED -->
+    <a href="30-hari-ai.html" class="card new">
+      <span class="new-badge"><span class="new-badge-dot"></span> New</span>
+      <div class="card-icon" style="background:#EDF4FE">🤖</div>
+      <div class="card-body">
+        <div class="card-title">
+          30 Hari Belajar AI UI/UX Design
+          <span class="arrow">→</span>
+        </div>
+        <p class="card-desc">Kurikulum interaktif 30 hari — satu topik mendalam per hari. Dari conversational UI hingga agentic AI, lengkap dengan subtopik, tools, resources, dan practice task.</p>
+        <div class="card-tags">
+          <span class="tag" style="background:#EDF4FE;color:#0071E3">30-Day Curriculum</span>
+          <span class="tag" style="background:#F5EDFB;color:#AF52DE">AI Design</span>
+          <span class="tag" style="background:#E8F8ED;color:#1B7D3A">Interactive</span>
+        </div>
+      </div>
+    </a>
 
     <!-- Thumb Zone -->
     <a href="thumb-zone.html" class="card">
@@ -144,15 +190,6 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
     </a>
-
-    <!-- Placeholder: tambah study baru di sini -->
-    <div class="card soon">
-      <div class="card-icon" style="background:#FFF5E6">🎨</div>
-      <div class="card-body">
-        <div class="card-title">Study baru segera hadir</div>
-        <p class="card-desc">Topik eksplorasi selanjutnya sedang dalam proses. Stay tuned!</p>
-      </div>
-    </div>
 
   </div>
 </div>
