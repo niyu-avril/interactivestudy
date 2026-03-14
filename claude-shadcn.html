@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>shadcn/ui + Claude Code — Designer's Field Guide</title>
+<style>
+/* ─── RESET ─── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* ─── TOKENS — exact match to reference ─── */
+:root {
+  --bg:          #FAFAFA;
+  --surface:     #FFFFFF;
+  --surface-2:   #F5F5F7;
+  --border:      #E8E8EC;
+  --border-soft: #F0F0F4;
+
+  --text-1:  #1D1D1F;
+  --text-2:  #6E6E73;
+  --text-3:  #AEAEB2;
+
+  --blue:        #0071E3;
+  --blue-bg:     #EDF4FE;
+  --blue-border: #B3D4F7;
+
+  --green:        #1B7D3A;
+  --green-bg:     #E8F8ED;
+  --green-border: #B8E6C4;
+
+  --red:          #D70015;
+  --red-bg:       #FFF0F0;
+  --red-border:   #FFB3B8;
+
+  --amber:        #9A6300;
+  --amber-bg:     #FFF5E6;
+  --amber-border: #FFD699;
+
+  --term-bg:     #1D1D1F;
+  --term-bar:    #2C2C2E;
+  --term-border: #3A3A3C;
+  --term-text:   #E5E5EA;
+  --term-dim:    #636366;
+  --term-green:  #28C840;
+  --term-yellow: #FEBC2E;
+  --term-red:    #FF6B6B;
+  --term-blue:   #64ACFF;
+  --term-pink:   #FF8FAB;
+
+  --nav-w:       232px;
+  --content-max: 720px;
+
+  --r-sm:  8px;
+  --r-md:  10px;
+  --r-lg:  12px;
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,.04);
+  --shadow-float: 0 2px 12px rgba(0,0,0,.08);
+}
+
+/* ─── BASE ─── */
+body {
+  font-family: -apple-system, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-1);
+  background: var(--bg);
+}
+a { color: inherit; text-decoration: none; }
+
+/* ─── TYPE SCALE (matches reference exactly) ─── */
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.body-text {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.65;
+}
+.heading {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -.3px;
+}
+code {
+  font-family: ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace;
+  font-size: 11.5px;
+  background: var(--surface-2);
+  color: var(--text-1);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* ─── CARD ─── */
+.card {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+}
+
+/* ─── PILL / BADGE ─── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.pill-neutral { color: var(--text-2); background: var(--surface-2); border: 1px solid var(--border); }
+.pill-blue    { color: var(--blue);   background: var(--blue-bg);   border: 1px solid var(--blue-border); }
+.pill-green   { color: var(--green);  background: var(--green-bg);  border: 1px solid var(--green-border); }
+.pill-red     { color: var(--red);    background: var(--red-bg);    border: 1px solid var(--red-border); }
+.pill-amber   { color: var(--amber);  background: var(--amber-bg);  border: 1px solid var(--amber-border); }
+
+/* ─── CALLOUT ─── */
+.callout {
+  background: var(--surface-2);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-soft);
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.65;
+}
+.callout-blue   { background: var(--blue-bg);   border-color: var(--blue-border);   color: #004499; }
+.callout-green  { background: var(--green-bg);  border-color: var(--green-border);  color: #115528; }
+.callout-amber  { background: var(--amber-bg);  border-color: var(--amber-border);  color: var(--amber); }
+.callout-red    { background: var(--red-bg);    border-color: var(--red-border);    color: var(--red); }
+.callout-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; }
+.callout-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  opacity: .7;
+}
+
+/* ─── TERMINAL ─── */
+.terminal {
+  background: var(--term-bg);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 1px solid var(--term-border);
+  box-shadow: 0 2px 12px rgba(0,0,0,.12);
+}
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--term-bar);
+  border-bottom: 1px solid var(--term-border);
+}
+.term-dot {
+  width: 10px; height: 10px;
+  border-radius: 5px;
+  display: inline-block;
+}
+.term-title {
+  font-size: 10px;
+  color: #8E8E93;
+  margin-left: 8px;
+  font-family: ui-monospace, monospace;
+}
+.term-body {
+  padding: 14px 16px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11.5px;
+  line-height: 1.75;
+  color: var(--term-text);
+  overflow-x: auto;
+}
+.t-g { color: var(--term-green); }
+.t-y { color: var(--term-yellow); }
+.t-r { color: var(--term-red); }
+.t-b { color: var(--term-blue); }
+.t-p { color: var(--term-pink); }
+.t-d { color: var(--term-dim); }
+
+/* ─── AI PROMPT BLOCK ─── */
+.ai-block {
+  background: var(--term-bg);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--term-border);
+  box-shadow: 0 2px 12px rgba(0,0,0,.1);
+}
+.ai-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--term-bar);
+  border-bottom: 1px solid var(--term-border);
+  gap: 10px;
+}
+.ai-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ai-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: #64ACFF;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.ai-pill::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #64ACFF;
+}
+.ai-label {
+  font-size: 10px;
+  color: var(--term-dim);
+  font-family: ui-monospace, monospace;
+}
+.ai-body {
+  padding: 16px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: var(--term-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ai-footer {
+  padding: 8px 16px;
+  border-top: 1px solid var(--term-border);
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--term-dim);
+}
+
+/* ─── AI RESULT ─── */
+.ai-result {
+  background: #0A1F12;
+  border: 1px solid #1A4228;
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  font-size: 12px;
+  color: #5DC87A;
+  font-family: ui-monospace, monospace;
+  line-height: 1.65;
+}
+.ai-result-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--term-green);
+  opacity: .6;
+  margin-bottom: 5px;
+}
+
+/* ─── SIDEBAR NAV ─── */
+.nav {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--nav-w);
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+.nav::-webkit-scrollbar { width: 0; }
+.nav-header {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.nav-wordmark {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -.3px;
+}
+.nav-sub {
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* Lang toggle */
+.lang-toggle {
+  display: flex;
+  margin: 12px 16px 4px;
+  background: var(--surface-2);
+  border-radius: 9px;
+  padding: 3px;
+  gap: 2px;
+}
+.lang-btn {
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-3);
+  transition: all .15s;
+  font-family: inherit;
+}
+.lang-btn.active {
+  background: var(--surface);
+  color: var(--text-1);
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+
+/* Nav links */
+.nav-section {
+  padding: 16px 0 8px;
+}
+.nav-section + .nav-section {
+  border-top: 1px solid var(--border-soft);
+}
+.nav-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  padding: 0 16px 8px;
+}
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  border-left: 2px solid transparent;
+  transition: all .12s;
+}
+.nav a:hover {
+  color: var(--text-1);
+  background: var(--surface-2);
+}
+.nav a.active {
+  color: var(--text-1);
+  font-weight: 600;
+  border-left-color: var(--text-1);
+  background: var(--surface-2);
+}
+.nav-num {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  min-width: 16px;
+}
+.nav a.bug-link { color: var(--red); }
+.nav a.bug-link:hover, .nav a.bug-link.active {
+  color: var(--red);
+  background: var(--red-bg);
+  border-left-color: var(--red);
+}
+.nav a.bug-link .nav-num { color: var(--red); }
+
+/* ─── MAIN LAYOUT ─── */
+.main { margin-left: var(--nav-w); min-height: 100vh; }
+
+/* ─── HEADER / HERO ─── */
+.page-header {
+  padding: 40px 40px 32px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.header-label { font-size: 10px; }
+.page-header h1 {
+  margin: 6px 0 0;
+  font-size: 26px;
+  font-weight: 750;
+  color: var(--text-1);
+  letter-spacing: -.5px;
+  line-height: 1.2;
+}
+.page-header p {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.55;
+  max-width: 540px;
+}
+.header-pills {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+/* ─── CONTENT ─── */
+.content {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 32px 40px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* ─── SECTION ─── */
+.section { padding-top: 16px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.section-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  font-family: ui-monospace, monospace;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.section-num.bugs {
+  color: var(--red);
+  background: var(--red-bg);
+  border-color: var(--red-border);
+}
+.section h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -.3px;
+}
+.section h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -.2px;
+  margin: 24px 0 10px;
+}
+.section p {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+.section p strong { color: var(--text-1); font-weight: 600; }
+.divider { border: none; border-top: 1px solid var(--border-soft); margin: 8px 0 0; }
+
+/* ─── STACK CARDS (overview) ─── */
+.stack-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+.stack-card {
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.stack-icon { font-size: 18px; margin-top: 1px; flex-shrink: 0; }
+.stack-title { font-size: 13px; font-weight: 600; color: var(--text-1); margin-bottom: 3px; }
+.stack-desc  { font-size: 12px; color: var(--text-2); line-height: 1.55; }
+
+/* ─── FLOW ROWS ─── */
+.flow-list {
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  margin: 16px 0;
+}
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  transition: background .1s;
+}
+.flow-row:last-child { border-bottom: none; }
+.flow-row:hover { background: var(--surface-2); }
+.flow-dot {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+  color: var(--text-2);
+}
+.flow-body { flex: 1; }
+.flow-title { font-size: 13px; font-weight: 600; color: var(--text-1); letter-spacing: -.1px; }
+.flow-desc  { font-size: 11.5px; color: var(--text-3); margin-top: 1px; }
+.flow-arrow { font-size: 11px; color: var(--text-3); }
+
+/* ─── STEP NAV BUTTONS (like reference) ─── */
+.step-nav {
+  display: flex;
+  gap: 6px;
+  margin: 14px 0;
+}
+.step-btn {
+  flex: 1;
+  padding: 8px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--surface);
+  color: var(--text-3);
+  transition: all .15s;
+  font-family: inherit;
+  text-align: center;
+}
+.step-btn.active { background: var(--text-1); color: #fff; border-color: var(--text-1); }
+.step-btn.done   { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+
+/* ─── TABLES ─── */
+.table-wrap {
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  margin: 16px 0;
+}
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text-2);
+  line-height: 1.5;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #FDFDFD; }
+td:first-child { color: var(--text-1); font-weight: 500; }
+td code, th code {
+  font-size: 10.5px;
+  background: var(--surface-2);
+  color: var(--text-1);
+  border-color: var(--border);
+}
+
+/* ─── PROMPT LIBRARY CARDS ─── */
+.prompt-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+.prompt-card { padding: 16px; transition: box-shadow .15s, border-color .15s; }
+.prompt-card:hover { box-shadow: var(--shadow-float); }
+.prompt-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.prompt-num {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+.prompt-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -.2px;
+  margin-bottom: 10px;
+}
+.prompt-body {
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  color: var(--text-2);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* ─── BUG ITEMS ─── */
+.bug-list { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+.bug-item {
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.bug-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.bug-num {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--red);
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  padding: 2px 8px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.bug-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  flex: 1;
+  letter-spacing: -.1px;
+}
+.bug-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bug-body p { font-size: 12.5px; color: var(--text-2); line-height: 1.65; margin: 0; }
+.error-box {
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--red);
+  line-height: 1.65;
+}
+
+/* ─── LAYER STACK (primitives) ─── */
+.layer-stack {
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  margin: 16px 0;
+}
+.layer-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--surface);
+  transition: background .1s;
+}
+.layer-row:last-child { border-bottom: none; }
+.layer-row:hover { background: #FDFDFD; }
+.layer-name {
+  width: 180px;
+  min-width: 180px;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  border-right: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+}
+.layer-desc {
+  flex: 1;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  line-height: 1.5;
+}
+.layer-note {
+  padding: 12px 14px;
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  border-left: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 24px 40px 40px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+.footer-text { font-size: 12px; color: var(--text-3); }
+.footer-text strong { color: var(--text-2); font-weight: 600; }
+
+/* ─── TRANSLATION ─── */
+.t-id { display: none; }
+body.lang-id .t-en { display: none; }
+body.lang-id .t-id { display: block; }
+body.lang-id span.t-id { display: inline; }
+
+/* ─── RESPONSIVE: TABLET ─── */
+@media (max-width: 1024px) {
+  :root { --nav-w: 200px; --content-max: 640px; }
+  .page-header { padding: 32px 32px 24px; }
+  .content { padding: 28px 32px 64px; }
+}
+
+/* ─── RESPONSIVE: MOBILE ─── */
+@media (max-width: 768px) {
+  :root { --nav-w: 0px; }
+
+  .nav {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    flex-direction: row;
+    align-items: center;
+    z-index: 100;
+  }
+  .nav-header {
+    padding: 14px 16px;
+    border-bottom: none;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .nav-sub { display: none; }
+  .nav-section { display: none; }
+  .nav-section.mobile-show {
+    display: flex;
+    overflow-x: auto;
+    padding: 0;
+    border: none;
+    flex-direction: row;
+    align-items: stretch;
+    flex: 1;
+  }
+  .nav-section.mobile-show .nav-section-label { display: none; }
+  .nav-section.mobile-show a {
+    padding: 14px 12px;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    font-size: 12px;
+    line-height: 1;
+    margin-bottom: -1px;
+  }
+  .nav-section.mobile-show a.active {
+    border-bottom-color: var(--text-1);
+    background: transparent;
+    font-weight: 600;
+  }
+  .lang-toggle { margin: 10px 14px 10px auto; flex-shrink: 0; }
+
+  .main { margin-left: 0; }
+  .page-header { padding: 24px 20px 20px; }
+  .page-header h1 { font-size: 22px; }
+  .content { padding: 24px 20px 64px; }
+  .section h2 { font-size: 18px; }
+  .layer-row { flex-direction: column; }
+  .layer-name { width: 100%; border-right: none; border-bottom: 1px solid var(--border-soft); }
+  .layer-note { border-left: none; border-top: 1px solid var(--border-soft); }
+  footer { flex-direction: column; gap: 8px; text-align: center; padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ────────────── SIDEBAR NAV ── -->
+<nav class="nav">
+  <div class="nav-header">
+    <div class="nav-wordmark">shadcn + Claude Code</div>
+    <div class="nav-sub t-en">Designer's Field Guide</div>
+    <div class="nav-sub t-id">Panduan untuk Designer</div>
+  </div>
+
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-id" onclick="setLang('id')">ID</button>
+  </div>
+
+  <div class="nav-section mobile-show">
+    <div class="nav-section-label t-en">Happy Flow</div>
+    <div class="nav-section-label t-id">Alur Utama</div>
+    <a href="#overview">
+      <span class="nav-num">01</span>
+      <span class="t-en">What is This Stack?</span>
+      <span class="t-id">Apa Stack Ini?</span>
+    </a>
+    <a href="#setup">
+      <span class="nav-num">02</span>
+      <span class="t-en">Project Setup</span>
+      <span class="t-id">Setup Project</span>
+    </a>
+    <a href="#component">
+      <span class="nav-num">03</span>
+      <span class="t-en">Design → Component</span>
+      <span class="t-id">Design → Component</span>
+    </a>
+    <a href="#theming">
+      <span class="nav-num">04</span>
+      <span class="t-en">Themes & Styling</span>
+      <span class="t-id">Tema & Styling</span>
+    </a>
+    <a href="#patterns">
+      <span class="nav-num">05</span>
+      <span class="t-en">UI Patterns</span>
+      <span class="t-id">Pola UI</span>
+    </a>
+    <a href="#prompts">
+      <span class="nav-num">06</span>
+      <span class="t-en">Prompt Library</span>
+      <span class="t-id">Library Prompt</span>
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label t-en">Reference</div>
+    <div class="nav-section-label t-id">Referensi</div>
+    <a href="#bugs" class="bug-link">
+      <span class="nav-num">⚑</span>
+      <span class="t-en">Bugs & Fixes</span>
+      <span class="t-id">Bug & Perbaikan</span>
+    </a>
+    <a href="#primitives">
+      <span class="nav-num">→</span>
+      <span class="t-en">Radix & Base UI</span>
+      <span class="t-id">Radix & Base UI</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ────────────── MAIN ── -->
+<div class="main">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <p class="label header-label t-en">Product Designer's Field Guide</p>
+    <p class="label header-label t-id">Panduan Lengkap untuk Product Designer</p>
+    <h1 class="t-en">shadcn/ui + Claude Code</h1>
+    <h1 class="t-id">shadcn/ui + Claude Code</h1>
+    <p class="t-en">Step-by-step delegation mode — you write the prompt, Claude Code ships the component. No coding required.</p>
+    <p class="t-id">Panduan delegation mode langkah demi langkah — kamu tulis promptnya, Claude Code yang ship componentnya. Tidak perlu coding.</p>
+    <div class="header-pills">
+      <span class="pill pill-green t-en">Delegation Mode</span>
+      <span class="pill pill-green t-id">Delegation Mode</span>
+      <span class="pill pill-neutral t-en">shadcn/ui · Claude Code · Next.js</span>
+      <span class="pill pill-neutral t-id">shadcn/ui · Claude Code · Next.js</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── 01 ─── -->
+    <section class="section" id="overview">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2 class="t-en">What is This Stack?</h2>
+        <h2 class="t-id">Apa Stack Ini?</h2>
+      </div>
+
+      <p class="body-text t-en">Two tools that work together to let designers ship real UI without writing code. You describe what you want in plain language — Claude Code builds it using shadcn/ui components.</p>
+      <p class="body-text t-id">Dua tools yang bekerja bersama agar designer bisa ship UI nyata tanpa menulis kode. Kamu deskripsikan apa yang kamu mau — Claude Code membangunnya pakai component shadcn/ui.</p>
+
+      <div class="stack-list">
+        <div class="card stack-card">
+          <span class="stack-icon">⬡</span>
+          <div>
+            <div class="stack-title">shadcn/ui</div>
+            <div class="stack-desc t-en">40+ production-ready components. The code lives in your project — you own every line. Built on Radix UI + Tailwind CSS.</div>
+            <div class="stack-desc t-id">40+ component siap produksi. Kode ada langsung di projectmu — kamu yang pegang. Dibangun di atas Radix UI + Tailwind CSS.</div>
+            <div style="margin-top:8px;"><span class="pill pill-neutral">Component Library</span></div>
+          </div>
+        </div>
+        <div class="card stack-card">
+          <span class="stack-icon">🤖</span>
+          <div>
+            <div class="stack-title">Claude Code</div>
+            <div class="stack-desc t-en">AI agent in your terminal. Reads your codebase, writes files, installs packages, and iterates — like a frontend engineer on demand.</div>
+            <div class="stack-desc t-id">AI agent di terminalmu. Baca codebase, tulis file, install package, dan iterasi — seperti frontend engineer on-demand.</div>
+            <div style="margin-top:8px;"><span class="pill pill-neutral">AI Agent</span></div>
+          </div>
+        </div>
+        <div class="card stack-card">
+          <span class="stack-icon">🎯</span>
+          <div>
+            <div class="stack-title t-en">Why together?</div>
+            <div class="stack-title t-id">Kenapa digabung?</div>
+            <div class="stack-desc t-en">shadcn gives Claude a consistent component vocabulary. When you describe UI, Claude generates matching shadcn code automatically.</div>
+            <div class="stack-desc t-id">shadcn memberi Claude kosakata component yang konsisten. Saat kamu deskripsikan UI, Claude generate kode shadcn yang cocok secara otomatis.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-blue">
+        <span class="callout-icon">ℹ</span>
+        <div class="callout-body">
+          <div class="callout-label t-en">Delegation Mode</div>
+          <div class="callout-label t-id">Delegation Mode</div>
+          <span class="t-en">Every step in this guide has a ready-to-use <strong>Claude Code prompt</strong>. Copy it, paste into Claude Code, and the AI executes. Your job is to describe intent — not write code.</span>
+          <span class="t-id">Setiap langkah dalam panduan ini punya <strong>prompt Claude Code</strong> siap pakai. Copy, paste ke Claude Code, dan AI yang mengeksekusi. Tugasmu adalah mendeskripsikan intent — bukan menulis kode.</span>
+        </div>
+      </div>
+
+      <h3 class="t-en">The workflow</h3>
+      <h3 class="t-id">Alur kerjanya</h3>
+
+      <div class="flow-list">
+        <div class="flow-row">
+          <div class="flow-dot">F</div>
+          <div class="flow-body">
+            <div class="flow-title t-en">Figma Design</div>
+            <div class="flow-title t-id">Design di Figma</div>
+            <div class="flow-desc t-en">Pick values from Dev Mode — spacing, color, radius, type</div>
+            <div class="flow-desc t-id">Ambil nilai dari Dev Mode — spacing, warna, radius, tipografi</div>
+          </div>
+          <div class="flow-arrow">↓</div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-dot" style="background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue);">⌘</div>
+          <div class="flow-body">
+            <div class="flow-title t-en">You write a prompt</div>
+            <div class="flow-title t-id">Kamu tulis prompt</div>
+            <div class="flow-desc t-en">Describe the component using the template in section 03</div>
+            <div class="flow-desc t-id">Deskripsikan component pakai template di bagian 03</div>
+          </div>
+          <div class="flow-arrow">↓</div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-dot" style="background:#1D1D1F;border-color:#1D1D1F;color:#64ACFF;">AI</div>
+          <div class="flow-body">
+            <div class="flow-title t-en">Claude Code builds it</div>
+            <div class="flow-title t-id">Claude Code membangunnya</div>
+            <div class="flow-desc t-en">Reads codebase → picks components → writes TSX → applies tokens</div>
+            <div class="flow-desc t-id">Baca codebase → pilih component → tulis TSX → apply token</div>
+          </div>
+          <div class="flow-arrow">↓</div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-dot" style="background:var(--green-bg);border-color:var(--green-border);color:var(--green);">✓</div>
+          <div class="flow-body">
+            <div class="flow-title t-en">Live preview + iterate</div>
+            <div class="flow-title t-id">Preview langsung + iterasi</div>
+            <div class="flow-desc t-en">Hot reload at localhost:3000 — follow up with short revision prompts</div>
+            <div class="flow-desc t-id">Hot reload di localhost:3000 — follow up dengan prompt revisi singkat</div>
+          </div>
+          <div class="flow-arrow">→</div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── 02 ─── -->
+    <section class="section" id="setup">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2 class="t-en">Project Setup</h2>
+        <h2 class="t-id">Setup Project</h2>
+      </div>
+
+      <p class="body-text t-en">Done once per project. Two terminal commands from you — everything else is delegated to Claude Code.</p>
+      <p class="body-text t-id">Dikerjakan sekali per project. Dua perintah terminal dari kamu — sisanya semua didelegasikan ke Claude Code.</p>
+
+      <h3 class="t-en">Step 1 — Run these yourself</h3>
+      <h3 class="t-id">Langkah 1 — Jalankan sendiri</h3>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <span class="term-dot" style="background:#FF5F57;"></span>
+          <span class="term-dot" style="background:#FEBC2E;"></span>
+          <span class="term-dot" style="background:#28C840;"></span>
+          <span class="term-title">Terminal — zsh</span>
+        </div>
+        <div class="term-body">
+<span class="t-d"># 1. Create a new Next.js project</span>
+npx create-next-app@latest my-app <span class="t-y">--typescript --tailwind --eslint</span>
+<span class="t-y">cd my-app</span>
+
+<span class="t-d"># 2. Install Claude Code globally</span>
+npm install -g <span class="t-b">@anthropic-ai/claude-code</span>
+
+<span class="t-d"># 3. Launch Claude Code inside your project</span>
+<span class="t-g">claude</span></div>
+      </div>
+
+      <h3 class="t-en">Step 2 — Delegate shadcn setup to Claude Code</h3>
+      <h3 class="t-id">Langkah 2 — Delegasikan setup shadcn ke Claude Code</h3>
+
+      <div class="ai-block">
+        <div class="ai-bar">
+          <div class="ai-bar-left">
+            <span class="ai-pill">Prompt → Claude Code</span>
+          </div>
+          <span class="ai-label t-en">Initialize shadcn + install all components</span>
+          <span class="ai-label t-id">Inisialisasi shadcn + install semua component</span>
+        </div>
+        <div class="ai-body">Initialize shadcn/ui in this project, then install all available components.
+
+After installation:
+1. Create a showcase page at app/showcase/page.tsx that renders all installed
+   shadcn components so I can preview them
+2. Set up CSS variables in globals.css with a clean light theme as default
+3. Confirm hot reload is working at localhost:3000
+
+Use the default configuration unless I specify otherwise.</div>
+        <div class="ai-footer t-en">→ runs: npx shadcn init → npx shadcn add --all → creates showcase page</div>
+        <div class="ai-footer t-id">→ menjalankan: npx shadcn init → npx shadcn add --all → membuat halaman showcase</div>
+      </div>
+
+      <div class="ai-result">
+        <div class="ai-result-label t-en">Expected output</div>
+        <div class="ai-result-label t-id">Output yang diharapkan</div>
+        <span class="t-en">shadcn initialized → all 40+ components in components/ui/ → showcase at localhost:3000/showcase → CSS variables configured in globals.css</span>
+        <span class="t-id">shadcn terinisialisasi → 40+ component di components/ui/ → showcase di localhost:3000/showcase → CSS variable dikonfigurasi di globals.css</span>
+      </div>
+
+      <h3 class="t-en">Step 3 — Brief Claude Code on your design system</h3>
+      <h3 class="t-id">Langkah 3 — Brief Claude Code tentang design systemmu</h3>
+
+      <p class="body-text t-en">A <code>CLAUDE.md</code> file tells Claude Code your conventions once — it reads this at the start of every session, so it always knows your rules without re-explaining.</p>
+      <p class="body-text t-id">File <code>CLAUDE.md</code> memberi tahu Claude Code konvensimu sekali — dia membaca ini di awal setiap sesi, sehingga selalu tahu aturanmu tanpa perlu dijelaskan ulang.</p>
+
+      <div class="ai-block">
+        <div class="ai-bar">
+          <div class="ai-bar-left">
+            <span class="ai-pill">Prompt → Claude Code</span>
+          </div>
+          <span class="ai-label t-en">Create CLAUDE.md design system brief</span>
+          <span class="ai-label t-id">Buat CLAUDE.md brief design system</span>
+        </div>
+        <div class="ai-body">Create a CLAUDE.md file at the project root with these design system rules:
+
+Stack: Next.js 14 + TypeScript + Tailwind CSS + shadcn/ui
+Components in: components/ui/
+
+Design rules:
+- Primary brand color: [YOUR HEX — e.g. #0071E3]
+- Font: [YOUR FONT — e.g. SF Pro / Inter]
+- Border radius: [e.g. rounded-xl for cards, rounded-lg for buttons]
+- Always use CSS variable tokens — never hardcode colors
+
+Conventions:
+- File names: kebab-case (e.g. user-profile-card.tsx)
+- Component names: PascalCase (e.g. UserProfileCard)
+- Always include: loading, empty, and error states
+- Always add aria-label to interactive elements
+
+Read this file before every task I give you.</div>
+        <div class="ai-footer t-en">Replace bracketed values with your actual brand specs before sending</div>
+        <div class="ai-footer t-id">Ganti nilai dalam kurung kotak dengan spesifikasi brand aktualmu sebelum mengirim</div>
+      </div>
+
+      <div class="callout callout-amber">
+        <span class="callout-icon">⚑</span>
+        <div class="callout-body">
+          <div class="callout-label t-en">Turborepo / Monorepo</div>
+          <div class="callout-label t-id">Turborepo / Monorepo</div>
+          <span class="t-en">Mention <em>"this is a Turborepo monorepo"</em> in CLAUDE.md and Claude Code will automatically add <code>-c apps/web</code> or <code>-c packages/ui</code> to all shadcn commands.</span>
+          <span class="t-id">Sebutkan <em>"this is a Turborepo monorepo"</em> di CLAUDE.md dan Claude Code akan otomatis menambahkan <code>-c apps/web</code> atau <code>-c packages/ui</code> ke semua perintah shadcn.</span>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── 03 ─── -->
+    <section class="section" id="component">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2 class="t-en">Design → Component</h2>
+        <h2 class="t-id">Design → Component</h2>
+      </div>
+
+      <p class="body-text t-en">The core delegation loop. A well-structured prompt covers four things: <strong>what it is, what it contains, all interactive states, and behavior.</strong></p>
+      <p class="body-text t-id">Loop delegasi utama. Prompt yang terstruktur mencakup empat hal: <strong>apa itu, apa isinya, semua state interaktif, dan behavior.</strong></p>
+
+      <h3 class="t-en">The prompt template</h3>
+      <h3 class="t-id">Template promptnya</h3>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <span class="term-dot" style="background:#FF5F57;"></span>
+          <span class="term-dot" style="background:#FEBC2E;"></span>
+          <span class="term-dot" style="background:#28C840;"></span>
+          <span class="term-title t-en">Prompt Template</span>
+          <span class="term-title t-id">Template Prompt</span>
+        </div>
+        <div class="term-body">
+<span class="t-d"># What it is</span>
+Build a <span class="t-b">[component name]</span> for <span class="t-b">[screen / feature]</span>.
+
+<span class="t-d"># What it contains</span>
+It contains:
+- <span class="t-b">[element 1]</span> — include size/color from Figma Dev Mode
+- <span class="t-b">[element 2]</span>
+
+<span class="t-d"># States to handle</span>
+Default, loading (use shadcn Skeleton), error (<span class="t-b">[message]</span>).
+
+<span class="t-d"># Behavior</span>
+On <span class="t-b">[action]</span>: <span class="t-b">[what happens]</span>.
+Save to <span class="t-b">components/[name].tsx</span>. Follow CLAUDE.md.</div>
+      </div>
+
+      <h3 class="t-en">Example — navigation header</h3>
+      <h3 class="t-id">Contoh — navigation header</h3>
+
+      <div class="ai-block">
+        <div class="ai-bar">
+          <div class="ai-bar-left">
+            <span class="ai-pill">Prompt → Claude Code</span>
+          </div>
+          <span class="ai-label t-en">Build: responsive nav header</span>
+          <span class="ai-label t-id">Build: responsive nav header</span>
+        </div>
+        <div class="ai-body">Build a responsive navigation header for the main app shell.
+
+Contains:
+- Logo left: "Acme" text, 20px font-semibold
+- Nav links center: Dashboard, Projects, Team, Settings
+- Right: notification bell (shadcn Button ghost icon) + Badge for
+  unread count + shadcn Avatar with initials fallback
+
+States:
+- Active link: 2px bottom border, primary color
+- Mobile (< 768px): hide links, hamburger opens shadcn Sheet from right
+- Avatar click: shadcn DropdownMenu → Profile, Settings, Sign out
+
+Behavior:
+- Sticky top (position: sticky, top: 0, z-50)
+- Scroll > 10px: add backdrop-blur-sm bg-background/80
+- Sign out: console.log("sign out") placeholder
+
+Save to components/navigation-header.tsx. Follow CLAUDE.md.</div>
+      </div>
+
+      <h3 class="t-en">Iteration follow-up prompts</h3>
+      <h3 class="t-id">Prompt follow-up iterasi</h3>
+
+      <div class="ai-block">
+        <div class="ai-bar">
+          <div class="ai-bar-left">
+            <span class="ai-pill">Prompt → Claude Code</span>
+          </div>
+          <span class="ai-label t-en">Iterate: common revision patterns</span>
+          <span class="ai-label t-id">Iterasi: pola revisi umum</span>
+        </div>
+        <div class="ai-body"><span class="t-d"># Adjust spacing</span>
+The nav links gap is too wide. Reduce to gap-6.
+
+<span class="t-d"># Add a missing state</span>
+Add a loading skeleton for the avatar while user data loads.
+
+<span class="t-d"># Change visual treatment</span>
+Active link: bottom border instead of underline. 2px, primary, 150ms.
+
+<span class="t-d"># Responsiveness tweak</span>
+Below 480px: hide badge number, show just the bell icon.</div>
+        <div class="ai-footer t-en">One change per follow-up = cleanest result</div>
+        <div class="ai-footer t-id">Satu perubahan per follow-up = hasil paling bersih</div>
+      </div>
+
+      <h3 class="t-en">Figma Dev Mode → prompt values</h3>
+      <h3 class="t-id">Figma Dev Mode → nilai prompt</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th class="t-en">Figma Dev Mode shows</th>
+            <th class="t-en">Use in your prompt</th>
+            <th class="t-id" style="display:none">Figma Dev Mode menampilkan</th>
+            <th class="t-id" style="display:none">Gunakan dalam promptmu</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><code>Font: Inter 16/24, weight 500</code></td><td><code>text-base font-medium leading-6</code></td></tr>
+            <tr>
+              <td><code>Fill: #0071E3</code></td>
+              <td class="t-en"><code>use --primary token (set in globals.css)</code></td>
+              <td class="t-id" style="display:none"><code>gunakan token --primary (set di globals.css)</code></td>
+            </tr>
+            <tr><td><code>Corner Radius: 12</code></td><td><code>rounded-xl</code></td></tr>
+            <tr><td><code>Gap: 16, Padding: 24 16</code></td><td><code>gap-4, px-4 py-6</code></td></tr>
+            <tr><td><code>Shadow: 0 4 6 rgba(0,0,0,.1)</code></td><td><code>shadow-md</code></td></tr>
+            <tr><td><code>Auto Layout: H, gap 8, wrap</code></td><td><code>flex flex-row gap-2 flex-wrap</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── 04 ─── -->
+    <section class="section" id="theming">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2 class="t-en">Themes & Styling</h2>
+        <h2 class="t-id">Tema & Styling</h2>
+      </div>
+
+      <p class="body-text t-en">shadcn is built on <strong>CSS variables</strong>. Every component uses tokens like <code>--primary</code>, <code>--background</code>, <code>--border</code>. Switching an entire visual theme = one class on <code>&lt;body&gt;</code>.</p>
+      <p class="body-text t-id">shadcn dibangun di atas <strong>CSS variable</strong>. Setiap component pakai token seperti <code>--primary</code>, <code>--background</code>, <code>--border</code>. Ganti seluruh tema visual = satu class di <code>&lt;body&gt;</code>.</p>
+
+      <h3 class="t-en">Create a brand theme from your Figma colors</h3>
+      <h3 class="t-id">Buat brand theme dari warna Figma-mu</h3>
+
+      <div class="ai-block">
+        <div class="ai-bar">
+          <div class="ai-bar-left">
+            <span class="ai-pill">Prompt → Claude Code</span>
+          </div>
+          <span class="ai-label t-en">Create a custom named theme</span>
+          <span class="ai-label t-id">Buat custom named theme</span>
+        </div>
+        <div class="ai-body">Create a custom shadcn/ui theme called ".sunset" in globals.css.
+
+My Figma brand colors:
+- Primary CTA:     #E57C3A  (warm orange)
+- Page bg:         #FBF9F5  (warm off-white)
+- Card bg:         #F5F1EB
+- Body text:       #2E2418  (dark warm brown)
+- Border:          #DDD5C8
+
+Rules:
+1. Convert all hex values to oklch
+2. Derive muted, accent, secondary, chart-* from the primary hue
+3. Include full sidebar variables
+4. Place .sunset after .dark {} and before @theme inline {}
+5. Create components/theme-switcher.tsx with buttons for:
+   ☀️ Light  🌙 Dark  🌅 Sunset
+   Persist selection to localStorage. Add to showcase page header.</div>
+        <div class="ai-footer t-en">Replace hex values with your actual Figma colors before sending</div>
+        <div class="ai-footer t-id">Ganti nilai hex dengan warna Figma aktualmu sebelum mengirim</div>
+      </div>
+
+      <div class="ai-result">
+        <div class="ai-result-label t-en">Expected output</div>
+        <div class="ai-result-label t-id">Output yang diharapkan</div>
+        <span class="t-en">.sunset {} block added to globals.css with full oklch variables → ThemeSwitcher.tsx with localStorage → open localhost:3000/showcase to see all components in your brand theme</span>
+        <span class="t-id">Blok .sunset {} ditambahkan ke globals.css dengan variabel oklch lengkap → ThemeSwitcher.tsx dengan localStorage → buka localhost:3000/showcase untuk preview</span>
+      </div>
+
+      <h3 class="t-en">Theme from a Figma UI Kit — 🩷 Avril example</h3>
+      <h3 class="t-id">Tema dari Figma UI Kit — contoh 🩷 Avril</h3>
+
+      <div class="ai-block">
+        <div class="ai-bar">
+          <div class="ai-bar-left">
+            <span class="ai-pill">Prompt → Claude Code</span>
+          </div>
+          <span class="ai-label t-en">Theme from Figma kit — pink/magenta</span>
+          <span class="ai-label t-id">Tema dari kit Figma — pink/magenta</span>
+        </div>
+        <div class="ai-body">Create a second theme called ".avril" — pink/magenta aesthetic
+(reference: Friendzy dating app UI Kit on Figma).
+
+- Primary: vivid pink/magenta → oklch(0.65 0.24 350)
+- Background: soft blush pink → oklch(0.97 0.015 350)
+- Surface/card: slightly lighter than background
+- Keep destructive as standard red
+
+Same rules: full oklch set + sidebar vars.
+Place after .sunset {}. Add 🩷 Avril to ThemeSwitcher.</div>
+      </div>
+
+      <h3 class="t-en">oklch cheat sheet</h3>
+      <h3 class="t-id">Cheat sheet oklch</h3>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <span class="term-dot" style="background:#FF5F57;"></span>
+          <span class="term-dot" style="background:#FEBC2E;"></span>
+          <span class="term-dot" style="background:#28C840;"></span>
+          <span class="term-title">oklch( L  C  H )</span>
+        </div>
+        <div class="term-body">
+<span class="t-d">oklch( Lightness   Chroma   Hue )</span>
+<span class="t-d">       0 → 1       0 → .4   0 → 360°</span>
+
+<span class="t-b">L</span>:  0.97 = near-white  |  0.50 = mid  |  0.12 = near-black
+<span class="t-g">C</span>:  0.00 = grey         |  0.08 = pastel  |  0.22 = vivid
+<span class="t-y">H</span>:  0=red  40=orange  60=yellow  140=green  220=blue  350=pink
+
+<span class="t-d">Background →  L 0.96+,  C 0.01–0.02</span>
+<span class="t-d">Primary    →  L 0.55–0.70,  C 0.18–0.26</span>
+<span class="t-d">Border     →  same hue, L 0.85–0.92</span></div>
+      </div>
+
+      <div class="callout callout-amber">
+        <span class="callout-icon">⚑</span>
+        <div class="callout-body">
+          <div class="callout-label t-en">Monorepo: correct file</div>
+          <div class="callout-label t-id">Monorepo: file yang tepat</div>
+          <span class="t-en">In Turborepo, themes go in <code>packages/ui/src/styles/globals.css</code> — not <code>apps/web/app/globals.css</code>. Tell Claude: <em>"add to packages/ui/src/styles/globals.css"</em></span>
+          <span class="t-id">Di Turborepo, tema masuk di <code>packages/ui/src/styles/globals.css</code>. Beritahu Claude: <em>"add to packages/ui/src/styles/globals.css"</em></span>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── 05 ─── -->
+    <section class="section" id="patterns">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2 class="t-en">UI Patterns</h2>
+        <h2 class="t-id">Pola UI</h2>
+      </div>
+
+      <p class="body-text t-en">The most common design challenges in product work — each with a delegation prompt ready to go.</p>
+      <p class="body-text t-id">Tantangan design paling umum dalam product — masing-masing dengan prompt delegasi yang siap digunakan.</p>
+
+      <h3>📊 Dashboard</h3>
+      <div class="ai-block">
+        <div class="ai-bar">
+          <span class="ai-pill">Prompt → Claude Code</span>
+          <span class="ai-label t-en">Pattern: analytics dashboard</span>
+          <span class="ai-label t-id">Pola: analytics dashboard</span>
+        </div>
+        <div class="ai-body">Build an analytics dashboard at app/dashboard/page.tsx.
+
+Layout: 4 stat cards top → full-width line chart → data table.
+
+Stat cards (shadcn Card):
+- Total Revenue: $48,200 | +12% vs last month
+- Active Users: 1,840 | +5%
+- Conversion Rate: 3.2% | -0.4%
+- Avg Session: 4m 32s | +8%
+Badge: green for positive, red for negative deltas.
+
+Chart: recharts LineChart, 7 days mock data, 2 lines.
+Tabs above: 7 days / 30 days / 90 days.
+Table: User, Plan, Revenue, Status, Last active.
+Status = shadcn Badge, sortable Revenue, 8 mock rows.
+Add loading skeletons. Follow CLAUDE.md.</div>
+      </div>
+
+      <h3>📝 Multi-step Form</h3>
+      <div class="ai-block">
+        <div class="ai-bar">
+          <span class="ai-pill">Prompt → Claude Code</span>
+          <span class="ai-label t-en">Pattern: 3-step onboarding form</span>
+          <span class="ai-label t-id">Pola: form onboarding 3 langkah</span>
+        </div>
+        <div class="ai-body">Build a 3-step onboarding form at app/onboarding/page.tsx.
+
+Step 1: full name, email, role (shadcn RadioGroup).
+Step 2: team name, size (shadcn Select), invite 3 emails max.
+Step 3: notification checkboxes, theme preference (3 card options).
+
+Progress bar at top (33% / 66% / 100%).
+Disable Next on validation errors. Final step: console.log(formData).
+Wire react-hook-form + zod automatically. Follow CLAUDE.md.</div>
+      </div>
+
+      <h3>🗂️ Data Table</h3>
+      <div class="ai-block">
+        <div class="ai-bar">
+          <span class="ai-pill">Prompt → Claude Code</span>
+          <span class="ai-label t-en">Pattern: data table with filters + pagination</span>
+          <span class="ai-label t-id">Pola: tabel data dengan filter + pagination</span>
+        </div>
+        <div class="ai-body">Build a full-featured data table at components/data-table.tsx.
+
+Columns: Name, Email, Plan, Status, Join Date, Actions.
+Actions: DropdownMenu → View, Edit, Suspend, Delete.
+Above: real-time search Input + Status Select + Plan Select + reset.
+Pagination: shadcn Pagination + items per page + "Showing X–Y of Z".
+States: empty (no results msg), loading (skeleton rows), bulk select.
+30 rows of realistic mock data. Follow CLAUDE.md.</div>
+      </div>
+
+      <h3>🎨 Branded Component</h3>
+      <div class="ai-block">
+        <div class="ai-bar">
+          <span class="ai-pill">Prompt → Claude Code</span>
+          <span class="ai-label t-en">Pattern: branded button wrapping shadcn</span>
+          <span class="ai-label t-id">Pola: branded button yang membungkus shadcn</span>
+        </div>
+        <div class="ai-body">Create components/ui/brand-button.tsx wrapping shadcn's Button.
+
+Extra props:
+- isLoading?: boolean → spinner (Loader2, animate-spin) + disabled
+- leftIcon?: React.ReactNode → before label, gap-2
+- rightIcon?: React.ReactNode → after label, gap-2
+- fullWidth?: boolean → w-full
+
+Keep all existing shadcn Button props. Add showcase section. Follow CLAUDE.md.</div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── 06 ─── -->
+    <section class="section" id="prompts">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2 class="t-en">Prompt Library</h2>
+        <h2 class="t-id">Library Prompt</h2>
+      </div>
+
+      <p class="body-text t-en">Ready-to-use delegation prompts. Copy, adjust details to your product, send to Claude Code.</p>
+      <p class="body-text t-id">Prompt delegasi siap pakai. Copy, sesuaikan detail dengan productmu, kirim ke Claude Code.</p>
+
+      <div class="prompt-list">
+
+        <div class="card prompt-card">
+          <div class="prompt-meta">
+            <span class="prompt-num">01</span>
+            <span class="pill pill-blue">Web</span>
+          </div>
+          <div class="prompt-title t-en">Command Palette (Cmd+K)</div>
+          <div class="prompt-title t-id">Command Palette (Cmd+K)</div>
+          <div class="prompt-body">Build a command palette using shadcn Command.
+Open: Cmd+K / Ctrl+K. Groups: Navigation, Actions, Settings.
+Keyboard shortcuts right-aligned. Filter as typed.
+Recent searches at top. Close on Esc or outside click.
+Register globally in root layout. Follow CLAUDE.md.</div>
+        </div>
+
+        <div class="card prompt-card">
+          <div class="prompt-meta">
+            <span class="prompt-num">02</span>
+            <span class="pill pill-blue">Web</span>
+          </div>
+          <div class="prompt-title t-en">Notification Bell</div>
+          <div class="prompt-title t-id">Notification Bell</div>
+          <div class="prompt-body">Build a notification bell using shadcn Popover + ScrollArea.
+Bell icon + red Badge for unread count.
+360px popover: "Notifications" + "Mark all read" link.
+5 mock notifications: avatar, message, timestamp, unread dot.
+Empty state when all read. Follow CLAUDE.md.</div>
+        </div>
+
+        <div class="card prompt-card">
+          <div class="prompt-meta">
+            <span class="prompt-num">03</span>
+            <span class="pill pill-blue">Web</span>
+          </div>
+          <div class="prompt-title t-en">Settings Page</div>
+          <div class="prompt-title t-id">Halaman Settings</div>
+          <div class="prompt-body">Build settings at app/settings/page.tsx.
+Left sidebar: Account, Password, Notifications, Billing, Danger Zone.
+Account: avatar upload + name + email.
+Notifications: shadcn Switch per type.
+Danger Zone: AlertDialog to confirm delete.
+Save → success Toast per section. Follow CLAUDE.md.</div>
+        </div>
+
+        <div class="card prompt-card">
+          <div class="prompt-meta">
+            <span class="prompt-num">04</span>
+            <span class="pill pill-blue">Web</span>
+          </div>
+          <div class="prompt-title t-en">Kanban Column</div>
+          <div class="prompt-title t-id">Kolom Kanban</div>
+          <div class="prompt-body">Build components/kanban-column.tsx.
+Props: title, count, color, cards[].
+Header: title + count badge + add icon button.
+Cards: title, assignee avatar, priority badge, due date, drag handle.
+Empty: dashed border + "+ Add a card". Follow CLAUDE.md.</div>
+        </div>
+
+        <div class="card prompt-card">
+          <div class="prompt-meta">
+            <span class="prompt-num">05</span>
+            <span class="pill pill-green">System</span>
+          </div>
+          <div class="prompt-title t-en">Empty State (Reusable)</div>
+          <div class="prompt-title t-id">Empty State (Reusable)</div>
+          <div class="prompt-body">Build components/empty-state.tsx.
+Props: icon, title, description, action? {label, onClick}.
+Layout: centered, icon in bg-muted container, title font-semibold,
+description text-muted-foreground, optional Button below.
+Document usage example in a comment. Follow CLAUDE.md.</div>
+        </div>
+
+        <div class="card prompt-card">
+          <div class="prompt-meta">
+            <span class="prompt-num">06</span>
+            <span class="pill pill-blue">Web</span>
+          </div>
+          <div class="prompt-title t-en">Pricing Table</div>
+          <div class="prompt-title t-id">Tabel Pricing</div>
+          <div class="prompt-body">Build components/pricing-table.tsx.
+3 plans: Starter ($0), Pro ($29 — highlighted), Enterprise (Custom).
+Each: name, price, feature list, CTA button.
+Annual/monthly Tabs — annual = 20% discount + strikethrough.
+Mobile: stack vertically. Follow CLAUDE.md.</div>
+        </div>
+
+        <div class="card prompt-card">
+          <div class="prompt-meta">
+            <span class="prompt-num">07</span>
+            <span class="pill pill-blue">Web</span>
+          </div>
+          <div class="prompt-title t-en">Profile Card</div>
+          <div class="prompt-title t-id">Profile Card</div>
+          <div class="prompt-body">Build components/profile-card.tsx.
+Avatar 72px + online dot, display name, @handle, bio (2 lines),
+3 stats (Posts/Followers/Following), Follow + Message buttons.
+States: own profile → Edit Profile; followed → Unfollow;
+loading → skeleton all fields. Follow CLAUDE.md.</div>
+        </div>
+
+        <div class="card prompt-card">
+          <div class="prompt-meta">
+            <span class="prompt-num">08</span>
+            <span class="pill pill-blue">Web</span>
+          </div>
+          <div class="prompt-title t-en">File Upload with Drag & Drop</div>
+          <div class="prompt-title t-id">File Upload Drag & Drop</div>
+          <div class="prompt-body">Build components/file-uploader.tsx.
+Drop zone: dashed border, icon + "Drag here or browse".
+Accepts: images + PDFs only. Max: 5MB each. Max files: 5.
+After select: thumbnail/icon + name + size + remove button.
+Errors: wrong type, too large, too many. Per-file Progress bar. Follow CLAUDE.md.</div>
+        </div>
+
+        <div class="card prompt-card">
+          <div class="prompt-meta">
+            <span class="prompt-num">09</span>
+            <span class="pill pill-amber">Advanced</span>
+          </div>
+          <div class="prompt-title t-en">Design Token Audit</div>
+          <div class="prompt-title t-id">Audit Design Token</div>
+          <div class="prompt-body">Audit all components/ for token compliance.
+
+Find: hardcoded hex colors, Tailwind utilities bypassing tokens
+(e.g. bg-orange-500), inline style color values.
+
+Per violation: file + line + current code + correct replacement.
+Ask me which to auto-fix before making any changes.</div>
+        </div>
+
+        <div class="card prompt-card">
+          <div class="prompt-meta">
+            <span class="prompt-num">10</span>
+            <span class="pill pill-green">Mobile</span>
+          </div>
+          <div class="prompt-title t-en">Mobile Tab Navigator (Expo)</div>
+          <div class="prompt-title t-id">Navigasi Tab Mobile (Expo)</div>
+          <div class="prompt-body">Build a bottom tab navigator for Expo Router.
+Tabs: Home, Explore, Notifications (badge for unread), Profile.
+Active: primary color icon + label. Inactive: muted, no label.
+iOS: safe area insets. Android: solid background.
+NativeWind for all styling. Tokens mirror globals.css. Follow CLAUDE.md.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── BUGS ─── -->
+    <section class="section" id="bugs">
+      <div class="section-header">
+        <span class="section-num bugs">⚑ Bugs</span>
+        <h2 class="t-en">Bugs & Fixes</h2>
+        <h2 class="t-id">Bug & Perbaikan</h2>
+      </div>
+
+      <p class="body-text t-en">Known errors from real sessions. For any error, paste it directly into Claude Code with <em>"Fix this error"</em> — resolves most cases automatically.</p>
+      <p class="body-text t-id">Error yang diketahui dari sesi nyata. Untuk error apapun, paste langsung ke Claude Code dengan <em>"Fix this error"</em> — sebagian besar langsung terselesaikan.</p>
+
+      <div class="bug-list">
+
+        <div class="bug-item">
+          <div class="bug-header">
+            <span class="bug-num">Bug 01</span>
+            <span class="bug-title">EPERM: operation not permitted, scandir ~/.Trash</span>
+          </div>
+          <div class="bug-body">
+            <div class="error-box">EPERM: operation not permitted, scandir '/Users/yourname/.Trash'</div>
+            <p class="t-en"><strong>Cause:</strong> Running <code>shadcn add</code> from your home directory <code>~</code>. The CLI scans the current directory tree and hits protected macOS system folders.</p>
+            <p class="t-id"><strong>Penyebab:</strong> Menjalankan <code>shadcn add</code> dari home directory <code>~</code>. CLI scan direktori saat ini dan menabrak folder sistem macOS yang diproteksi.</p>
+            <div class="terminal">
+              <div class="term-bar">
+                <span class="term-dot" style="background:#FF5F57;"></span>
+                <span class="term-dot" style="background:#FEBC2E;"></span>
+                <span class="term-dot" style="background:#28C840;"></span>
+                <span class="term-title t-en">Fix — cd into project first</span>
+                <span class="term-title t-id">Fix — masuk ke folder project dulu</span>
+              </div>
+              <div class="term-body">
+<span class="t-r">yourname@Mac ~ %</span> npx shadcn@latest add button  <span class="t-d">← ❌ home dir</span>
+
+<span class="t-d"># Fix: cd into your project folder</span>
+<span class="t-g">cd /path/to/your-project</span>
+npx shadcn@latest add button <span class="t-y">-c apps/web</span>      <span class="t-d">← ✓</span>
+
+<span class="t-d"># Sanity check: ls should show package.json</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bug-item">
+          <div class="bug-header">
+            <span class="bug-num">Bug 02</span>
+            <span class="bug-title">zsh: no matches found: [component]</span>
+          </div>
+          <div class="bug-body">
+            <div class="error-box">zsh: no matches found: [component]
+zsh: command not found: -c</div>
+            <p class="t-en"><strong>Cause:</strong> <code>[component]</code> is a placeholder, not a literal value. zsh interprets square brackets as a glob pattern. Replace it with the actual component name.</p>
+            <p class="t-id"><strong>Penyebab:</strong> <code>[component]</code> adalah placeholder, bukan nilai literal. zsh menginterpretasikan kurung kotak sebagai pola glob. Ganti dengan nama component aslinya.</p>
+            <div class="terminal">
+              <div class="term-bar">
+                <span class="term-dot" style="background:#FF5F57;"></span>
+                <span class="term-dot" style="background:#FEBC2E;"></span>
+                <span class="term-dot" style="background:#28C840;"></span>
+              </div>
+              <div class="term-body">
+npx shadcn@latest add <span class="t-r">[component]</span> -c apps/web   <span class="t-d">← ❌ placeholder</span>
+npx shadcn@latest add <span class="t-g">button</span>       -c apps/web   <span class="t-d">← ✓</span>
+npx shadcn@latest add <span class="t-y">--all</span>        -c apps/web   <span class="t-d">← install everything</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bug-item">
+          <div class="bug-header">
+            <span class="bug-num">Bug 03</span>
+            <span class="bug-title t-en">Missing 'packageManager' — Turborepo won't start</span>
+            <span class="bug-title t-id">Missing 'packageManager' — Turborepo tidak mau start</span>
+          </div>
+          <div class="bug-body">
+            <div class="error-box">× Could not resolve workspaces.
+╰─▶ Missing packageManager field in package.json</div>
+            <p class="t-en"><strong>Cause:</strong> Turborepo 2.x requires the root <code>package.json</code> to declare which package manager you use.</p>
+            <p class="t-id"><strong>Penyebab:</strong> Turborepo 2.x mengharuskan root <code>package.json</code> mendeklarasikan package manager yang digunakan.</p>
+            <div class="terminal">
+              <div class="term-bar">
+                <span class="term-dot" style="background:#FF5F57;"></span>
+                <span class="term-dot" style="background:#FEBC2E;"></span>
+                <span class="term-dot" style="background:#28C840;"></span>
+                <span class="term-title">root package.json</span>
+              </div>
+              <div class="term-body">
+{
+  "name": "my-monorepo",
+  "private": true,
+  <span class="t-g">"packageManager": "npm@10.8.2"</span>,   <span class="t-d">← add this</span>
+  "scripts": { ... }
+}
+
+<span class="t-d"># Find your version: npm --version</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bug-item">
+          <div class="bug-header">
+            <span class="bug-num">Bug 04</span>
+            <span class="bug-title t-en">Component added to wrong folder in monorepo</span>
+            <span class="bug-title t-id">Component masuk folder yang salah di monorepo</span>
+          </div>
+          <div class="bug-body">
+            <div class="error-box t-en">It looks like you are running add [component] from a monorepo root.
+Use the -c flag to target a specific workspace.</div>
+            <div class="error-box t-id">It looks like you are running add [component] from a monorepo root.
+Use the -c flag to target a specific workspace.</div>
+            <div class="terminal">
+              <div class="term-bar">
+                <span class="term-dot" style="background:#FF5F57;"></span>
+                <span class="term-dot" style="background:#FEBC2E;"></span>
+                <span class="term-dot" style="background:#28C840;"></span>
+              </div>
+              <div class="term-body">
+npx shadcn@latest add button <span class="t-y">-c apps/web</span>      <span class="t-d">← app-specific</span>
+npx shadcn@latest add button <span class="t-b">-c packages/ui</span>   <span class="t-d">← shared across apps</span>
+npx shadcn@latest add --all  <span class="t-b">-c packages/ui</span>   <span class="t-d">← install everything shared</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bug-item">
+          <div class="bug-header">
+            <span class="bug-num">Bug 05</span>
+            <span class="bug-title">Module not found: @/components/ui/accordion</span>
+          </div>
+          <div class="bug-body">
+            <div class="error-box">Module not found: Can't resolve '@/components/ui/accordion'
+Import map: aliased to './components/ui/accordion' inside [project]/apps/web</div>
+            <p class="t-en"><strong>Cause:</strong> Components are in <code>packages/ui</code> but imported via <code>@/components/ui/</code> which only works when components are in the same app. Use the shared package name.</p>
+            <p class="t-id"><strong>Penyebab:</strong> Component ada di <code>packages/ui</code> tapi di-import lewat <code>@/components/ui/</code> yang hanya bekerja di app yang sama. Gunakan nama shared package.</p>
+            <div class="terminal">
+              <div class="term-bar">
+                <span class="term-dot" style="background:#FF5F57;"></span>
+                <span class="term-dot" style="background:#FEBC2E;"></span>
+                <span class="term-dot" style="background:#28C840;"></span>
+              </div>
+              <div class="term-body">
+<span class="t-d"># Find your package name</span>
+cat packages/ui/package.json | grep '"name"'
+<span class="t-g">→ "name": "@workspace/ui"</span>
+
+<span class="t-r">import { Button } from "@/components/ui/button"</span>          <span class="t-d">← ❌</span>
+<span class="t-g">import { Button } from "@workspace/ui/components/button"</span>   <span class="t-d">← ✓</span>
+
+<span class="t-d"># Fix all files: Cmd+Shift+H in VS Code</span>
+<span class="t-d"># search: @/components/ui/</span>
+<span class="t-d"># replace: @workspace/ui/components/</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bug-item">
+          <div class="bug-header">
+            <span class="bug-num">Bug 06</span>
+            <span class="bug-title t-en">Localhost not opening / port conflict</span>
+            <span class="bug-title t-id">Localhost tidak terbuka / konflik port</span>
+          </div>
+          <div class="bug-body">
+            <div class="error-box t-en">⚠ Port 3000 is in use, trying 3001 instead.</div>
+            <div class="error-box t-id">⚠ Port 3000 is in use, trying 3001 instead.</div>
+            <p class="t-en"><strong>Cause:</strong> Port 3000 is occupied. Next.js auto-bumps to the next available port — always read the terminal output for the actual URL.</p>
+            <p class="t-id"><strong>Penyebab:</strong> Port 3000 sudah terpakai. Next.js otomatis beralih ke port berikutnya — selalu baca output terminal untuk URL yang sebenarnya.</p>
+            <div class="terminal">
+              <div class="term-bar">
+                <span class="term-dot" style="background:#FF5F57;"></span>
+                <span class="term-dot" style="background:#FEBC2E;"></span>
+                <span class="term-dot" style="background:#28C840;"></span>
+              </div>
+              <div class="term-body">
+<span class="t-d"># Follow what the terminal says — open :3001 if it shows :3001</span>
+
+<span class="t-d"># Force a specific port</span>
+npm run dev <span class="t-y">-- --port 4000</span>
+
+<span class="t-d"># Kill what's on port 3000</span>
+lsof -ti:3000 | xargs kill -9
+
+<span class="t-d"># Monorepo: start only one app</span>
+<span class="t-g">cd apps/web && npm run dev</span>
+npx turbo dev   <span class="t-d">← starts all apps in parallel</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── PRIMITIVES ─── -->
+    <section class="section" id="primitives">
+      <div class="section-header">
+        <span class="section-num">ref</span>
+        <h2 class="t-en">Under the Hood: Radix & Base UI</h2>
+        <h2 class="t-id">Di Balik Layar: Radix & Base UI</h2>
+      </div>
+
+      <p class="body-text t-en">You almost never touch these directly — Claude Code handles it. The layer model shows where to look when something needs advanced customization.</p>
+      <p class="body-text t-id">Kamu hampir tidak pernah menyentuh ini langsung — Claude Code yang menanganinya. Model layer menunjukkan ke mana harus melihat saat butuh kustomisasi lanjutan.</p>
+
+      <div class="layer-stack">
+        <div class="layer-row">
+          <div class="layer-name t-en">Your App</div>
+          <div class="layer-name t-id">Aplikasimu</div>
+          <div class="layer-desc t-en">Your components, brand tokens, feature logic</div>
+          <div class="layer-desc t-id">Component kamu, brand token, logika fitur</div>
+          <div class="layer-note t-en">← edit here first</div>
+          <div class="layer-note t-id">← edit di sini dulu</div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-name">shadcn/ui</div>
+          <div class="layer-desc t-en">Tailwind-styled wrapper in your <code>components/ui/</code></div>
+          <div class="layer-desc t-id">Wrapper Tailwind di <code>components/ui/</code> milikmu</div>
+          <div class="layer-note t-en">← color, spacing</div>
+          <div class="layer-note t-id">← warna, spasi</div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-name t-en">Radix UI / Base UI</div>
+          <div class="layer-name t-id">Radix UI / Base UI</div>
+          <div class="layer-desc t-en">Headless primitives — keyboard nav, ARIA, focus trapping</div>
+          <div class="layer-desc t-id">Primitive headless — keyboard nav, ARIA, focus trapping</div>
+          <div class="layer-note t-en">← behavior, a11y</div>
+          <div class="layer-note t-id">← behavior, a11y</div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-name">React + DOM</div>
+          <div class="layer-desc t-en">Rendering layer</div>
+          <div class="layer-desc t-id">Lapisan rendering</div>
+          <div class="layer-note">—</div>
+        </div>
+      </div>
+
+      <h3 class="t-en">Radix vs Base UI — how to tell which you have</h3>
+      <h3 class="t-id">Radix vs Base UI — cara membedakannya</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th class="t-en">Check</th>
+            <th>Radix UI</th>
+            <th>Base UI</th>
+            <th class="t-id" style="display:none">Cek</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td class="t-en">package.json</td>
+              <td><code>"@radix-ui/react-*"</code></td>
+              <td><code>"@base-ui/react"</code></td>
+            </tr>
+            <tr>
+              <td class="t-en">Import path</td>
+              <td><code>from "@radix-ui/react-dialog"</code></td>
+              <td><code>from "@base-ui/react/dialog"</code></td>
+            </tr>
+            <tr>
+              <td class="t-en">Content subcomp</td>
+              <td><code>Dialog.Content</code></td>
+              <td><code>Dialog.Popup</code></td>
+            </tr>
+            <tr>
+              <td class="t-en">Common in</td>
+              <td class="t-en">Most shadcn projects</td>
+              <td class="t-en">Newer Turborepo starters</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+  </div><!-- /content -->
+
+  <footer>
+    <span class="footer-text t-en">shadcn/ui + Claude Code — <strong>Designer's Field Guide</strong></span>
+    <span class="footer-text t-id">shadcn/ui + Claude Code — <strong>Panduan untuk Designer</strong></span>
+    <span class="footer-text t-en" style="font-family:ui-monospace,monospace;font-size:10.5px;color:var(--text-3);">Delegation mode · You describe, AI builds</span>
+    <span class="footer-text t-id" style="font-family:ui-monospace,monospace;font-size:10.5px;color:var(--text-3);">Delegation mode · Kamu deskripsikan, AI yang membangun</span>
+  </footer>
+
+</div><!-- /main -->
+
+<script>
+function setLang(lang) {
+  document.body.classList.toggle('lang-id', lang === 'id');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-id').classList.toggle('active', lang === 'id');
+  localStorage.setItem('guide-lang', lang);
+  document.querySelectorAll('td,th').forEach(el => {
+    if (lang === 'id') {
+      if (el.classList.contains('t-en')) el.style.display = 'none';
+      if (el.classList.contains('t-id')) el.style.display = 'table-cell';
+    } else {
+      if (el.classList.contains('t-en')) el.style.display = 'table-cell';
+      if (el.classList.contains('t-id')) el.style.display = 'none';
+    }
+  });
+}
+
+// Active nav
+const secs = document.querySelectorAll('.section');
+const links = document.querySelectorAll('.nav a[href^="#"]');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + e.target.id) a.classList.add('active');
+      });
+    }
+  });
+}, { rootMargin: '-10% 0% -75% 0%' });
+secs.forEach(s => io.observe(s));
+
+links.forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+const saved = localStorage.getItem('guide-lang');
+if (saved === 'id') setLang('id');
+</script>
+</body>
+</html>
