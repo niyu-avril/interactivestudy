@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Native — Master Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f5f8;--bg2:#fff;--bg3:#eeeef3;--bg4:#e4e4ec;--text:#1a1a2e;--text2:#5a5a72;--text3:#8a8a9e;--accent:#5a4fcf;--accent2:#7c6ff0;--al:#ededfa;--green:#0d9f6e;--gbg:#ecfdf5;--gbd:#a7f3d0;--orange:#d97706;--obg:#fffbeb;--obd:#fcd34d;--red:#dc2626;--rbg:#fef2f2;--rbd:#fca5a5;--blue:#2563eb;--bbg:#eff6ff;--bbd:#93c5fd;--cyan:#0891b2;--br:#e2e2ea;--br2:#ededf3;--radius:12px;--rsm:8px;--mono:'JetBrains Mono',monospace;--sans:'DM Sans',system-ui,sans-serif;--shsm:0 1px 3px rgba(0,0,0,.06);--shmd:0 4px 16px rgba(0,0,0,.08);--shlg:0 12px 40px rgba(0,0,0,.12)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}::selection{background:var(--accent);color:#fff}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--br);border-radius:3px}
+.app{max-width:1360px;margin:0 auto;padding:1.5rem 1.5rem 4rem}
+.hero{text-align:center;padding:2rem 0 1.2rem}.hero h1{font-size:1.7rem;font-weight:800;letter-spacing:-.03em}.hero h1 span{color:var(--accent)}.hero p{color:var(--text2);font-size:.85rem;margin-top:4px}
+.stats{display:flex;justify-content:center;gap:1.5rem;padding:.8rem 0;margin-bottom:.5rem;flex-wrap:wrap}.stat-item{text-align:center}.stat-num{font-size:1.4rem;font-weight:700;font-family:var(--mono)}.sn-c{color:var(--green)}.sn-i{color:var(--orange)}.sn-a{color:var(--red)}.sn-l{color:var(--blue)}.stat-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);font-weight:600}
+.controls{display:flex;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}.search-box{flex:1;min-width:200px;position:relative}.search-box input{width:100%;padding:9px 14px 9px 38px;font-size:.82rem;background:var(--bg2);border:1px solid var(--br);border-radius:var(--radius);color:var(--text);font-family:var(--sans);outline:none;transition:border .2s;box-shadow:var(--shsm)}.search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--al)}.search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text3)}.filters{display:flex;gap:5px;flex-wrap:wrap}
+.fbtn{padding:5px 14px;font-size:.72rem;border-radius:20px;border:1px solid var(--br);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .15s;font-family:var(--sans);font-weight:600}.fbtn:hover{border-color:var(--text3)}.fbtn.active{background:var(--accent);border-color:var(--accent);color:#fff}.fbtn[data-f="core"].active{background:var(--green);border-color:var(--green)}.fbtn[data-f="important"].active{background:var(--orange);border-color:var(--orange)}.fbtn[data-f="advanced"].active{background:var(--red);border-color:var(--red)}.fbtn[data-f="library"].active{background:var(--blue);border-color:var(--blue)}
+.section{margin-bottom:2rem;animation:fu .35s ease both}@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.sec-head{display:flex;align-items:center;gap:8px;padding-bottom:.6rem;border-bottom:1px solid var(--br2);margin-bottom:.75rem}.sec-icon{font-size:1.1rem}.sec-title{font-size:.92rem;font-weight:700}.sec-sub{font-size:.7rem;color:var(--text3)}.sec-count{margin-left:auto;font-size:.65rem;color:var(--text3);font-family:var(--mono);background:var(--bg3);padding:2px 8px;border-radius:10px}.group-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);font-weight:700;margin:1rem 0 .4rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px}.card{background:var(--bg2);border:1px solid var(--br2);border-radius:var(--rsm);padding:12px 14px;cursor:pointer;transition:all .15s;box-shadow:var(--shsm)}.card:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(90,79,207,.12);transform:translateY(-1px)}.card.hidden{display:none}.card-top{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:4px}.card-name{font-family:var(--mono);font-size:.78rem;font-weight:600}.badge{font-size:.58rem;padding:2px 8px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}.badge-core{background:var(--gbg);color:var(--green);border:1px solid var(--gbd)}.badge-important{background:var(--obg);color:var(--orange);border:1px solid var(--obd)}.badge-advanced{background:var(--rbg);color:var(--red);border:1px solid var(--rbd)}.badge-library{background:var(--bbg);color:var(--blue);border:1px solid var(--bbd)}.card-desc{font-size:.7rem;color:var(--text2);line-height:1.5}
+.overlay{display:none;position:fixed;inset:0;z-index:1000}.overlay.open{display:flex}.overlay-bg{position:absolute;inset:0;background:rgba(0,0,0,.3);backdrop-filter:blur(4px)}.detail-modal{position:relative;margin:auto;width:94%;max-width:880px;max-height:92vh;background:var(--bg2);border:1px solid var(--br);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shlg)}.detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--br2);flex-shrink:0}.detail-head-left h2{font-family:var(--mono);font-size:1.15rem;font-weight:700}.detail-head-left p{font-size:.76rem;color:var(--text2);margin-top:2px}.close-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--br);background:var(--bg);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;transition:all .15s}.close-btn:hover{background:var(--bg3);color:var(--text)}.detail-body{overflow-y:auto;padding:1.25rem 1.5rem 2rem;flex:1}
+.d-section{margin-bottom:1.5rem}.d-section-title{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.5rem;display:flex;align-items:center;gap:6px}.d-section-title::after{content:'';flex:1;height:1px;background:var(--br2)}
+.info-row{display:flex;gap:.75rem;flex-wrap:wrap}.info-box{flex:1;min-width:180px;background:var(--bg);border:1px solid var(--br2);border-radius:var(--rsm);padding:12px 14px}.info-box h4{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:5px;font-weight:700}.info-box p{font-size:.78rem;line-height:1.65}.gotcha-box{background:var(--obg);border:1px solid var(--obd);border-radius:var(--rsm);padding:10px 14px}.gotcha-box p{font-size:.78rem;color:#92400e;line-height:1.6}
+.props-wrap{overflow-x:auto;border:1px solid var(--br2);border-radius:var(--rsm)}.props-table{width:100%;border-collapse:collapse;font-size:.72rem}.props-table th{text-align:left;padding:7px 10px;font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:1px solid var(--br);font-weight:700;background:var(--bg);position:sticky;top:0}.props-table td{padding:8px 10px;border-bottom:1px solid var(--br2);vertical-align:top}.props-table tr:hover td{background:var(--bg)}.prop-name{font-family:var(--mono);font-weight:600;color:var(--accent);font-size:.7rem;white-space:nowrap}.prop-type{font-family:var(--mono);color:var(--cyan);font-size:.65rem}.prop-default{font-family:var(--mono);color:var(--text3);font-size:.65rem}.prop-req{color:var(--red);font-size:.6rem;font-weight:800}.prop-opt{color:var(--text3);font-size:.6rem}.prop-desc{color:var(--text2);line-height:1.5}
+.state-panel{background:var(--bg);border:1px solid var(--br2);border-radius:var(--rsm);padding:12px 14px}.state-row{display:flex;align-items:baseline;gap:8px;margin-bottom:5px;font-size:.73rem}.state-key{font-family:var(--mono);color:var(--accent);font-weight:600;min-width:90px;flex-shrink:0}.state-val{color:var(--text2)}
+.code-block{background:#1e1e2e;border-radius:var(--rsm);padding:14px 16px;font-family:var(--mono);font-size:.7rem;line-height:1.8;color:#cdd6f4;white-space:pre-wrap;overflow-x:auto;position:relative}.copy-btn{position:absolute;top:8px;right:8px;padding:3px 10px;font-size:.6rem;background:#313244;border:1px solid #45475a;border-radius:6px;color:#bac2de;cursor:pointer;font-family:var(--mono);transition:all .15s}.copy-btn:hover{background:#45475a;color:#cdd6f4}
+.demo-area{background:var(--bg);border:1px solid var(--br2);border-radius:var(--radius);overflow:hidden}.demo-toolbar{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-bottom:1px solid var(--br2);background:var(--bg3)}.demo-toolbar span{font-size:.65rem;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.05em}.demo-toolbar .reset-btn{padding:3px 10px;font-size:.6rem;border-radius:6px;border:1px solid var(--br);background:var(--bg2);color:var(--text3);cursor:pointer;font-family:var(--sans);transition:all .15s}.demo-toolbar .reset-btn:hover{border-color:var(--accent);color:var(--accent)}
+.demo-phone{width:260px;min-height:400px;margin:20px auto;background:#f8f8fb;border-radius:28px;border:2px solid var(--br);overflow:hidden;position:relative;box-shadow:var(--shmd)}.demo-phone .phone-notch{width:90px;height:20px;background:#e4e4ec;border-radius:0 0 12px 12px;margin:0 auto}.demo-phone .phone-screen{padding:10px;min-height:340px;display:flex;flex-direction:column}.demo-phone .phone-home{width:90px;height:4px;background:#c0c0cc;border-radius:2px;margin:6px auto 5px}
+.demo-controls{padding:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.demo-ctrl-btn{padding:5px 12px;font-size:.68rem;border-radius:8px;border:1px solid var(--br);background:var(--bg2);color:var(--text2);cursor:pointer;font-family:var(--sans);font-weight:600;transition:all .15s;box-shadow:var(--shsm)}.demo-ctrl-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ph-view{background:var(--al);border:1.5px dashed #b4b0e8;border-radius:8px;padding:10px;margin-bottom:6px}.ph-btn{padding:10px 0;text-align:center;background:var(--accent);color:#fff;border-radius:10px;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s}.ph-btn:active{opacity:.7;transform:scale(.97)}.ph-input{width:100%;padding:9px 12px;background:#fff;border:1.5px solid var(--br);border-radius:10px;color:var(--text);font-size:.78rem;outline:none;font-family:var(--sans)}.ph-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--al)}.ph-scroll{max-height:200px;overflow-y:auto;border:1px solid var(--br2);border-radius:8px;background:#fff}.ph-list-item{padding:9px 12px;border-bottom:1px solid var(--br2);font-size:.72rem;color:var(--text2);display:flex;justify-content:space-between}.ph-list-item:last-child{border-bottom:none}.ph-spinner{width:22px;height:22px;border:2.5px solid var(--br);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:16px auto}@keyframes spin{to{transform:rotate(360deg)}}.ph-tab-bar{display:flex;border-top:1px solid var(--br2);margin-top:auto;background:#fff}.ph-tab{flex:1;padding:7px 0;text-align:center;font-size:.58rem;color:var(--text3);cursor:pointer;transition:color .15s}.ph-tab.active{color:var(--accent)}
+@media(max-width:768px){.app{padding:1rem}.hero h1{font-size:1.3rem}.grid{grid-template-columns:1fr}.detail-modal{width:100%;max-height:100vh;border-radius:12px 12px 0 0;margin:auto 0 0 0}.info-row{flex-direction:column}.demo-phone{width:240px;min-height:370px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero"><h1>React Native — <span>Master Reference</span></h1><p>Semua komponen, API & library. Lengkap dengan props, state, dan interactive demo.</p></div>
+  <div class="stats" id="stats"></div>
+  <div class="controls"><div class="search-box"><svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.3"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="text" id="searchInput" placeholder="Cari komponen, API, props..." oninput="applyFilters()"></div><div class="filters" id="filterBar"></div></div>
+  <div id="sectionsRoot"></div>
+</div>
+<div class="overlay" id="overlay"><div class="overlay-bg" onclick="closeDetail()"></div><div class="detail-modal"><div class="detail-head"><div class="detail-head-left"><h2 id="dName"></h2><p id="dDesc"></p></div><button class="close-btn" onclick="closeDetail()">✕</button></div><div class="detail-body" id="dBody"></div></div></div>
+<script>
+const DATA = { sections: [
+// ──────────────────── SECTION 1: CORE UI ────────────────────
+{
+  id:"core-ui", icon:"🧩", title:"Core UI Components", sub:"Official React Native",
+  groups:[
+    { label:"Fundamental", items:[
+// ---- VIEW ----
+{ name:"View", badge:"core", desc:"Container utama untuk layout — setara div di web",
+  detail:{
+    use:"Semua layout. Ini container paling dasar di React Native. Setiap screen dimulai dari View.",
+    gotcha:"View tidak punya scroll bawaan. Kalau konten bisa overflow, wrap dengan ScrollView. View juga tidak bisa menampilkan teks langsung — harus pakai <Text>.",
+    props:[
+      {n:"style",t:"ViewStyle | ViewStyle[]",d:"-",r:false,ds:"Styling menggunakan Flexbox. Bisa array untuk merge styles."},
+      {n:"onLayout",t:"(event: LayoutEvent) => void",d:"-",r:false,ds:"Dipanggil saat layout berubah. Event berisi {x, y, width, height}."},
+      {n:"accessible",t:"boolean",d:"true",r:false,ds:"Apakah view ini adalah accessibility element."},
+      {n:"accessibilityLabel",t:"string",d:"-",r:false,ds:"Label yang dibaca screen reader."},
+      {n:"accessibilityRole",t:"AccessibilityRole",d:"-",r:false,ds:"Role untuk screen reader: 'button', 'header', 'image', dll."},
+      {n:"accessibilityState",t:"object",d:"-",r:false,ds:"State accessibility: {disabled, selected, checked, busy, expanded}."},
+      {n:"testID",t:"string",d:"-",r:false,ds:"ID untuk testing (Detox, Appium)."},
+      {n:"pointerEvents",t:"'box-none'|'none'|'box-only'|'auto'",d:"'auto'",r:false,ds:"Kontrol apakah view bisa menerima touch events."},
+      {n:"collapsable",t:"boolean",d:"true",r:false,ds:"Android: view tanpa children/style bisa di-remove dari native hierarchy untuk optimasi."},
+      {n:"nativeID",t:"string",d:"-",r:false,ds:"ID native untuk referensi dari native code."},
+      {n:"needsOffscreenAlphaCompositing",t:"boolean",d:"false",r:false,ds:"Render view ke offscreen buffer dulu sebelum compositing. Berguna untuk animasi opacity."},
+      {n:"hitSlop",t:"Insets | number",d:"-",r:false,ds:"Perbesar area touch tanpa mengubah layout."},
+      {n:"removeClippedSubviews",t:"boolean",d:"false",r:false,ds:"Optimasi: unmount child views di luar viewport (eksperimental)."},
+      {n:"onMoveShouldSetResponder",t:"(event) => boolean",d:"-",r:false,ds:"Gesture responder system — apakah view ingin menjadi responder saat move."},
+    ],
+    states:[
+      {n:"layout",ds:"Ukuran dan posisi view setelah layout engine menghitung ({x, y, width, height})."},
+    ],
+    code:`import { View, Text, StyleSheet } from 'react-native';
+
+const MyComponent = () => (
+  <View style={styles.container}>
+    <View style={styles.row}>
+      <View style={styles.box}>
+        <Text>Box 1</Text>
+      </View>
+      <View style={[styles.box, styles.boxAccent]}>
+        <Text>Box 2</Text>
+      </View>
+    </View>
+    <View
+      onLayout={(e) => {
+        const { width, height } = e.nativeEvent.layout;
+        console.log('Layout:', width, height);
+      }}
+    >
+      <Text>Measured View</Text>
+    </View>
+  </View>
+);
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16 },
+  row: { flexDirection: 'row', gap: 12 },
+  box: { flex: 1, padding: 20, backgroundColor: '#f0f0f0', borderRadius: 8 },
+  boxAccent: { backgroundColor: '#e8f4ff' },
+});`,
+    demo: "view"
+  }
+},
+// ---- TEXT ----
+{ name:"Text", badge:"core", desc:"Render teks — satu-satunya cara menampilkan string",
+  detail:{
+    use:"SEMUA teks wajib pakai Text. Tidak bisa taruh string langsung di View — akan error.",
+    gotcha:"Text nested MEWARISI style parent Text-nya (cascading), beda dengan View. Ini mirip inline element di web.",
+    props:[
+      {n:"style",t:"TextStyle | TextStyle[]",d:"-",r:false,ds:"Font size, weight, color, line height, text align, dll."},
+      {n:"numberOfLines",t:"number",d:"-",r:false,ds:"Batasi jumlah baris. Text akan terpotong dan muncul ellipsis."},
+      {n:"ellipsizeMode",t:"'head'|'middle'|'tail'|'clip'",d:"'tail'",r:false,ds:"Posisi ellipsis saat text terpotong."},
+      {n:"selectable",t:"boolean",d:"false",r:false,ds:"User bisa select & copy text."},
+      {n:"onPress",t:"() => void",d:"-",r:false,ds:"Handler saat text di-tap. Bikin Text bisa jadi link."},
+      {n:"onLongPress",t:"() => void",d:"-",r:false,ds:"Handler saat text di-long press."},
+      {n:"onTextLayout",t:"(event) => void",d:"-",r:false,ds:"Info layout tiap baris text (lines array)."},
+      {n:"adjustsFontSizeToFit",t:"boolean",d:"false",r:false,ds:"iOS: auto-shrink font supaya muat di container."},
+      {n:"minimumFontScale",t:"number",d:"-",r:false,ds:"iOS: minimum scale saat adjustsFontSizeToFit. Range 0-1."},
+      {n:"allowFontScaling",t:"boolean",d:"true",r:false,ds:"Apakah font mengikuti system accessibility font size."},
+      {n:"maxFontSizeMultiplier",t:"number",d:"-",r:false,ds:"Batas max font scaling. 0 = unlimited."},
+      {n:"suppressHighlighting",t:"boolean",d:"false",r:false,ds:"iOS: suppress highlight saat text di-tap."},
+      {n:"disabled",t:"boolean",d:"false",r:false,ds:"Disable text press events."},
+      {n:"dataDetectorType",t:"'phoneNumber'|'link'|'email'|'all'|'none'",d:"'none'",r:false,ds:"Android: auto-detect phone, link, email."},
+      {n:"lineBreakStrategyIOS",t:"'none'|'standard'|'hangul-word'|'push-out'",d:"'none'",r:false,ds:"iOS 14+: strategi line break."},
+    ],
+    states:[
+      {n:"pressed",ds:"Apakah text sedang ditekan (saat onPress diset)."},
+    ],
+    code:`import { Text, StyleSheet } from 'react-native';
+
+const TextExamples = () => (
+  <>
+    {/* Basic */}
+    <Text style={styles.title}>Judul Halaman</Text>
+
+    {/* Truncated */}
+    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.body}>
+      Text yang sangat panjang akan terpotong setelah dua baris
+      dan menampilkan ellipsis di akhir baris kedua...
+    </Text>
+
+    {/* Nested - style cascading */}
+    <Text style={styles.body}>
+      Ini text normal,{' '}
+      <Text style={styles.bold}>ini bold yang mewarisi</Text>
+      {' '}dan{' '}
+      <Text style={styles.link} onPress={() => alert('Tapped!')}>
+        ini bisa di-tap
+      </Text>
+    </Text>
+
+    {/* Selectable */}
+    <Text selectable>Long press untuk copy text ini</Text>
+  </>
+);
+
+const styles = StyleSheet.create({
+  title: { fontSize: 24, fontWeight: '700', marginBottom: 8 },
+  body: { fontSize: 15, lineHeight: 22, color: '#333' },
+  bold: { fontWeight: '700' },
+  link: { color: '#007AFF', textDecorationLine: 'underline' },
+});`,
+    demo: "text"
+  }
+},
+// ---- IMAGE ----
+{ name:"Image", badge:"core", desc:"Render gambar lokal & remote",
+  detail:{
+    use:"Gambar produk, avatar, banner, icons bitmap. Bisa dari URI atau require() lokal.",
+    gotcha:"Remote image WAJIB ada width & height explicit — tidak auto-size seperti web <img>. Tanpa dimensi = tidak muncul!",
+    props:[
+      {n:"source",t:"ImageSource",d:"-",r:true,ds:"Sumber gambar: { uri: 'https://...' } atau require('./img.png')."},
+      {n:"style",t:"ImageStyle",d:"-",r:false,ds:"Width, height, borderRadius, tintColor, opacity, dll."},
+      {n:"resizeMode",t:"'cover'|'contain'|'stretch'|'repeat'|'center'",d:"'cover'",r:false,ds:"Cara gambar di-resize ke container."},
+      {n:"onLoad",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat gambar berhasil di-load."},
+      {n:"onLoadStart",t:"() => void",d:"-",r:false,ds:"Dipanggil saat mulai loading."},
+      {n:"onLoadEnd",t:"() => void",d:"-",r:false,ds:"Dipanggil saat loading selesai (sukses atau gagal)."},
+      {n:"onError",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat gagal load gambar."},
+      {n:"onProgress",t:"(event) => void",d:"-",r:false,ds:"iOS: progress download. event.nativeEvent.{loaded, total}."},
+      {n:"blurRadius",t:"number",d:"-",r:false,ds:"Blur effect pada gambar. Angka makin besar makin blur."},
+      {n:"loadingIndicatorSource",t:"ImageSource",d:"-",r:false,ds:"Gambar placeholder saat loading."},
+      {n:"defaultSource",t:"ImageSource",d:"-",r:false,ds:"iOS: gambar default sebelum remote image di-load."},
+      {n:"fadeDuration",t:"number",d:"300",r:false,ds:"Android: durasi fade-in animation (ms)."},
+      {n:"progressiveRenderingEnabled",t:"boolean",d:"false",r:false,ds:"Android: progressive JPEG rendering."},
+      {n:"accessible",t:"boolean",d:"true",r:false,ds:"Accessibility flag."},
+      {n:"accessibilityLabel",t:"string",d:"-",r:false,ds:"Alt text untuk screen reader."},
+      {n:"tintColor",t:"string",d:"-",r:false,ds:"Warna tint yang overlay gambar. Berguna untuk icons."},
+      {n:"crossOrigin",t:"'anonymous'|'use-credentials'",d:"-",r:false,ds:"CORS mode untuk image request."},
+    ],
+    states:[
+      {n:"loading",ds:"Apakah gambar sedang di-download/decode."},
+      {n:"error",ds:"Apakah terjadi error saat load."},
+    ],
+    code:`import { Image, StyleSheet, View } from 'react-native';
+
+// Remote image — WAJIB set dimensi
+<Image
+  source={{ uri: 'https://picsum.photos/300/200' }}
+  style={styles.remoteImg}
+  resizeMode="cover"
+  onLoad={() => console.log('Loaded!')}
+  onError={(e) => console.log('Error:', e.nativeEvent.error)}
+/>
+
+// Local image
+<Image
+  source={require('./assets/logo.png')}
+  style={styles.logo}
+  resizeMode="contain"
+/>
+
+// Tinted icon
+<Image
+  source={require('./assets/icon.png')}
+  style={{ width: 24, height: 24, tintColor: '#007AFF' }}
+/>
+
+// Static methods:
+// Image.getSize(uri, (w,h) => {}, onError)
+// Image.prefetch(uri) — pre-download
+// Image.queryCache([uris]) — cek cache
+
+const styles = StyleSheet.create({
+  remoteImg: { width: '100%', height: 200, borderRadius: 12 },
+  logo: { width: 120, height: 40 },
+});`,
+    demo: "image"
+  }
+},
+// ---- TEXTINPUT ----
+{ name:"TextInput", badge:"core", desc:"Input teks dari user",
+  detail:{
+    use:"Form input, search bar, chat input, semua yang perlu ketikan user.",
+    gotcha:"Harus controlled (value + onChangeText) atau uncontrolled. Jangan campur — bisa bikin bug aneh.",
+    props:[
+      {n:"value",t:"string",d:"-",r:false,ds:"Controlled value. Set ini + onChangeText untuk controlled input."},
+      {n:"defaultValue",t:"string",d:"-",r:false,ds:"Uncontrolled default value. Jangan campur dengan value."},
+      {n:"onChangeText",t:"(text: string) => void",d:"-",r:false,ds:"Dipanggil setiap karakter berubah. Versi simple dari onChange."},
+      {n:"onChange",t:"(event) => void",d:"-",r:false,ds:"Raw event handler. Biasanya onChangeText lebih praktis."},
+      {n:"placeholder",t:"string",d:"-",r:false,ds:"Teks placeholder saat input kosong."},
+      {n:"placeholderTextColor",t:"string",d:"-",r:false,ds:"Warna placeholder."},
+      {n:"secureTextEntry",t:"boolean",d:"false",r:false,ds:"Sembunyikan teks (untuk password)."},
+      {n:"multiline",t:"boolean",d:"false",r:false,ds:"Input bisa multi-baris (textarea)."},
+      {n:"numberOfLines",t:"number",d:"-",r:false,ds:"Android: jumlah baris visible saat multiline."},
+      {n:"maxLength",t:"number",d:"-",r:false,ds:"Batas maksimal karakter."},
+      {n:"keyboardType",t:"'default'|'email-address'|'numeric'|'phone-pad'|'decimal-pad'|'url'",d:"'default'",r:false,ds:"Tipe keyboard yang muncul."},
+      {n:"returnKeyType",t:"'done'|'go'|'next'|'search'|'send'",d:"'done'",r:false,ds:"Label tombol return di keyboard."},
+      {n:"autoCapitalize",t:"'none'|'sentences'|'words'|'characters'",d:"'sentences'",r:false,ds:"Perilaku auto capitalize."},
+      {n:"autoCorrect",t:"boolean",d:"true",r:false,ds:"Auto correct text."},
+      {n:"autoComplete",t:"string",d:"-",r:false,ds:"Hint untuk autofill: 'email', 'password', 'name', 'tel', dll."},
+      {n:"autoFocus",t:"boolean",d:"false",r:false,ds:"Otomatis focus saat component mount."},
+      {n:"editable",t:"boolean",d:"true",r:false,ds:"Apakah input bisa di-edit."},
+      {n:"selectTextOnFocus",t:"boolean",d:"false",r:false,ds:"Select semua text saat focus."},
+      {n:"onFocus",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat input mendapat focus."},
+      {n:"onBlur",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat input kehilangan focus."},
+      {n:"onSubmitEditing",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat tombol return ditekan."},
+      {n:"onEndEditing",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat editing selesai."},
+      {n:"onSelectionChange",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat selection berubah."},
+      {n:"onContentSizeChange",t:"(event) => void",d:"-",r:false,ds:"Multiline: dipanggil saat ukuran konten berubah."},
+      {n:"blurOnSubmit",t:"boolean",d:"true",r:false,ds:"Blur input saat submit. Set false untuk multiline."},
+      {n:"textAlign",t:"'left'|'center'|'right'",d:"'left'",r:false,ds:"Alignment teks dalam input."},
+      {n:"textAlignVertical",t:"'auto'|'top'|'bottom'|'center'",d:"'auto'",r:false,ds:"Android: vertical alignment saat multiline."},
+      {n:"inputAccessoryViewID",t:"string",d:"-",r:false,ds:"iOS: ID untuk InputAccessoryView toolbar."},
+      {n:"clearButtonMode",t:"'never'|'while-editing'|'unless-editing'|'always'",d:"'never'",r:false,ds:"iOS: kapan clear button (×) muncul."},
+      {n:"enablesReturnKeyAutomatically",t:"boolean",d:"false",r:false,ds:"iOS: disable return key kalau input kosong."},
+      {n:"ref",t:"React.Ref",d:"-",r:false,ds:"Ref untuk .focus(), .blur(), .clear(), .isFocused()."},
+    ],
+    states:[
+      {n:"value (controlled)",ds:"String text yang diketik user, di-manage via useState."},
+      {n:"isFocused",ds:"Apakah input sedang active/focused."},
+      {n:"selection",ds:"Posisi cursor/selection: {start: number, end: number}."},
+    ],
+    code:`import { useState, useRef } from 'react';
+import { TextInput, View, Platform } from 'react-native';
+
+const LoginForm = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const passRef = useRef(null);
+
+  return (
+    <View style={{ gap: 12 }}>
+      <TextInput
+        value={email}
+        onChangeText={setEmail}
+        placeholder="Email"
+        placeholderTextColor="#999"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        autoComplete="email"
+        returnKeyType="next"
+        onSubmitEditing={() => passRef.current?.focus()}
+        clearButtonMode="while-editing"
+        style={styles.input}
+      />
+      <TextInput
+        ref={passRef}
+        value={password}
+        onChangeText={setPassword}
+        placeholder="Password"
+        secureTextEntry
+        autoComplete="password"
+        returnKeyType="done"
+        onSubmitEditing={handleLogin}
+        enablesReturnKeyAutomatically
+        style={styles.input}
+      />
+    </View>
+  );
+};`,
+    demo: "textinput"
+  }
+},
+// ---- PRESSABLE ----
+{ name:"Pressable", badge:"core", desc:"Touchable modern — yang harusnya lo pake",
+  detail:{
+    use:"Semua elemen yang bisa di-tap: button custom, card, list item. Pengganti TouchableOpacity & kawan-kawan.",
+    gotcha:"Style bisa berupa function yang menerima { pressed } — manfaatin untuk visual feedback. Jangan lupa hitSlop kalau area tap kecil.",
+    props:[
+      {n:"onPress",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat tap selesai (finger up)."},
+      {n:"onPressIn",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat finger down."},
+      {n:"onPressOut",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat finger up."},
+      {n:"onLongPress",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat long press (~500ms)."},
+      {n:"delayLongPress",t:"number",d:"500",r:false,ds:"Durasi (ms) sebelum onLongPress dipanggil."},
+      {n:"disabled",t:"boolean",d:"false",r:false,ds:"Disable semua press interactions."},
+      {n:"style",t:"ViewStyle | (state) => ViewStyle",d:"-",r:false,ds:"Bisa function! Menerima {pressed, hovered, focused}."},
+      {n:"children",t:"ReactNode | (state) => ReactNode",d:"-",r:false,ds:"Bisa function juga, sama seperti style."},
+      {n:"android_ripple",t:"{color, borderless, foreground, radius}",d:"-",r:false,ds:"Android: konfigurasi ripple effect."},
+      {n:"android_disableSound",t:"boolean",d:"false",r:false,ds:"Android: disable click sound."},
+      {n:"hitSlop",t:"Insets | number",d:"-",r:false,ds:"Perbesar area touch. Penting untuk target kecil."},
+      {n:"pressRetentionOffset",t:"Insets",d:"{top:20,left:20,right:20,bottom:30}",r:false,ds:"Jarak finger boleh keluar sebelum press dibatalkan."},
+      {n:"unstable_pressDelay",t:"number",d:"0",r:false,ds:"Delay sebelum pressed state aktif (ms). Berguna untuk ScrollView."},
+    ],
+    states:[
+      {n:"pressed",ds:"boolean — apakah sedang ditekan. Diakses via callback style/children."},
+      {n:"hovered",ds:"boolean — apakah sedang di-hover (web/desktop)."},
+      {n:"focused",ds:"boolean — apakah sedang focused (keyboard/TV navigation)."},
+    ],
+    code:`import { Pressable, Text, StyleSheet } from 'react-native';
+
+// Basic with press feedback
+<Pressable
+  onPress={() => console.log('Pressed!')}
+  style={({ pressed }) => [
+    styles.button,
+    pressed && styles.buttonPressed,
+  ]}
+>
+  {({ pressed }) => (
+    <Text style={[styles.btnText, pressed && styles.btnTextPressed]}>
+      {pressed ? 'Pressing...' : 'Tap Me'}
+    </Text>
+  )}
+</Pressable>
+
+// With Android ripple
+<Pressable
+  onPress={handlePress}
+  android_ripple={{ color: '#ffffff30', borderless: false }}
+  style={styles.rippleBtn}
+>
+  <Text>Android Ripple</Text>
+</Pressable>
+
+// With hitSlop for small targets
+<Pressable
+  onPress={toggleFavorite}
+  hitSlop={20}
+>
+  <Icon name="heart" size={16} />
+</Pressable>
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  buttonPressed: { backgroundColor: '#0056b3', transform: [{ scale: 0.97 }] },
+  btnText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  btnTextPressed: { opacity: 0.8 },
+});`,
+    demo: "pressable"
+  }
+},
+// ---- BUTTON ----
+{ name:"Button", badge:"core", desc:"Button bawaan OS, styling sangat terbatas",
+  detail:{
+    use:"Prototyping cepat saja. Di production, bikin custom button dari Pressable.",
+    gotcha:"Tidak bisa ubah border radius, font, padding — apa-apa. Tampilan beda total di iOS vs Android.",
+    props:[
+      {n:"title",t:"string",d:"-",r:true,ds:"Label text pada button."},
+      {n:"onPress",t:"() => void",d:"-",r:true,ds:"Handler saat button ditekan."},
+      {n:"color",t:"string",d:"'#2196F3'",r:false,ds:"iOS: warna text. Android: warna background."},
+      {n:"disabled",t:"boolean",d:"false",r:false,ds:"Disable button (grayed out)."},
+      {n:"accessibilityLabel",t:"string",d:"-",r:false,ds:"Label untuk screen reader."},
+      {n:"testID",t:"string",d:"-",r:false,ds:"ID untuk testing."},
+      {n:"touchSoundDisabled",t:"boolean",d:"false",r:false,ds:"Android: disable click sound."},
+      {n:"nextFocusDown",t:"number",d:"-",r:false,ds:"Android TV: next focus."},
+    ],
+    states:[],
+    code:`import { Button, View, Alert } from 'react-native';
+
+<View style={{ gap: 12 }}>
+  <Button
+    title="Submit"
+    onPress={() => Alert.alert('Submitted!')}
+    color="#007AFF"
+  />
+  <Button
+    title="Disabled"
+    onPress={() => {}}
+    disabled={true}
+  />
+  {/* Catatan: Di production app,
+     bikin custom button dari Pressable
+     untuk kontrol styling penuh */}
+</View>`,
+    demo: "button"
+  }
+},
+    ]},
+    // ---- LAYOUT & CONTAINER ----
+    { label:"Layout & Container", items:[
+{ name:"SafeAreaView", badge:"core", desc:"Hindari notch & home indicator",
+  detail:{
+    use:"Wrapper screen utama supaya konten tidak tertutup notch, status bar, atau home indicator.",
+    gotcha:"Di Android efeknya minimal. Untuk kontrol penuh per-edge, pakai react-native-safe-area-context (useSafeAreaInsets).",
+    props:[
+      {n:"style",t:"ViewStyle",d:"-",r:false,ds:"Style container. Biasanya flex: 1."},
+      {n:"edges",t:"Array<'top'|'right'|'bottom'|'left'>",d:"semua",r:false,ds:"(react-native-safe-area-context) Edge mana yang di-pad."},
+      {n:"mode",t:"'padding'|'margin'",d:"'padding'",r:false,ds:"(react-native-safe-area-context) Apakah pakai padding atau margin."},
+    ],
+    states:[
+      {n:"insets",ds:"(useSafeAreaInsets) Object {top, right, bottom, left} — inset values dalam points."},
+    ],
+    code:`// Basic (built-in)
+import { SafeAreaView } from 'react-native';
+<SafeAreaView style={{ flex: 1 }}>
+  <YourScreen />
+</SafeAreaView>
+
+// Recommended: react-native-safe-area-context
+import { SafeAreaView } from 'react-native-safe-area-context';
+<SafeAreaView edges={['top', 'left', 'right']} style={{ flex: 1 }}>
+  <YourScreen />
+</SafeAreaView>
+
+// Hook version — more flexible
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+const Screen = () => {
+  const insets = useSafeAreaInsets();
+  return (
+    <View style={{
+      flex: 1,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+    }}>
+      <YourContent />
+    </View>
+  );
+};`,
+    demo: "safeareaview"
+  }
+},
+{ name:"ScrollView", badge:"core", desc:"Container scrollable untuk konten",
+  detail:{
+    use:"Halaman form, detail produk, settings. Untuk list panjang (>50 items), gunakan FlatList.",
+    gotcha:"ScrollView render SEMUA children sekaligus. Jangan taruh 1000 item di sini — performa hancur.",
+    props:[
+      {n:"contentContainerStyle",t:"ViewStyle",d:"-",r:false,ds:"Style untuk inner container. BUKAN style luar ScrollView."},
+      {n:"horizontal",t:"boolean",d:"false",r:false,ds:"Scroll arah horizontal."},
+      {n:"showsVerticalScrollIndicator",t:"boolean",d:"true",r:false,ds:"Tampilkan scroll indicator vertikal."},
+      {n:"showsHorizontalScrollIndicator",t:"boolean",d:"true",r:false,ds:"Tampilkan scroll indicator horizontal."},
+      {n:"scrollEnabled",t:"boolean",d:"true",r:false,ds:"Enable/disable scrolling."},
+      {n:"pagingEnabled",t:"boolean",d:"false",r:false,ds:"Snap ke halaman (full-screen swipe)."},
+      {n:"bounces",t:"boolean",d:"true",r:false,ds:"iOS: efek bounce di ujung scroll."},
+      {n:"overScrollMode",t:"'auto'|'always'|'never'",d:"'auto'",r:false,ds:"Android: overscroll glow effect."},
+      {n:"refreshControl",t:"ReactElement",d:"-",r:false,ds:"Pull-to-refresh component (RefreshControl)."},
+      {n:"onScroll",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat scroll. Event punya contentOffset."},
+      {n:"scrollEventThrottle",t:"number",d:"0",r:false,ds:"iOS: interval (ms) onScroll dipanggil. Set 16 untuk smooth."},
+      {n:"keyboardShouldPersistTaps",t:"'always'|'never'|'handled'",d:"'never'",r:false,ds:"Behavior keyboard saat tap di dalam ScrollView."},
+      {n:"keyboardDismissMode",t:"'none'|'on-drag'|'interactive'",d:"'none'",r:false,ds:"Kapan keyboard dismiss saat scroll."},
+      {n:"stickyHeaderIndices",t:"number[]",d:"-",r:false,ds:"Index children yang sticky di atas saat scroll."},
+      {n:"nestedScrollEnabled",t:"boolean",d:"false",r:false,ds:"Android: enable nested scrolling."},
+      {n:"snapToInterval",t:"number",d:"-",r:false,ds:"Snap scroll ke interval tertentu (px)."},
+      {n:"snapToOffsets",t:"number[]",d:"-",r:false,ds:"Snap ke offset spesifik."},
+      {n:"decelerationRate",t:"'normal'|'fast'|number",d:"'normal'",r:false,ds:"Kecepatan deceleration setelah user lift finger."},
+      {n:"onMomentumScrollEnd",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat momentum scroll selesai."},
+      {n:"onScrollBeginDrag",t:"(event) => void",d:"-",r:false,ds:"Dipanggil saat user mulai drag."},
+      {n:"scrollTo({x,y,animated})",t:"method",d:"-",r:false,ds:"Imperative method: scroll ke posisi tertentu via ref."},
+      {n:"scrollToEnd({animated})",t:"method",d:"-",r:false,ds:"Imperative: scroll ke akhir."},
+    ],
+    states:[
+      {n:"contentOffset",ds:"{x, y} — posisi scroll saat ini."},
+      {n:"contentSize",ds:"{width, height} — ukuran total konten."},
+      {n:"layoutMeasurement",ds:"{width, height} — ukuran visible area."},
+    ],
+    code:`import { ScrollView, RefreshControl, View, Text } from 'react-native';
+
+const DetailScreen = () => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  };
+
+  return (
+    <ScrollView
+      contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <Text style={{ fontSize: 24, fontWeight: '700' }}>Detail</Text>
+      {/* Konten panjang di sini */}
+    </ScrollView>
+  );
+};`,
+    demo: "scrollview"
+  }
+},
+{ name:"FlatList", badge:"core", desc:"List performa tinggi dengan virtualisasi",
+  detail:{
+    use:"List panjang: feed, produk, transaksi, contacts. WAJIB pakai ini kalau list bisa punya banyak item.",
+    gotcha:"keyExtractor WAJIB return string unik. Lupa ini = bug re-render yang susah banget di-debug.",
+    props:[
+      {n:"data",t:"T[]",d:"-",r:true,ds:"Array data yang akan di-render."},
+      {n:"renderItem",t:"({item, index, separators}) => ReactElement",d:"-",r:true,ds:"Function untuk render setiap item."},
+      {n:"keyExtractor",t:"(item, index) => string",d:"-",r:true,ds:"Return unique string key. Penting untuk performa."},
+      {n:"ListHeaderComponent",t:"ReactElement | () => ReactElement",d:"-",r:false,ds:"Component di atas list (header)."},
+      {n:"ListFooterComponent",t:"ReactElement | () => ReactElement",d:"-",r:false,ds:"Component di bawah list (footer/loader)."},
+      {n:"ListEmptyComponent",t:"ReactElement | () => ReactElement",d:"-",r:false,ds:"Ditampilkan saat data kosong."},
+      {n:"ItemSeparatorComponent",t:"ReactElement",d:"-",r:false,ds:"Separator antar item."},
+      {n:"horizontal",t:"boolean",d:"false",r:false,ds:"List horizontal."},
+      {n:"numColumns",t:"number",d:"1",r:false,ds:"Grid layout. Tidak bisa dipakai bareng horizontal."},
+      {n:"inverted",t:"boolean",d:"false",r:false,ds:"List terbalik (chat-like). Item terakhir di bawah."},
+      {n:"onEndReached",t:"() => void",d:"-",r:false,ds:"Dipanggil saat scroll mendekati akhir. Untuk infinite scroll."},
+      {n:"onEndReachedThreshold",t:"number",d:"2",r:false,ds:"Jarak trigger onEndReached. 0.5 = 50% dari visible height."},
+      {n:"refreshControl",t:"ReactElement",d:"-",r:false,ds:"Pull-to-refresh."},
+      {n:"onRefresh",t:"() => void",d:"-",r:false,ds:"Shortcut untuk pull-to-refresh (auto-wrap RefreshControl)."},
+      {n:"refreshing",t:"boolean",d:"-",r:false,ds:"State refreshing (pasangan onRefresh)."},
+      {n:"windowSize",t:"number",d:"21",r:false,ds:"Jumlah viewport yang di-render. Lebih kecil = hemat memory."},
+      {n:"initialNumToRender",t:"number",d:"10",r:false,ds:"Jumlah item initial render."},
+      {n:"maxToRenderPerBatch",t:"number",d:"10",r:false,ds:"Jumlah item per batch render."},
+      {n:"removeClippedSubviews",t:"boolean",d:"false",r:false,ds:"Detach view di luar viewport. Hemat memory."},
+      {n:"getItemLayout",t:"(data, index) => {length, offset, index}",d:"-",r:false,ds:"Optimasi BESAR. Skip measurement kalau item height fixed."},
+      {n:"onViewableItemsChanged",t:"callback",d:"-",r:false,ds:"Dipanggil saat items visible berubah (analytics, lazy load)."},
+      {n:"viewabilityConfig",t:"object",d:"-",r:false,ds:"Config untuk onViewableItemsChanged."},
+      {n:"extraData",t:"any",d:"-",r:false,ds:"Trigger re-render saat data di luar 'data' prop berubah."},
+      {n:"scrollToIndex({index})",t:"method",d:"-",r:false,ds:"Imperative: scroll ke item tertentu."},
+      {n:"scrollToOffset({offset})",t:"method",d:"-",r:false,ds:"Imperative: scroll ke offset."},
+    ],
+    states:[
+      {n:"data",ds:"Array data dari state/store."},
+      {n:"refreshing",ds:"boolean — apakah sedang pull-to-refresh."},
+      {n:"loading / loadingMore",ds:"boolean — state untuk initial dan pagination load."},
+    ],
+    code:`import { useState, useCallback } from 'react';
+import { FlatList, Text, View, RefreshControl } from 'react-native';
+
+const TransactionList = () => {
+  const [data, setData] = useState(transactions);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const renderItem = useCallback(({ item }) => (
+    <View style={styles.row}>
+      <Text style={styles.name}>{item.name}</Text>
+      <Text style={styles.amount}>{item.amount}</Text>
+    </View>
+  ), []);
+
+  const loadMore = () => {
+    if (loading) return;
+    setLoading(true);
+    fetchNextPage().then(newItems => {
+      setData(prev => [...prev, ...newItems]);
+      setLoading(false);
+    });
+  };
+
+  return (
+    <FlatList
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id}
+      ListEmptyComponent={<EmptyState />}
+      ListFooterComponent={loading ? <Spinner /> : null}
+      onEndReached={loadMore}
+      onEndReachedThreshold={0.5}
+      refreshing={refreshing}
+      onRefresh={async () => {
+        setRefreshing(true);
+        const fresh = await fetchLatest();
+        setData(fresh);
+        setRefreshing(false);
+      }}
+      // Optimasi performa:
+      removeClippedSubviews
+      maxToRenderPerBatch={15}
+      windowSize={10}
+      initialNumToRender={10}
+      getItemLayout={(_, index) => ({
+        length: 64, offset: 64 * index, index,
+      })}
+    />
+  );
+};`,
+    demo: "flatlist"
+  }
+},
+{ name:"SectionList", badge:"important", desc:"FlatList dengan section headers",
+  detail:{
+    use:"List yang butuh grouping: contacts A-Z, transaksi per tanggal, menu per kategori.",
+    gotcha:"Data format berbeda dari FlatList — harus array of { title, data[] }. Sering lupa ini.",
+    props:[
+      {n:"sections",t:"Array<{title, data, ...}>",d:"-",r:true,ds:"Array of section objects. Setiap section punya data array."},
+      {n:"renderItem",t:"({item, index, section}) => ReactElement",d:"-",r:true,ds:"Render setiap item. Menerima section info juga."},
+      {n:"renderSectionHeader",t:"({section}) => ReactElement",d:"-",r:false,ds:"Render section header."},
+      {n:"renderSectionFooter",t:"({section}) => ReactElement",d:"-",r:false,ds:"Render section footer."},
+      {n:"keyExtractor",t:"(item, index) => string",d:"-",r:false,ds:"Unique key per item."},
+      {n:"stickySectionHeadersEnabled",t:"boolean",d:"true (iOS)",r:false,ds:"Section header sticky di atas saat scroll."},
+      {n:"ListHeaderComponent",t:"ReactElement",d:"-",r:false,ds:"Header di atas semua sections."},
+      {n:"ListEmptyComponent",t:"ReactElement",d:"-",r:false,ds:"Ditampilkan saat semua sections kosong."},
+      {n:"SectionSeparatorComponent",t:"ReactElement",d:"-",r:false,ds:"Separator antar sections."},
+      {n:"ItemSeparatorComponent",t:"ReactElement",d:"-",r:false,ds:"Separator antar items dalam section."},
+      {n:"onEndReached",t:"() => void",d:"-",r:false,ds:"Infinite scroll callback."},
+      {n:"refreshControl",t:"ReactElement",d:"-",r:false,ds:"Pull-to-refresh."},
+    ],
+    states:[
+      {n:"sections data",ds:"Array of sections dari state/API."},
+    ],
+    code:`const sections = [
+  {
+    title: 'Hari ini',
+    data: [
+      { id: '1', name: 'Transfer ke Budi', amount: '-Rp 500.000' },
+      { id: '2', name: 'Top up GoPay', amount: '-Rp 100.000' },
+    ],
+  },
+  {
+    title: 'Kemarin',
+    data: [
+      { id: '3', name: 'Gaji', amount: '+Rp 8.000.000' },
+    ],
+  },
+];
+
+<SectionList
+  sections={sections}
+  keyExtractor={(item) => item.id}
+  renderSectionHeader={({ section: { title } }) => (
+    <View style={styles.sectionHeader}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+    </View>
+  )}
+  renderItem={({ item }) => (
+    <View style={styles.row}>
+      <Text>{item.name}</Text>
+      <Text>{item.amount}</Text>
+    </View>
+  )}
+  stickySectionHeadersEnabled
+/>`,
+    demo: "sectionlist"
+  }
+},
+{ name:"KeyboardAvoidingView", badge:"core", desc:"Geser konten saat keyboard muncul",
+  detail:{
+    use:"Screen yang ada TextInput di bawah — chat, login, checkout form.",
+    gotcha:"behavior WAJIB berbeda iOS vs Android. Selalu pakai Platform.OS check.",
+    props:[
+      {n:"behavior",t:"'height'|'padding'|'position'",d:"-",r:false,ds:"Cara menghindari keyboard. iOS: 'padding'. Android: 'height'."},
+      {n:"keyboardVerticalOffset",t:"number",d:"0",r:false,ds:"Offset tambahan. Adjust kalau ada header/tabbar."},
+      {n:"contentContainerStyle",t:"ViewStyle",d:"-",r:false,ds:"Style inner container (hanya untuk behavior='position')."},
+      {n:"enabled",t:"boolean",d:"true",r:false,ds:"Enable/disable keyboard avoiding."},
+      {n:"style",t:"ViewStyle",d:"-",r:false,ds:"Style container luar."},
+    ],
+    states:[
+      {n:"keyboardHeight",ds:"Tinggi keyboard saat ini (dari Keyboard API)."},
+    ],
+    code:`import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+
+const ChatScreen = () => (
+  <KeyboardAvoidingView
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    style={{ flex: 1 }}
+    keyboardVerticalOffset={
+      Platform.OS === 'ios' ? 88 : 0 // header height
+    }
+  >
+    <ScrollView style={{ flex: 1 }}>
+      {/* Chat messages */}
+    </ScrollView>
+    <View style={styles.inputBar}>
+      <TextInput placeholder="Ketik pesan..." style={styles.input} />
+      <Pressable onPress={sendMessage}>
+        <Text>Kirim</Text>
+      </Pressable>
+    </View>
+  </KeyboardAvoidingView>
+);`,
+    demo: "keyboardavoiding"
+  }
+},
+    ]},
+    // ---- FEEDBACK & OVERLAY ----
+    { label:"Feedback & Overlay", items:[
+{ name:"Modal", badge:"core", desc:"Overlay full-screen bawaan React Native",
+  detail:{
+    use:"Bottom sheet, dialog konfirmasi, image viewer, onboarding overlay, picker.",
+    gotcha:"onRequestClose WAJIB di Android — dipanggil saat back button. Tanpa ini, modal tidak bisa ditutup pakai back.",
+    props:[
+      {n:"visible",t:"boolean",d:"false",r:true,ds:"Kontrol apakah modal ditampilkan."},
+      {n:"transparent",t:"boolean",d:"false",r:false,ds:"Background transparan (untuk custom overlay)."},
+      {n:"animationType",t:"'none'|'slide'|'fade'",d:"'none'",r:false,ds:"Tipe animasi masuk/keluar."},
+      {n:"onRequestClose",t:"() => void",d:"-",r:true,ds:"WAJIB di Android. Dipanggil saat back button ditekan."},
+      {n:"onShow",t:"() => void",d:"-",r:false,ds:"Dipanggil setelah modal visible."},
+      {n:"onDismiss",t:"() => void",d:"-",r:false,ds:"iOS: dipanggil setelah modal dismissed."},
+      {n:"statusBarTranslucent",t:"boolean",d:"false",r:false,ds:"Android: modal extend di bawah status bar."},
+      {n:"presentationStyle",t:"'fullScreen'|'pageSheet'|'formSheet'|'overFullScreen'",d:"'fullScreen'",r:false,ds:"iOS: style presentasi modal."},
+      {n:"supportedOrientations",t:"string[]",d:"-",r:false,ds:"iOS: orientasi yang didukung."},
+      {n:"hardwareAccelerated",t:"boolean",d:"false",r:false,ds:"Android: hardware acceleration."},
+    ],
+    states:[
+      {n:"visible / isOpen",ds:"boolean — kontrol buka/tutup modal via useState."},
+    ],
+    code:`import { useState } from 'react';
+import { Modal, View, Text, Pressable } from 'react-native';
+
+const ConfirmDialog = () => {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      <Pressable onPress={() => setVisible(true)}>
+        <Text>Buka Dialog</Text>
+      </Pressable>
+
+      <Modal
+        visible={visible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setVisible(false)}
+        statusBarTranslucent
+      >
+        <Pressable
+          style={styles.overlay}
+          onPress={() => setVisible(false)}
+        >
+          <View style={styles.dialog}>
+            <Text style={styles.title}>Konfirmasi</Text>
+            <Text>Yakin mau hapus?</Text>
+            <View style={styles.actions}>
+              <Pressable onPress={() => setVisible(false)}>
+                <Text>Batal</Text>
+              </Pressable>
+              <Pressable onPress={handleDelete}>
+                <Text style={{ color: 'red' }}>Hapus</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Pressable>
+      </Modal>
+    </>
+  );
+};`,
+    demo: "modal"
+  }
+},
+{ name:"ActivityIndicator", badge:"core", desc:"Loading spinner bawaan native",
+  detail:{
+    use:"Loading state: fetch data, submit form, processing.",
+    gotcha:"Cuma spinner standar. Untuk skeleton loader atau custom loading, bikin sendiri atau pakai library.",
+    props:[
+      {n:"animating",t:"boolean",d:"true",r:false,ds:"Apakah spinner berputar. False = hide."},
+      {n:"size",t:"'small'|'large'|number",d:"'small'",r:false,ds:"Ukuran spinner. Number hanya di Android."},
+      {n:"color",t:"string",d:"system default",r:false,ds:"Warna spinner."},
+      {n:"hidesWhenStopped",t:"boolean",d:"true",r:false,ds:"iOS: hide saat animating=false."},
+    ],
+    states:[
+      {n:"isLoading",ds:"boolean — biasanya dari state fetch/mutation."},
+    ],
+    code:`import { ActivityIndicator, View } from 'react-native';
+
+// Conditional render
+{isLoading ? (
+  <ActivityIndicator size="large" color="#007AFF" />
+) : (
+  <DataList data={data} />
+)}
+
+// Overlay loading
+<Modal transparent visible={isSubmitting}>
+  <View style={styles.loadingOverlay}>
+    <ActivityIndicator size="large" color="#fff" />
+    <Text style={{ color: '#fff', marginTop: 12 }}>
+      Memproses...
+    </Text>
+  </View>
+</Modal>`,
+    demo: "activityindicator"
+  }
+},
+{ name:"Alert", badge:"core", desc:"Dialog alert native OS",
+  detail:{
+    use:"Konfirmasi destructive action, error message, simple prompt.",
+    gotcha:"Alert.prompt() cuma iOS. Untuk Android, buat custom input modal.",
+    props:[
+      {n:"Alert.alert(title, message?, buttons?, options?)",t:"static method",d:"-",r:false,ds:"Tampilkan alert dialog."},
+      {n:"title",t:"string",d:"-",r:true,ds:"Judul alert."},
+      {n:"message",t:"string",d:"-",r:false,ds:"Pesan detail."},
+      {n:"buttons",t:"Array<{text, onPress, style}>",d:"[{text:'OK'}]",r:false,ds:"Array tombol. Max 3 di iOS. style: 'default'|'cancel'|'destructive'."},
+      {n:"options",t:"{cancelable, onDismiss, userInterfaceStyle}",d:"-",r:false,ds:"Android: cancelable (tap outside dismiss). iOS: userInterfaceStyle."},
+      {n:"Alert.prompt(title, msg?, callbackOrButtons?, type?, defaultValue?)",t:"static (iOS only)",d:"-",r:false,ds:"Alert dengan text input. iOS ONLY."},
+    ],
+    states:[],
+    code:`import { Alert } from 'react-native';
+
+// Simple alert
+Alert.alert('Berhasil', 'Data tersimpan!');
+
+// Confirm dialog
+Alert.alert(
+  'Hapus Transaksi?',
+  'Aksi ini tidak bisa dibatalkan.',
+  [
+    { text: 'Batal', style: 'cancel' },
+    {
+      text: 'Hapus',
+      style: 'destructive',
+      onPress: () => deleteItem(id),
+    },
+  ],
+  { cancelable: true }
+);
+
+// 3 buttons
+Alert.alert(
+  'Simpan Draft?',
+  'Kamu punya perubahan yang belum disimpan.',
+  [
+    { text: 'Buang', style: 'destructive', onPress: discard },
+    { text: 'Batal', style: 'cancel' },
+    { text: 'Simpan', onPress: saveDraft },
+  ]
+);
+
+// iOS prompt
+Alert.prompt(
+  'Rename',
+  'Masukkan nama baru:',
+  (text) => rename(text),
+  'plain-text',
+  currentName
+);`,
+    demo: "alert"
+  }
+},
+{ name:"StatusBar", badge:"core", desc:"Kontrol status bar OS",
+  detail:{
+    use:"Set warna/style status bar per screen.",
+    gotcha:"Di Android, backgroundColor hanya berfungsi kalau translucent={false}.",
+    props:[
+      {n:"barStyle",t:"'default'|'light-content'|'dark-content'",d:"'default'",r:false,ds:"Warna ikon status bar."},
+      {n:"backgroundColor",t:"string",d:"-",r:false,ds:"Android: warna background status bar."},
+      {n:"translucent",t:"boolean",d:"false",r:false,ds:"Android: konten di bawah status bar."},
+      {n:"hidden",t:"boolean",d:"false",r:false,ds:"Sembunyikan status bar."},
+      {n:"animated",t:"boolean",d:"false",r:false,ds:"Animasi transisi perubahan."},
+      {n:"networkActivityIndicatorVisible",t:"boolean",d:"false",r:false,ds:"iOS: network activity indicator."},
+      {n:"showHideTransition",t:"'fade'|'slide'|'none'",d:"'fade'",r:false,ds:"iOS: animasi show/hide."},
+    ],
+    states:[],
+    code:`<StatusBar
+  barStyle="dark-content"
+  backgroundColor="transparent"
+  translucent
+/>
+
+// Per-screen control
+// StatusBar.setBarStyle('light-content');
+// StatusBar.setBackgroundColor('#000');`,
+    demo: "statusbar"
+  }
+},
+    ]},
+    // ---- ADVANCED/LEGACY ----
+    { label:"Legacy Touchables & Platform-Specific", items:[
+{ name:"TouchableOpacity", badge:"advanced", desc:"Touchable dengan opacity feedback (legacy)",
+  detail:{
+    use:"Legacy. Masih banyak di codebase lama. Untuk kode baru, pakai Pressable.",
+    gotcha:"Deprecated de facto. Pressable lebih fleksibel dan modern.",
+    props:[
+      {n:"onPress",t:"() => void",d:"-",r:false,ds:"Handler tap."},
+      {n:"onLongPress",t:"() => void",d:"-",r:false,ds:"Handler long press."},
+      {n:"activeOpacity",t:"number",d:"0.2",r:false,ds:"Opacity saat ditekan (0-1)."},
+      {n:"disabled",t:"boolean",d:"false",r:false,ds:"Disable interaction."},
+      {n:"style",t:"ViewStyle",d:"-",r:false,ds:"Container style."},
+      {n:"delayPressIn",t:"number",d:"0",r:false,ds:"Delay sebelum opacity berubah (ms)."},
+      {n:"delayPressOut",t:"number",d:"0",r:false,ds:"Delay sebelum opacity kembali normal (ms)."},
+      {n:"delayLongPress",t:"number",d:"500",r:false,ds:"Durasi long press (ms)."},
+    ],
+    states:[],
+    code:`// Legacy — gunakan Pressable untuk kode baru
+<TouchableOpacity
+  onPress={handlePress}
+  activeOpacity={0.7}
+  style={styles.card}
+>
+  <Text>Tap me</Text>
+</TouchableOpacity>
+
+// Equivalent Pressable (recommended):
+<Pressable
+  onPress={handlePress}
+  style={({ pressed }) => [
+    styles.card,
+    { opacity: pressed ? 0.7 : 1 },
+  ]}
+>
+  <Text>Tap me</Text>
+</Pressable>`,
+    demo: "touchable"
+  }
+},
+    ]},
+  ]
+},
+// ──────────────────── SECTION 2: CORE APIS ────────────────────
+{
+  id:"core-api", icon:"⚙️", title:"Core APIs", sub:"Built-in React Native",
+  groups:[
+    { label:"App Lifecycle & System", items:[
+{ name:"AppState", badge:"important", desc:"Deteksi app foreground/background/inactive",
+  detail:{
+    use:"Refresh data saat app kembali active, pause video/audio saat background, session tracking.",
+    gotcha:"Selalu remove listener di cleanup useEffect. Memory leak kalau lupa. Di iOS ada 'inactive' state (transitional).",
+    props:[
+      {n:"AppState.currentState",t:"'active'|'background'|'inactive'|'unknown'|'extension'",d:"-",r:false,ds:"State app saat ini."},
+      {n:"AppState.addEventListener('change', handler)",t:"method",d:"-",r:false,ds:"Listen perubahan state. Return subscription."},
+      {n:"AppState.addEventListener('memoryWarning', handler)",t:"method",d:"-",r:false,ds:"iOS: notifikasi memory warning."},
+      {n:"AppState.addEventListener('focus', handler)",t:"method",d:"-",r:false,ds:"App mendapat focus."},
+      {n:"AppState.addEventListener('blur', handler)",t:"method",d:"-",r:false,ds:"App kehilangan focus."},
+    ],
+    states:[
+      {n:"appState",ds:"'active' | 'background' | 'inactive' — state app saat ini."},
+    ],
+    code:`import { useEffect, useRef, useState } from 'react';
+import { AppState } from 'react-native';
+
+const useAppState = () => {
+  const appState = useRef(AppState.currentState);
+  const [isActive, setIsActive] = useState(true);
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (next) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        next === 'active'
+      ) {
+        // App came to foreground
+        refetchData();
+      }
+      appState.current = next;
+      setIsActive(next === 'active');
+    });
+
+    return () => sub.remove(); // WAJIB cleanup!
+  }, []);
+
+  return isActive;
+};`,
+    demo: "appstate"
+  }
+},
+{ name:"Platform", badge:"core", desc:"Deteksi OS, version, dan platform branching",
+  detail:{
+    use:"Code branching iOS vs Android, platform-specific styling, cek versi OS.",
+    gotcha:"Shadow CSS berbeda total: iOS pakai shadowColor/shadowOffset, Android pakai elevation.",
+    props:[
+      {n:"Platform.OS",t:"'ios'|'android'|'web'|'windows'|'macos'",d:"-",r:false,ds:"OS saat ini."},
+      {n:"Platform.Version",t:"number|string",d:"-",r:false,ds:"Versi OS. Android: API level (number). iOS: version string."},
+      {n:"Platform.select({ios, android, default})",t:"method",d:"-",r:false,ds:"Return value berdasar platform."},
+      {n:"Platform.isPad",t:"boolean",d:"-",r:false,ds:"iOS: apakah iPad."},
+      {n:"Platform.isTV",t:"boolean",d:"-",r:false,ds:"Apakah TV platform."},
+      {n:"Platform.isTesting",t:"boolean",d:"-",r:false,ds:"Apakah dalam test environment."},
+      {n:"Platform.constants",t:"object",d:"-",r:false,ds:"Platform-specific constants."},
+    ],
+    states:[],
+    code:`import { Platform, StyleSheet } from 'react-native';
+
+// Simple OS check
+if (Platform.OS === 'ios') { /* iOS code */ }
+
+// Platform.select — sangat berguna
+const styles = StyleSheet.create({
+  shadow: Platform.select({
+    ios: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
+    },
+    android: {
+      elevation: 4,
+    },
+    default: {
+      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+    },
+  }),
+});
+
+// Version check
+if (Platform.OS === 'android' && Platform.Version >= 33) {
+  // Android 13+ specific code
+}
+
+// File extension based:
+// MyComponent.ios.js
+// MyComponent.android.js
+// Import otomatis pilih yang sesuai`,
+    demo: "platform"
+  }
+},
+{ name:"Linking", badge:"important", desc:"Open URL, deep link, external app",
+  detail:{
+    use:"Buka browser, email, WhatsApp, phone, deep link ke screen tertentu.",
+    gotcha:"Selalu cek canOpenURL() dulu — app target belum tentu terinstall. Di iOS perlu whitelist URL scheme di Info.plist.",
+    props:[
+      {n:"Linking.openURL(url)",t:"Promise<void>",d:"-",r:false,ds:"Buka URL. Bisa http, tel, mailto, custom scheme."},
+      {n:"Linking.canOpenURL(url)",t:"Promise<boolean>",d:"-",r:false,ds:"Cek apakah URL bisa dibuka."},
+      {n:"Linking.getInitialURL()",t:"Promise<string|null>",d:"-",r:false,ds:"URL yang membuka app (cold start deep link)."},
+      {n:"Linking.addEventListener('url', handler)",t:"subscription",d:"-",r:false,ds:"Listen deep link saat app sudah running."},
+      {n:"Linking.sendIntent(action, extras)",t:"Android only",d:"-",r:false,ds:"Android: send intent ke app lain."},
+    ],
+    states:[
+      {n:"initialUrl",ds:"URL yang membuka app pertama kali."},
+    ],
+    code:`import { Linking, Alert } from 'react-native';
+
+// Buka browser
+await Linking.openURL('https://google.com');
+
+// Buka WhatsApp
+const waUrl = 'whatsapp://send?phone=6281234567890&text=Halo';
+if (await Linking.canOpenURL(waUrl)) {
+  await Linking.openURL(waUrl);
+} else {
+  Alert.alert('WhatsApp tidak terinstall');
+}
+
+// Telepon
+await Linking.openURL('tel:+6281234567890');
+
+// Email
+await Linking.openURL('mailto:support@app.com?subject=Help');
+
+// Deep link listener
+useEffect(() => {
+  const sub = Linking.addEventListener('url', ({ url }) => {
+    handleDeepLink(url);
+  });
+  // Check initial URL (cold start)
+  Linking.getInitialURL().then(url => {
+    if (url) handleDeepLink(url);
+  });
+  return () => sub.remove();
+}, []);`,
+    demo: "linking"
+  }
+},
+{ name:"Keyboard", badge:"core", desc:"Kontrol & listen keyboard events",
+  detail:{
+    use:"Dismiss keyboard, listen show/hide, adjust layout berdasar keyboard height.",
+    gotcha:"keyboardWillShow hanya iOS. Android pakai keyboardDidShow. Timing-nya beda!",
+    props:[
+      {n:"Keyboard.dismiss()",t:"static method",d:"-",r:false,ds:"Dismiss keyboard secara programmatic."},
+      {n:"Keyboard.addListener('keyboardDidShow', handler)",t:"subscription",d:"-",r:false,ds:"Keyboard sudah muncul."},
+      {n:"Keyboard.addListener('keyboardDidHide', handler)",t:"subscription",d:"-",r:false,ds:"Keyboard sudah hilang."},
+      {n:"Keyboard.addListener('keyboardWillShow', handler)",t:"iOS only",d:"-",r:false,ds:"Keyboard akan muncul (dengan height info)."},
+      {n:"Keyboard.addListener('keyboardWillHide', handler)",t:"iOS only",d:"-",r:false,ds:"Keyboard akan hilang."},
+      {n:"Keyboard.addListener('keyboardWillChangeFrame', handler)",t:"iOS only",d:"-",r:false,ds:"Frame keyboard berubah."},
+      {n:"Keyboard.metrics()",t:"KeyboardMetrics | undefined",d:"-",r:false,ds:"Metrics keyboard terakhir."},
+      {n:"Keyboard.isVisible()",t:"boolean",d:"-",r:false,ds:"Apakah keyboard sedang visible."},
+      {n:"Keyboard.scheduleLayoutAnimation(event)",t:"method",d:"-",r:false,ds:"Schedule LayoutAnimation sesuai keyboard animation."},
+    ],
+    states:[
+      {n:"keyboardHeight",ds:"number — tinggi keyboard saat ini."},
+      {n:"isKeyboardVisible",ds:"boolean — apakah keyboard sedang muncul."},
+    ],
+    code:`import { useEffect, useState } from 'react';
+import { Keyboard, Platform } from 'react-native';
+
+const useKeyboard = () => {
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios'
+      ? 'keyboardWillShow'
+      : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios'
+      ? 'keyboardWillHide'
+      : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      setKeyboardHeight(e.endCoordinates.height);
+      setIsVisible(true);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setKeyboardHeight(0);
+      setIsVisible(false);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  return { keyboardHeight, isVisible };
+};`,
+    demo: "keyboard"
+  }
+},
+{ name:"Dimensions", badge:"important", desc:"Get screen & window dimensions",
+  detail:{
+    use:"Responsive layout, positioning, kalkulasi ukuran.",
+    gotcha:"Tidak reactive saat rotasi. Pakai useWindowDimensions() hook untuk yang reactive.",
+    props:[
+      {n:"Dimensions.get('window')",t:"{width, height, scale, fontScale}",d:"-",r:false,ds:"Ukuran window (tanpa system UI)."},
+      {n:"Dimensions.get('screen')",t:"{width, height, scale, fontScale}",d:"-",r:false,ds:"Ukuran screen penuh (termasuk system UI)."},
+      {n:"Dimensions.addEventListener('change', handler)",t:"subscription",d:"-",r:false,ds:"Listen perubahan dimensi (rotasi, resize)."},
+      {n:"Dimensions.set(dims)",t:"method",d:"-",r:false,ds:"Override dimensions (rare use case)."},
+    ],
+    states:[],
+    code:`import { Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
+const CARD_WIDTH = (width - 48) / 2; // 2 column grid
+
+// Reactive version (recommended):
+import { useWindowDimensions } from 'react-native';
+const { width, height } = useWindowDimensions();`,
+    demo: "dimensions"
+  }
+},
+{ name:"Vibration", badge:"important", desc:"Trigger haptic/vibration feedback",
+  detail:{
+    use:"Feedback untuk action penting, error, success, notification.",
+    gotcha:"iOS hanya support single short vibration bawaan. Untuk haptic kaya, pakai react-native-haptic-feedback.",
+    props:[
+      {n:"Vibration.vibrate(duration?)",t:"method",d:"-",r:false,ds:"Single vibration. Duration di Android saja."},
+      {n:"Vibration.vibrate(pattern, repeat?)",t:"method",d:"-",r:false,ds:"Pattern vibration [wait, vibrate, wait, vibrate...]."},
+      {n:"Vibration.cancel()",t:"method",d:"-",r:false,ds:"Stop vibration."},
+    ],
+    states:[],
+    code:`import { Vibration } from 'react-native';
+
+// Single vibration
+Vibration.vibrate();
+Vibration.vibrate(200); // 200ms (Android)
+
+// Pattern: [wait, vibrate, wait, vibrate...]
+Vibration.vibrate([0, 200, 100, 200]);
+
+// Repeating pattern
+Vibration.vibrate([0, 200, 100, 200], true);
+// Don't forget to cancel!
+Vibration.cancel();`,
+    demo: "vibration"
+  }
+},
+{ name:"BackHandler", badge:"important", desc:"Handle tombol back Android",
+  detail:{
+    use:"Custom back behavior, prevent exit, close modal pakai back button.",
+    gotcha:"Return true = block default back. Return false = allow default. Android only.",
+    props:[
+      {n:"BackHandler.addEventListener('hardwareBackPress', handler)",t:"subscription",d:"-",r:false,ds:"Listen back button press."},
+      {n:"BackHandler.exitApp()",t:"method",d:"-",r:false,ds:"Force exit app."},
+      {n:"BackHandler.removeEventListener('hardwareBackPress', handler)",t:"method",d:"-",r:false,ds:"Legacy: remove listener."},
+    ],
+    states:[],
+    code:`import { useEffect } from 'react';
+import { BackHandler, Alert } from 'react-native';
+
+useEffect(() => {
+  const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+    if (hasUnsavedChanges) {
+      Alert.alert('Perubahan belum disimpan', 'Yakin mau keluar?', [
+        { text: 'Batal', style: 'cancel' },
+        { text: 'Keluar', onPress: () => navigation.goBack() },
+      ]);
+      return true; // block default
+    }
+    return false; // allow default back
+  });
+  return () => sub.remove();
+}, [hasUnsavedChanges]);`,
+    demo: "backhandler"
+  }
+},
+{ name:"RefreshControl", badge:"important", desc:"Pull-to-refresh component",
+  detail:{
+    use:"Refresh feed, reload data terbaru.",
+    gotcha:"refreshing harus di-set false setelah fetch selesai, kalau tidak spinner tidak berhenti.",
+    props:[
+      {n:"refreshing",t:"boolean",d:"-",r:true,ds:"Apakah sedang refresh. WAJIB controlled."},
+      {n:"onRefresh",t:"() => void",d:"-",r:false,ds:"Dipanggil saat user pull-to-refresh."},
+      {n:"colors",t:"string[]",d:"-",r:false,ds:"Android: array warna spinner."},
+      {n:"tintColor",t:"string",d:"-",r:false,ds:"iOS: warna spinner."},
+      {n:"title",t:"string",d:"-",r:false,ds:"iOS: text di bawah spinner."},
+      {n:"titleColor",t:"string",d:"-",r:false,ds:"iOS: warna title text."},
+      {n:"progressBackgroundColor",t:"string",d:"-",r:false,ds:"Android: background spinner."},
+      {n:"progressViewOffset",t:"number",d:"-",r:false,ds:"Android: offset spinner dari atas."},
+      {n:"size",t:"'default'|'large'",d:"'default'",r:false,ds:"Android: ukuran spinner."},
+      {n:"enabled",t:"boolean",d:"true",r:false,ds:"Android: enable/disable."},
+    ],
+    states:[
+      {n:"refreshing",ds:"boolean — controlled state."},
+    ],
+    code:`const [refreshing, setRefreshing] = useState(false);
+
+const onRefresh = async () => {
+  setRefreshing(true);
+  try {
+    await fetchLatestData();
+  } finally {
+    setRefreshing(false); // WAJIB false!
+  }
+};
+
+<FlatList
+  data={data}
+  renderItem={renderItem}
+  refreshControl={
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      tintColor="#007AFF"
+      colors={['#007AFF', '#00b894']}
+    />
+  }
+/>`,
+    demo: "refreshcontrol"
+  }
+},
+    ]},
+  ]
+},
+// ──────────────────── SECTION 3: STYLING ────────────────────
+{
+  id:"styling", icon:"🎨", title:"Styling System", sub:"Core styling di React Native",
+  groups:[
+    { label:"", items:[
+{ name:"StyleSheet", badge:"core", desc:"Buat stylesheet yang dioptimasi",
+  detail:{
+    use:"Definisikan styles di luar component. Lebih cepat daripada inline object.",
+    gotcha:"Tidak ada CSS selector, pseudo-class, cascade, atau media query. Semua style explicit.",
+    props:[
+      {n:"StyleSheet.create(styles)",t:"method",d:"-",r:false,ds:"Buat stylesheet. Otomatis validasi dan optimasi."},
+      {n:"StyleSheet.flatten(style)",t:"method",d:"-",r:false,ds:"Flatten array styles jadi satu object."},
+      {n:"StyleSheet.compose(style1, style2)",t:"method",d:"-",r:false,ds:"Compose dua styles."},
+      {n:"StyleSheet.hairlineWidth",t:"number",d:"-",r:false,ds:"1 physical pixel. Untuk border super tipis."},
+      {n:"StyleSheet.absoluteFillObject",t:"object",d:"-",r:false,ds:"Shortcut: {position:'absolute', left:0, right:0, top:0, bottom:0}."},
+      {n:"StyleSheet.absoluteFill",t:"RegisteredStyle",d:"-",r:false,ds:"Sama tapi sebagai registered style ID."},
+    ],
+    states:[],
+    code:`const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 16,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a1a1a',
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#e0e0e0',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+});
+
+// Merge styles
+<View style={[styles.container, { marginTop: 20 }]} />
+// Array merge — style terakhir menang`,
+    demo: "stylesheet"
+  }
+},
+{ name:"Flexbox Layout", badge:"core", desc:"Default layout system di React Native",
+  detail:{
+    use:"SEMUA layout di RN. Flexbox adalah default — tidak perlu deklarasi display: flex.",
+    gotcha:"flexDirection default COLUMN di RN, bukan row seperti web CSS. Ini sering bikin bingung.",
+    props:[
+      {n:"flex",t:"number",d:"0",r:false,ds:"Rasio ruang yang diambil. flex: 1 = ambil semua sisa ruang."},
+      {n:"flexDirection",t:"'column'|'row'|'column-reverse'|'row-reverse'",d:"'column'",r:false,ds:"Arah main axis. DEFAULT COLUMN, bukan row!"},
+      {n:"justifyContent",t:"'flex-start'|'center'|'flex-end'|'space-between'|'space-around'|'space-evenly'",d:"'flex-start'",r:false,ds:"Distribusi di main axis."},
+      {n:"alignItems",t:"'flex-start'|'center'|'flex-end'|'stretch'|'baseline'",d:"'stretch'",r:false,ds:"Alignment di cross axis."},
+      {n:"alignSelf",t:"'auto'|'flex-start'|'center'|'flex-end'|'stretch'|'baseline'",d:"'auto'",r:false,ds:"Override alignItems untuk child tertentu."},
+      {n:"flexWrap",t:"'wrap'|'nowrap'|'wrap-reverse'",d:"'nowrap'",r:false,ds:"Wrap children ke baris baru."},
+      {n:"gap",t:"number",d:"-",r:false,ds:"Jarak antar children (sejak RN 0.71)."},
+      {n:"rowGap",t:"number",d:"-",r:false,ds:"Gap khusus antar row."},
+      {n:"columnGap",t:"number",d:"-",r:false,ds:"Gap khusus antar column."},
+      {n:"flexGrow",t:"number",d:"0",r:false,ds:"Seberapa banyak item bisa grow."},
+      {n:"flexShrink",t:"number",d:"1",r:false,ds:"Seberapa banyak item bisa shrink."},
+      {n:"flexBasis",t:"number|'auto'",d:"'auto'",r:false,ds:"Ukuran awal sebelum grow/shrink."},
+      {n:"position",t:"'relative'|'absolute'",d:"'relative'",r:false,ds:"Positioning. Absolute = keluar dari flow."},
+      {n:"overflow",t:"'visible'|'hidden'|'scroll'",d:"'visible'",r:false,ds:"Overflow handling."},
+      {n:"display",t:"'flex'|'none'",d:"'flex'",r:false,ds:"Show/hide element."},
+      {n:"zIndex",t:"number",d:"0",r:false,ds:"Stacking order."},
+    ],
+    states:[],
+    code:`// KUNCI: flexDirection default COLUMN
+<View style={{ flex: 1, padding: 16 }}>
+  {/* Row layout */}
+  <View style={{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 12,
+  }}>
+    <View style={{ flex: 1, height: 50, backgroundColor: '#007AFF' }} />
+    <View style={{ flex: 2, height: 50, backgroundColor: '#00b894' }} />
+  </View>
+
+  {/* Centered content */}
+  <View style={{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}>
+    <Text>Centered!</Text>
+  </View>
+
+  {/* Wrap layout */}
+  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+    {tags.map(tag => (
+      <View style={styles.tag}><Text>{tag}</Text></View>
+    ))}
+  </View>
+</View>`,
+    demo: "flexbox"
+  }
+},
+    ]},
+  ]
+},
+// ──────────────────── SECTION 4: NAVIGATION ────────────────────
+{
+  id:"navigation", icon:"🧭", title:"Navigation", sub:"React Navigation",
+  groups:[
+    { label:"React Navigation (standard)", items:[
+{ name:"Stack Navigator", badge:"core", desc:"Push/pop screen seperti stack kartu",
+  detail:{
+    use:"Flow standar: Home → Detail, Login → OTP → Success, onboarding steps.",
+    gotcha:"navigate() tidak push kalau screen sudah ada di stack. Pakai push() kalau mau duplicate.",
+    props:[
+      {n:"Stack.Navigator",t:"component",d:"-",r:false,ds:"Container navigator."},
+      {n:"screenOptions",t:"object | ({route, navigation}) => object",d:"-",r:false,ds:"Default options untuk semua screens."},
+      {n:"initialRouteName",t:"string",d:"-",r:false,ds:"Screen pertama yang ditampilkan."},
+      {n:"Stack.Screen",t:"component",d:"-",r:false,ds:"Definisi screen."},
+      {n:"name",t:"string",d:"-",r:true,ds:"Nama route (unique)."},
+      {n:"component",t:"React.ComponentType",d:"-",r:true,ds:"Component screen."},
+      {n:"options",t:"object | ({route, navigation}) => object",d:"-",r:false,ds:"Options per-screen (title, headerStyle, dll)."},
+      {n:"initialParams",t:"object",d:"-",r:false,ds:"Default params untuk screen."},
+      {n:"navigation.navigate(name, params?)",t:"method",d:"-",r:false,ds:"Navigate ke screen."},
+      {n:"navigation.push(name, params?)",t:"method",d:"-",r:false,ds:"Push screen baru ke stack (bisa duplicate)."},
+      {n:"navigation.goBack()",t:"method",d:"-",r:false,ds:"Kembali ke screen sebelumnya."},
+      {n:"navigation.pop(n?)",t:"method",d:"-",r:false,ds:"Pop n screens dari stack."},
+      {n:"navigation.popToTop()",t:"method",d:"-",r:false,ds:"Kembali ke screen pertama."},
+      {n:"navigation.replace(name, params?)",t:"method",d:"-",r:false,ds:"Replace screen saat ini."},
+      {n:"navigation.reset({routes})",t:"method",d:"-",r:false,ds:"Reset stack navigation state."},
+      {n:"navigation.setOptions(options)",t:"method",d:"-",r:false,ds:"Update screen options secara dynamic."},
+      {n:"route.params",t:"object",d:"-",r:false,ds:"Parameters yang dikirim ke screen."},
+      {n:"route.name",t:"string",d:"-",r:false,ds:"Nama route saat ini."},
+      {n:"route.key",t:"string",d:"-",r:false,ds:"Unique key untuk route instance."},
+    ],
+    states:[
+      {n:"navigation state",ds:"Stack of screens yang di-manage React Navigation."},
+      {n:"route.params",ds:"Data yang dikirim antar screen."},
+    ],
+    code:`import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
+
+const AppNavigator = () => (
+  <Stack.Navigator
+    initialRouteName="Home"
+    screenOptions={{
+      headerShown: false,
+      animation: 'slide_from_right',
+    }}
+  >
+    <Stack.Screen name="Home" component={HomeScreen} />
+    <Stack.Screen
+      name="Detail"
+      component={DetailScreen}
+      options={({ route }) => ({
+        title: route.params?.title ?? 'Detail',
+        headerShown: true,
+      })}
+    />
+    <Stack.Screen
+      name="Settings"
+      component={SettingsScreen}
+      options={{ presentation: 'modal' }}
+    />
+  </Stack.Navigator>
+);
+
+// Navigate with params:
+navigation.navigate('Detail', { id: '123', title: 'Product' });
+
+// In DetailScreen:
+const { id, title } = route.params;`,
+    demo: "stacknav"
+  }
+},
+{ name:"Tab Navigator", badge:"core", desc:"Bottom tab navigation",
+  detail:{
+    use:"Main navigation app: Home, Search, Cart, Profile.",
+    gotcha:"Semua tab screen di-mount sekaligus. Pakai lazy: true untuk optimasi.",
+    props:[
+      {n:"Tab.Navigator",t:"component",d:"-",r:false,ds:"Container tab navigator."},
+      {n:"screenOptions",t:"object | function",d:"-",r:false,ds:"Default options. Biasa set tabBarIcon di sini."},
+      {n:"tabBarIcon",t:"({focused, color, size}) => ReactNode",d:"-",r:false,ds:"Icon per tab."},
+      {n:"tabBarLabel",t:"string | ({focused, color}) => ReactNode",d:"-",r:false,ds:"Label text per tab."},
+      {n:"tabBarStyle",t:"ViewStyle",d:"-",r:false,ds:"Style tab bar container."},
+      {n:"tabBarActiveTintColor",t:"string",d:"-",r:false,ds:"Warna icon/label saat active."},
+      {n:"tabBarInactiveTintColor",t:"string",d:"-",r:false,ds:"Warna icon/label saat inactive."},
+      {n:"tabBarBadge",t:"string|number",d:"-",r:false,ds:"Badge notification di tab icon."},
+      {n:"tabBarShowLabel",t:"boolean",d:"true",r:false,ds:"Tampilkan label text."},
+      {n:"tabBarHideOnKeyboard",t:"boolean",d:"false",r:false,ds:"Hide tab bar saat keyboard muncul."},
+      {n:"lazy",t:"boolean",d:"true",r:false,ds:"Lazy mount screens saat pertama kali visit."},
+    ],
+    states:[
+      {n:"focused tab",ds:"Tab mana yang sedang active."},
+    ],
+    code:`import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+const Tab = createBottomTabNavigator();
+
+<Tab.Navigator
+  screenOptions={({ route }) => ({
+    headerShown: false,
+    tabBarIcon: ({ focused, color, size }) => {
+      const icons = {
+        Home: focused ? 'home' : 'home-outline',
+        Search: focused ? 'search' : 'search-outline',
+        Profile: focused ? 'person' : 'person-outline',
+      };
+      return <Icon name={icons[route.name]} size={size} color={color} />;
+    },
+    tabBarActiveTintColor: '#007AFF',
+    tabBarInactiveTintColor: '#999',
+    tabBarStyle: {
+      borderTopWidth: StyleSheet.hairlineWidth,
+      backgroundColor: '#fff',
+    },
+  })}
+>
+  <Tab.Screen name="Home" component={HomeScreen} />
+  <Tab.Screen
+    name="Cart"
+    component={CartScreen}
+    options={{ tabBarBadge: 3 }}
+  />
+  <Tab.Screen name="Profile" component={ProfileScreen} />
+</Tab.Navigator>`,
+    demo: "tabnav"
+  }
+},
+    ]},
+  ]
+},
+// ──────────────────── SECTION 5: GESTURE & ANIMATION ────────────────────
+{
+  id:"gesture", icon:"👆", title:"Gesture & Animation", sub:"Production-level UX",
+  groups:[
+    { label:"", items:[
+{ name:"Reanimated", badge:"important", desc:"Animasi 60/120fps di UI thread",
+  detail:{
+    use:"Animasi smooth: swipe card, shared element, scroll-driven animation, micro-interactions.",
+    gotcha:"Worklet functions harus pure — tidak boleh ada JS side effects. Pakai runOnJS() kalau perlu akses JS.",
+    props:[
+      {n:"useSharedValue(initialValue)",t:"hook",d:"-",r:false,ds:"Value yang bisa di-animate. Mirip useRef tapi bisa animasi."},
+      {n:"useAnimatedStyle(() => style)",t:"hook",d:"-",r:false,ds:"Style yang reactive terhadap shared values."},
+      {n:"withSpring(toValue, config?)",t:"function",d:"-",r:false,ds:"Spring animation (bouncy)."},
+      {n:"withTiming(toValue, config?)",t:"function",d:"-",r:false,ds:"Timing animation (easing)."},
+      {n:"withSequence(...animations)",t:"function",d:"-",r:false,ds:"Jalankan animasi berurutan."},
+      {n:"withRepeat(animation, count, reverse)",t:"function",d:"-",r:false,ds:"Repeat animasi."},
+      {n:"withDelay(delay, animation)",t:"function",d:"-",r:false,ds:"Delay sebelum animasi."},
+      {n:"interpolate(value, input, output)",t:"function",d:"-",r:false,ds:"Map range value ke range lain."},
+      {n:"useAnimatedScrollHandler",t:"hook",d:"-",r:false,ds:"Scroll handler yang jalan di UI thread."},
+      {n:"Animated.View / .Text / .Image",t:"component",d:"-",r:false,ds:"View yang bisa di-animate."},
+      {n:"useDerivedValue(() => value)",t:"hook",d:"-",r:false,ds:"Derived dari shared values lain (computed)."},
+      {n:"runOnJS(fn)(...args)",t:"function",d:"-",r:false,ds:"Panggil JS function dari worklet (UI thread)."},
+      {n:"cancelAnimation(sharedValue)",t:"function",d:"-",r:false,ds:"Cancel animasi yang sedang berjalan."},
+      {n:"measure(animatedRef)",t:"function",d:"-",r:false,ds:"Measure layout di UI thread."},
+      {n:"useAnimatedRef()",t:"hook",d:"-",r:false,ds:"Ref yang bisa dipakai di worklet."},
+      {n:"Easing (module)",t:"object",d:"-",r:false,ds:"Easing functions: linear, ease, bezier, dll."},
+    ],
+    states:[
+      {n:"sharedValue.value",ds:"Value yang di-animate — assignable, triggers animation."},
+    ],
+    code:`import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  interpolate,
+  Easing,
+} from 'react-native-reanimated';
+
+const CardSwipe = () => {
+  const translateX = useSharedValue(0);
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { scale: scale.value },
+      { rotate: \`\${interpolate(
+        translateX.value, [-200, 0, 200], [-15, 0, 15]
+      )}deg\` },
+    ],
+    opacity: interpolate(
+      Math.abs(translateX.value), [0, 200], [1, 0.5]
+    ),
+  }));
+
+  const handlePress = () => {
+    scale.value = withSequence(
+      withTiming(0.95, { duration: 100 }),
+      withSpring(1, { damping: 4 })
+    );
+  };
+
+  return (
+    <Animated.View style={[styles.card, animatedStyle]}>
+      <Pressable onPress={handlePress}>
+        <Text>Swipe me!</Text>
+      </Pressable>
+    </Animated.View>
+  );
+};`,
+    demo: "reanimated"
+  }
+},
+{ name:"Gesture Handler", badge:"important", desc:"Gesture handling smooth & reliable",
+  detail:{
+    use:"Swipe to delete, drag & drop, pinch to zoom, double tap. Dependency React Navigation.",
+    gotcha:"WAJIB wrap root app dengan GestureHandlerRootView. Tanpa ini, semua gesture tidak jalan.",
+    props:[
+      {n:"GestureDetector",t:"component",d:"-",r:false,ds:"Wrapper component untuk gesture. Pakai Gesture API (v2)."},
+      {n:"Gesture.Pan()",t:"method",d:"-",r:false,ds:"Drag/swipe gesture."},
+      {n:"Gesture.Tap()",t:"method",d:"-",r:false,ds:"Tap gesture (single/double)."},
+      {n:"Gesture.Pinch()",t:"method",d:"-",r:false,ds:"Pinch to zoom."},
+      {n:"Gesture.Rotation()",t:"method",d:"-",r:false,ds:"Rotation gesture."},
+      {n:"Gesture.LongPress()",t:"method",d:"-",r:false,ds:"Long press gesture."},
+      {n:"Gesture.Fling()",t:"method",d:"-",r:false,ds:"Quick swipe/fling gesture."},
+      {n:"Gesture.Race(...gestures)",t:"method",d:"-",r:false,ds:"First gesture yang match menang."},
+      {n:"Gesture.Simultaneous(...gestures)",t:"method",d:"-",r:false,ds:"Gesture bisa jalan bersamaan."},
+      {n:"Gesture.Exclusive(...gestures)",t:"method",d:"-",r:false,ds:"Mutual exclusive gestures."},
+      {n:".onBegin(callback)",t:"method",d:"-",r:false,ds:"Gesture mulai."},
+      {n:".onUpdate(callback)",t:"method",d:"-",r:false,ds:"Gesture update (continuous)."},
+      {n:".onEnd(callback)",t:"method",d:"-",r:false,ds:"Gesture selesai."},
+      {n:".onFinalize(callback)",t:"method",d:"-",r:false,ds:"Gesture finalized (after any state)."},
+      {n:".minDistance(d)",t:"method",d:"-",r:false,ds:"Pan: minimum distance sebelum gesture activate."},
+      {n:".numberOfTaps(n)",t:"method",d:"-",r:false,ds:"Tap: jumlah tap yang dibutuhkan (double tap = 2)."},
+      {n:".enabled(boolean)",t:"method",d:"-",r:false,ds:"Enable/disable gesture."},
+      {n:"GestureHandlerRootView",t:"component",d:"-",r:false,ds:"WAJIB wrap root app. Tanpa ini gesture tidak jalan."},
+    ],
+    states:[
+      {n:"gesture state",ds:"State gesture: UNDETERMINED, BEGAN, ACTIVE, END, CANCELLED, FAILED."},
+      {n:"translationX/Y",ds:"Jarak drag dari titik awal."},
+      {n:"velocityX/Y",ds:"Kecepatan gesture."},
+      {n:"scale",ds:"Pinch scale factor."},
+      {n:"rotation",ds:"Rotation angle (radians)."},
+    ],
+    code:`import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue, useAnimatedStyle, withSpring
+} from 'react-native-reanimated';
+
+const SwipeableCard = () => {
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+
+  const pan = Gesture.Pan()
+    .onUpdate((e) => {
+      translateX.value = e.translationX;
+      translateY.value = e.translationY;
+    })
+    .onEnd(() => {
+      translateX.value = withSpring(0);
+      translateY.value = withSpring(0);
+    });
+
+  const doubleTap = Gesture.Tap()
+    .numberOfTaps(2)
+    .onEnd(() => {
+      // Double tap action
+    });
+
+  // Combine gestures
+  const combined = Gesture.Simultaneous(pan, doubleTap);
+
+  const style = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+    ],
+  }));
+
+  return (
+    <GestureDetector gesture={combined}>
+      <Animated.View style={[styles.card, style]}>
+        <Text>Drag me!</Text>
+      </Animated.View>
+    </GestureDetector>
+  );
+};
+
+// ROOT WAJIB WRAP:
+// <GestureHandlerRootView style={{ flex: 1 }}>
+//   <App />
+// </GestureHandlerRootView>`,
+    demo: "gesturehandler"
+  }
+},
+    ]},
+  ]
+},
+// ──────────────────── SECTION 6: PERFORMANCE ────────────────────
+{
+  id:"performance", icon:"⚡", title:"Performance & Lists", sub:"Untuk data besar",
+  groups:[
+    { label:"", items:[
+{ name:"FlashList", badge:"important", desc:"FlatList drop-in replacement, 10x lebih cepat",
+  detail:{
+    use:"List kompleks yang FlatList terasa lambat: trading app, social feed, e-commerce.",
+    gotcha:"estimatedItemSize WAJIB diisi. Semakin akurat = performa semakin bagus.",
+    props:[
+      {n:"data",t:"T[]",d:"-",r:true,ds:"Array data."},
+      {n:"renderItem",t:"({item, index}) => ReactElement",d:"-",r:true,ds:"Render function."},
+      {n:"estimatedItemSize",t:"number",d:"-",r:true,ds:"Perkiraan height item. WAJIB diisi."},
+      {n:"keyExtractor",t:"(item, index) => string",d:"-",r:false,ds:"Unique key."},
+      {n:"overrideItemLayout",t:"(layout, item, index, maxColumns, extraData) => void",d:"-",r:false,ds:"Override layout per-item (variable height)."},
+      {n:"drawDistance",t:"number",d:"250",r:false,ds:"Jarak (px) di luar viewport yang tetap di-render."},
+      {n:"estimatedListSize",t:"{width, height}",d:"-",r:false,ds:"Perkiraan ukuran list container."},
+      {n:"horizontal",t:"boolean",d:"false",r:false,ds:"Horizontal list."},
+      {n:"numColumns",t:"number",d:"1",r:false,ds:"Grid columns."},
+      {n:"inverted",t:"boolean",d:"false",r:false,ds:"Inverted list."},
+      {n:"ListHeaderComponent",t:"ReactElement",d:"-",r:false,ds:"Header."},
+      {n:"ListFooterComponent",t:"ReactElement",d:"-",r:false,ds:"Footer."},
+      {n:"ListEmptyComponent",t:"ReactElement",d:"-",r:false,ds:"Empty state."},
+      {n:"onEndReached",t:"() => void",d:"-",r:false,ds:"Infinite scroll."},
+      {n:"onEndReachedThreshold",t:"number",d:"-",r:false,ds:"Threshold trigger."},
+      {n:"refreshControl",t:"ReactElement",d:"-",r:false,ds:"Pull-to-refresh."},
+    ],
+    states:[],
+    code:`import { FlashList } from '@shopify/flash-list';
+
+<FlashList
+  data={transactions}
+  renderItem={({ item }) => <TransactionRow item={item} />}
+  keyExtractor={(item) => item.id}
+  estimatedItemSize={72}  // WAJIB!
+  // Untuk variable height items:
+  overrideItemLayout={(layout, item) => {
+    layout.size = item.type === 'header' ? 120 : 72;
+  }}
+  onEndReached={loadMore}
+  onEndReachedThreshold={0.5}
+/>
+
+// Benchmark vs FlatList:
+// FlatList blank area: ~750ms
+// FlashList blank area: ~50ms`,
+    demo: "flashlist"
+  }
+},
+    ]},
+  ]
+},
+// ──────────────────── SECTION 7: FORMS ────────────────────
+{
+  id:"forms", icon:"🧾", title:"Forms & Validation", sub:"State management form",
+  groups:[
+    { label:"", items:[
+{ name:"react-hook-form", badge:"important", desc:"Form state & validasi yang efisien",
+  detail:{
+    use:"Form apapun yang punya validasi. Minimal re-render dibanding Formik.",
+    gotcha:"Di RN pakai Controller, bukan register. register hanya untuk web <input>.",
+    props:[
+      {n:"useForm(options?)",t:"hook",d:"-",r:false,ds:"Main hook. Return control, handleSubmit, formState, dll."},
+      {n:"control",t:"Control",d:"-",r:false,ds:"Pass ke Controller component."},
+      {n:"handleSubmit(onValid, onInvalid?)",t:"method",d:"-",r:false,ds:"Wrap submit handler — auto validasi."},
+      {n:"formState.errors",t:"object",d:"-",r:false,ds:"Object error per field."},
+      {n:"formState.isSubmitting",t:"boolean",d:"-",r:false,ds:"Apakah form sedang submit."},
+      {n:"formState.isValid",t:"boolean",d:"-",r:false,ds:"Apakah semua field valid."},
+      {n:"formState.isDirty",t:"boolean",d:"-",r:false,ds:"Apakah ada field yang berubah."},
+      {n:"formState.dirtyFields",t:"object",d:"-",r:false,ds:"Field mana saja yang berubah."},
+      {n:"formState.touchedFields",t:"object",d:"-",r:false,ds:"Field mana saja yang pernah di-focus."},
+      {n:"watch(name?)",t:"method",d:"-",r:false,ds:"Watch value field (trigger re-render)."},
+      {n:"setValue(name, value)",t:"method",d:"-",r:false,ds:"Set value field secara programmatic."},
+      {n:"getValues(name?)",t:"method",d:"-",r:false,ds:"Get values tanpa re-render."},
+      {n:"reset(values?)",t:"method",d:"-",r:false,ds:"Reset form ke default values."},
+      {n:"setError(name, error)",t:"method",d:"-",r:false,ds:"Set error manual (server validation)."},
+      {n:"clearErrors(name?)",t:"method",d:"-",r:false,ds:"Clear errors."},
+      {n:"trigger(name?)",t:"method",d:"-",r:false,ds:"Trigger validasi manual."},
+      {n:"Controller",t:"component",d:"-",r:false,ds:"Wrapper untuk controlled components di RN."},
+      {n:"rules",t:"object",d:"-",r:false,ds:"Validation rules: required, min, max, pattern, validate, dll."},
+    ],
+    states:[
+      {n:"form values",ds:"Semua field values — managed internal oleh react-hook-form."},
+      {n:"errors",ds:"Object errors per field."},
+      {n:"isSubmitting",ds:"boolean."},
+      {n:"isDirty",ds:"boolean."},
+    ],
+    code:`import { useForm, Controller } from 'react-hook-form';
+import { TextInput, Text, Pressable, View } from 'react-native';
+
+const RegisterForm = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    watch,
+    setError,
+  } = useForm({
+    defaultValues: { email: '', password: '', confirmPassword: '' },
+  });
+
+  const password = watch('password');
+
+  const onSubmit = async (data) => {
+    try {
+      await registerUser(data);
+    } catch (err) {
+      setError('email', { message: 'Email sudah terdaftar' });
+    }
+  };
+
+  return (
+    <View style={{ gap: 16 }}>
+      <Controller
+        control={control}
+        name="email"
+        rules={{
+          required: 'Email wajib diisi',
+          pattern: {
+            value: /^[^@]+@[^@]+\\.[^@]+$/,
+            message: 'Email tidak valid',
+          },
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <>
+            <TextInput
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              placeholder="Email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              style={[styles.input, errors.email && styles.inputError]}
+            />
+            {errors.email && (
+              <Text style={styles.error}>{errors.email.message}</Text>
+            )}
+          </>
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="password"
+        rules={{
+          required: 'Password wajib diisi',
+          minLength: { value: 8, message: 'Min 8 karakter' },
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            value={value}
+            onChangeText={onChange}
+            secureTextEntry
+            placeholder="Password"
+          />
+        )}
+      />
+
+      <Pressable
+        onPress={handleSubmit(onSubmit)}
+        disabled={isSubmitting}
+      >
+        <Text>{isSubmitting ? 'Loading...' : 'Register'}</Text>
+      </Pressable>
+    </View>
+  );
+};`,
+    demo: "hookform"
+  }
+},
+    ]},
+  ]
+},
+// ──────────────────── SECTION 8: ADVANCED ────────────────────
+{
+  id:"advanced", icon:"🧠", title:"Advanced Architecture", sub:"Senior / Engineering level",
+  groups:[
+    { label:"", items:[
+{ name:"Native Modules", badge:"advanced", desc:"Bridge ke Swift/Kotlin code",
+  detail:{
+    use:"Fitur yang tidak ada di RN: Face ID, custom camera, payment SDK, Bluetooth.",
+    gotcha:"Perlu nulis code native (Swift/Kotlin). Cek dulu apakah ada library yang sudah wrapping ini.",
+    props:[
+      {n:"NativeModules.ModuleName",t:"object",d:"-",r:false,ds:"Access native module dari JS."},
+      {n:".method(args)",t:"Promise<any>",d:"-",r:false,ds:"Panggil method native."},
+      {n:"@ReactMethod (Android)",t:"annotation",d:"-",r:false,ds:"Mark Kotlin/Java method agar accessible dari JS."},
+      {n:"@objc func (iOS)",t:"keyword",d:"-",r:false,ds:"Mark Swift method agar accessible dari JS."},
+      {n:"NativeEventEmitter",t:"class",d:"-",r:false,ds:"Listen events dari native ke JS."},
+      {n:"requiresMainQueueSetup (iOS)",t:"boolean",d:"-",r:false,ds:"iOS: module perlu setup di main thread."},
+    ],
+    states:[],
+    code:`// JS side:
+import { NativeModules, NativeEventEmitter } from 'react-native';
+
+const { BiometricModule } = NativeModules;
+
+// Call native method
+const result = await BiometricModule.authenticate(
+  'Konfirmasi identitas kamu'
+);
+
+// Listen native events
+const emitter = new NativeEventEmitter(BiometricModule);
+const sub = emitter.addListener('onBiometricResult', (event) => {
+  console.log(event.success);
+});
+
+// Cleanup
+sub.remove();
+
+// Native side (Swift):
+// @objc func authenticate(_ prompt: String,
+//   resolve: @escaping RCTPromiseResolveBlock,
+//   reject: @escaping RCTPromiseRejectBlock) { ... }`,
+    demo: "nativemodules"
+  }
+},
+{ name:"New Architecture", badge:"advanced", desc:"Fabric + TurboModules + JSI",
+  detail:{
+    use:"RN 0.71+. Performa lebih baik, komunikasi sync antara JS dan native.",
+    gotcha:"Belum semua library support. Cek kompatibilitas sebelum enable.",
+    props:[
+      {n:"Fabric",t:"renderer",d:"-",r:false,ds:"New rendering engine. Synchronous layout measurement."},
+      {n:"TurboModules",t:"native module system",d:"-",r:false,ds:"Lazy-loaded native modules. Startup lebih cepat."},
+      {n:"JSI (JavaScript Interface)",t:"C++ layer",d:"-",r:false,ds:"Komunikasi sync JS ↔ Native tanpa bridge overhead."},
+      {n:"Codegen",t:"tool",d:"-",r:false,ds:"Auto-generate type-safe specs untuk native modules."},
+      {n:"Bridgeless mode",t:"feature",d:"-",r:false,ds:"Tidak ada bridge sama sekali — full JSI."},
+      {n:"newArchEnabled",t:"flag",d:"false",r:false,ds:"Flag untuk enable new architecture."},
+    ],
+    states:[],
+    code:`// Enable di android/gradle.properties:
+// newArchEnabled=true
+
+// Enable di ios/Podfile:
+// :fabric_enabled => true
+
+// Di code, tidak ada perubahan API
+// untuk komponen standar.
+
+// Cek kompatibilitas:
+// npx react-native-new-arch-helper
+
+// Libraries yang sudah support:
+// - react-native-reanimated ✅
+// - react-native-gesture-handler ✅
+// - react-native-screens ✅
+// - @shopify/flash-list ✅`,
+    demo: "newarch"
+  }
+},
+    ]},
+  ]
+},
+]};
+
+// ===================== RENDER ENGINE =====================
+
+
+let activeFilter='all';
+const BL={core:'Core',important:'Penting',advanced:'Advanced',library:'Library'};
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function init(){renderFilters();renderSections();updateStats();}
+function renderFilters(){
+  const bar=document.getElementById('filterBar');
+  ['all','core','important','advanced','library'].forEach(f=>{
+    const b=document.createElement('button');b.className='fbtn'+(f==='all'?' active':'');b.dataset.f=f;
+    b.textContent=f==='all'?'Semua':BL[f]||f;
+    b.onclick=()=>{activeFilter=f;document.querySelectorAll('.fbtn').forEach(x=>x.classList.toggle('active',x.dataset.f===f));applyFilters();};
+    bar.appendChild(b);
+  });
+}
+function renderSections(){
+  const root=document.getElementById('sectionsRoot');root.innerHTML='';
+  DATA.sections.forEach(sec=>{
+    const tot=sec.groups.reduce((a,g)=>a+g.items.length,0);
+    let h=`<div class="section" id="sec-${sec.id}"><div class="sec-head"><span class="sec-icon">${sec.icon}</span><span class="sec-title">${sec.title}</span><span class="sec-sub">${sec.sub}</span><span class="sec-count">${tot}</span></div>`;
+    sec.groups.forEach(g=>{
+      h+=`<div class="sub-group">`;
+      if(g.label)h+=`<div class="group-label">${g.label}</div>`;
+      h+=`<div class="grid">`;
+      g.items.forEach(item=>{
+        const en=escapeHtml(item.name),ed=escapeHtml(item.desc);
+        h+=`<div class="card" data-name="${en}" data-badge="${item.badge}" data-desc="${ed}" onclick='openDetail(${JSON.stringify(item.name)})'><div class="card-top"><span class="card-name">${en}</span><span class="badge badge-${item.badge}">${BL[item.badge]||item.badge}</span></div><div class="card-desc">${ed}</div></div>`;
+      });
+      h+=`</div></div>`;
+    });
+    h+=`</div>`;
+    root.insertAdjacentHTML('beforeend',h);
+  });
+}
+function updateStats(){
+  const vis=document.querySelectorAll('.card:not(.hidden)');
+  let c={t:vis.length,core:0,imp:0,adv:0,lib:0};
+  vis.forEach(x=>{const b=x.dataset.badge;if(b==='core')c.core++;else if(b==='important')c.imp++;else if(b==='advanced')c.adv++;else if(b==='library')c.lib++;});
+  document.getElementById('stats').innerHTML=`
+    <div class="stat-item"><div class="stat-num">${c.t}</div><div class="stat-label">Total</div></div>
+    <div class="stat-item"><div class="stat-num sn-c">${c.core}</div><div class="stat-label">Core</div></div>
+    <div class="stat-item"><div class="stat-num sn-i">${c.imp}</div><div class="stat-label">Important</div></div>
+    <div class="stat-item"><div class="stat-num sn-a">${c.adv}</div><div class="stat-label">Advanced</div></div>
+    <div class="stat-item"><div class="stat-num sn-l">${c.lib}</div><div class="stat-label">Library</div></div>`;
+}
+function applyFilters(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.card').forEach(c=>{
+    const ms=!q||c.dataset.name.toLowerCase().includes(q)||c.dataset.desc.toLowerCase().includes(q);
+    const mf=activeFilter==='all'||c.dataset.badge===activeFilter;
+    c.classList.toggle('hidden',!(ms&&mf));
+  });
+  document.querySelectorAll('.section').forEach(s=>s.style.display=s.querySelectorAll('.card:not(.hidden)').length?'':'none');
+  document.querySelectorAll('.sub-group').forEach(s=>s.style.display=s.querySelectorAll('.card:not(.hidden)').length?'':'none');
+  updateStats();
+}
+
+// ===== DETAIL (SINGLE SCROLL — NO TABS) =====
+function findItem(n){for(const s of DATA.sections)for(const g of s.groups)for(const i of g.items)if(i.name===n)return i;return null;}
+
+function openDetail(name){
+  const item=findItem(name);if(!item)return;
+  const d=item.detail;
+  document.getElementById('dName').textContent=item.name;
+  document.getElementById('dDesc').textContent=item.desc;
+  const body=document.getElementById('dBody');
+  let h='';
+
+  // 1) OVERVIEW
+  h+=`<div class="d-section"><div class="d-section-title">Overview</div>
+    <div class="info-row">
+      <div class="info-box"><h4>Kapan Dipake</h4><p>${d.use||''}</p></div>
+      <div class="info-box"><h4>Level</h4><p><span class="badge badge-${item.badge}" style="font-size:.7rem;padding:3px 10px">${BL[item.badge]}</span></p></div>
+    </div>
+    ${d.gotcha?`<div class="gotcha-box" style="margin-top:.75rem"><p>⚠️ ${d.gotcha}</p></div>`:''}
+  </div>`;
+
+  // 2) PROPS TABLE
+  if(d.props&&d.props.length){
+    h+=`<div class="d-section"><div class="d-section-title">Props / Parameters</div>
+      <div class="props-wrap"><table class="props-table"><thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Req</th><th>Deskripsi</th></tr></thead><tbody>`;
+    d.props.forEach(p=>{
+      if(typeof p==='string'){h+=`<tr><td class="prop-name">${escapeHtml(p)}</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>`;}
+      else{h+=`<tr><td class="prop-name">${escapeHtml(p.n)}</td><td class="prop-type">${escapeHtml(p.t||'-')}</td><td class="prop-default">${escapeHtml(p.d||'-')}</td><td>${p.r?'<span class="prop-req">YES</span>':'<span class="prop-opt">no</span>'}</td><td class="prop-desc">${escapeHtml(p.ds||'-')}</td></tr>`;}
+    });
+    h+=`</tbody></table></div></div>`;
+  }
+
+  // 3) STATE
+  if(d.states&&d.states.length){
+    h+=`<div class="d-section"><div class="d-section-title">State yang Biasa Dipakai</div><div class="state-panel">`;
+    d.states.forEach(s=>{h+=`<div class="state-row"><span class="state-key">${escapeHtml(s.n)}</span><span class="state-val">${escapeHtml(s.ds)}</span></div>`;});
+    h+=`</div></div>`;
+  }
+
+  // 4) CODE
+  if(d.code){
+    h+=`<div class="d-section"><div class="d-section-title">Contoh Penggunaan</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>${escapeHtml(d.code)}</div></div>`;
+  }
+
+  // 5) DEMO
+  h+=`<div class="d-section"><div class="d-section-title">Interactive Demo</div>${buildDemo(item)}</div>`;
+
+  body.innerHTML=h;
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  initDemo(item);
+}
+
+function closeDetail(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow='';}
+function copyCode(btn){const code=btn.parentElement.textContent.replace('Copy','').trim();navigator.clipboard?.writeText(code);btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1500);}
+
+// ===== DEMO BUILDER =====
+function buildDemo(item){
+  const id=item.detail?.demo||'generic';
+  return `<div class="demo-area"><div class="demo-toolbar"><span>📱 Live Preview</span><button class="reset-btn" onclick="resetDemo()">Reset</button></div><div class="demo-phone"><div class="phone-notch"></div><div class="phone-screen" id="demo-screen"></div><div class="phone-home"></div></div><div class="demo-controls" id="demo-controls"></div></div>`;
+}
+function resetDemo(){const n=document.getElementById('dName').textContent;initDemo(findItem(n));}
+
+const K={a:'#5a4fcf',a2:'#7c6ff0',al:'#ededfa',g:'#0d9f6e',o:'#d97706',r:'#dc2626',b:'#2563eb',cy:'#0891b2',bg:'#eeeef3',bg2:'#fff',bg3:'#f5f5f8',br:'#e2e2ea',br2:'#ededf3',t:'#1a1a2e',t2:'#5a5a72',t3:'#8a8a9e'};
+
+function initDemo(item){
+  const scr=document.getElementById('demo-screen'),ctrl=document.getElementById('demo-controls');
+  if(!scr||!ctrl)return;scr.innerHTML='';ctrl.innerHTML='';
+  const d=item?.detail?.demo||'generic';
+  const demos={
+    view:()=>{
+      scr.innerHTML=`<div class="ph-view" id="dv-o" style="transition:all .3s"><div style="font-size:.6rem;color:${K.t3};margin-bottom:6px">View (container)</div><div style="display:flex;gap:6px" id="dv-r"><div class="ph-view" style="flex:1;text-align:center"><span style="font-size:.7rem">Box 1</span></div><div class="ph-view" style="flex:1;text-align:center;border-color:${K.g}60;background:${K.g}12"><span style="font-size:.7rem">Box 2</span></div></div><div class="ph-view" style="margin-top:6px;text-align:center"><span style="font-size:.7rem">Box 3</span></div></div>`;
+      ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="var r=document.getElementById('dv-r');r.style.flexDirection=r.style.flexDirection==='column'?'row':'column'">Toggle Dir</button><button class="demo-ctrl-btn" onclick="var o=document.getElementById('dv-o');o.style.padding=o.style.padding==='0px'?'10px':'0px'">Padding</button><button class="demo-ctrl-btn" onclick="var r=document.getElementById('dv-r');var b=document.createElement('div');b.className='ph-view';b.style.cssText='flex:1;text-align:center;border-color:${K.r}60;background:${K.r}08';b.innerHTML='<span style=font-size:.7rem>New</span>';r.appendChild(b)">+ Box</button>`;
+    },
+    text:()=>{
+      scr.innerHTML=`<div style="margin-bottom:10px"><div style="font-size:1rem;font-weight:700" id="dt-t">Judul Halaman</div><div style="font-size:.75rem;color:${K.t2};line-height:1.6;margin-top:4px" id="dt-b">Ini contoh text yang bisa dikonfigurasi. Ubah numberOfLines untuk lihat efek truncation.</div></div><div style="background:${K.al};border-radius:8px;padding:8px;margin-bottom:8px"><span style="font-size:.7rem;color:${K.a}">Nested: </span><span style="font-size:.7rem;font-weight:700">Bold inherited</span><span style="font-size:.7rem;color:${K.cy};cursor:pointer" onclick="alert('Tapped!')"> &amp; Tappable</span></div><div style="font-size:.55rem;color:${K.t3}" id="dt-i">numberOfLines: unlimited</div>`;
+      ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="setTL(1)">1 Line</button><button class="demo-ctrl-btn" onclick="setTL(2)">2 Lines</button><button class="demo-ctrl-btn" onclick="setTL(0)">All</button><button class="demo-ctrl-btn" onclick="var t=document.getElementById('dt-t');t.style.fontWeight=t.style.fontWeight==='400'?'700':'400'">Bold</button>`;
+    },
+    image:()=>{
+      scr.innerHTML=`<div id="di-img" style="width:100%;height:110px;border-radius:12px;background:linear-gradient(135deg,${K.a}cc,${K.cy}cc);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:all .3s"><span style="font-size:2rem">🏔️</span></div><div style="display:flex;gap:8px;margin-top:10px;align-items:center"><div style="width:44px;height:44px;border-radius:22px;background:linear-gradient(135deg,${K.r},${K.o});display:flex;align-items:center;justify-content:center"><span style="font-size:1.1rem">👤</span></div><div><div style="font-size:.78rem;font-weight:600">Avatar</div><div style="font-size:.6rem;color:${K.t3}">borderRadius: circular</div></div></div>`;
+      ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="document.getElementById('di-img').style.backgroundSize='cover'">Cover</button><button class="demo-ctrl-btn" onclick="document.getElementById('di-img').style.backgroundSize='contain';document.getElementById('di-img').style.backgroundRepeat='no-repeat';document.getElementById('di-img').style.backgroundPosition='center'">Contain</button><button class="demo-ctrl-btn" onclick="var i=document.getElementById('di-img');i.style.filter=i.style.filter?'':'blur(6px)'">Blur</button>`;
+    },
+    textinput:()=>{
+      scr.innerHTML=`<div style="font-size:.82rem;font-weight:600;margin-bottom:10px">Login Form</div><input class="ph-input" id="di-e" type="text" placeholder="Email" style="margin-bottom:6px" oninput="upIS()"><input class="ph-input" id="di-p" type="password" placeholder="Password" style="margin-bottom:6px" oninput="upIS()"><input class="ph-input" id="di-ph" type="text" placeholder="Phone (numeric)" style="margin-bottom:10px" oninput="this.value=this.value.replace(/[^0-9]/g,'');upIS()"><div class="ph-btn" onclick="var e=document.getElementById('di-e');if(!e.value){document.getElementById('di-s').textContent='⚠️ Email required!';e.style.borderColor='${K.r}';return}document.getElementById('di-s').textContent='✅ Submitted!';e.style.borderColor='${K.g}'">Submit</div><div style="margin-top:8px;font-size:.55rem;color:${K.t3}" id="di-s">State: empty</div>`;
+      ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="var p=document.getElementById('di-p');p.type=p.type==='password'?'text':'password'">👁 Password</button><button class="demo-ctrl-btn" onclick="['di-e','di-p','di-ph'].forEach(id=>{var e=document.getElementById(id);if(e)e.value=''});upIS()">Clear</button><button class="demo-ctrl-btn" onclick="document.getElementById('di-e')?.focus()">Focus</button>`;
+    },
+    pressable:()=>{
+      scr.innerHTML=`<div id="dp-b" style="padding:12px;text-align:center;background:${K.a};border-radius:10px;cursor:pointer;transition:all .15s;user-select:none;color:#fff;font-weight:600;font-size:.82rem" onmousedown="this.style.transform='scale(.95)';this.style.opacity='.7';document.getElementById('dp-s').textContent='{pressed:true}'" onmouseup="this.style.transform='';this.style.opacity='';document.getElementById('dp-s').textContent='{pressed:false}';window._tc=(window._tc||0)+1;document.getElementById('dp-c').textContent='Tap count: '+window._tc" onmouseleave="this.style.transform='';this.style.opacity=''">Tap Me</div><div style="margin-top:10px;padding:10px;background:${K.bg};border-radius:8px;border:1px solid ${K.br};cursor:pointer;transition:all .15s" onmousedown="this.style.transform='scale(.97)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''"><div style="font-size:.78rem;font-weight:500">Card Item</div><div style="font-size:.6rem;color:${K.t3}">style function + pressed state</div></div><div style="text-align:center;margin-top:8px;font-size:.55rem;color:${K.t3}" id="dp-s">{pressed: false}</div><div style="text-align:center;font-size:.55rem;color:${K.t3}" id="dp-c">Tap count: 0</div>`;
+      window._tc=0;
+    },
+    scrollview:()=>{
+      let c='';for(let i=1;i<=10;i++)c+=`<div style="padding:12px;background:#fff;border-radius:8px;margin-bottom:5px;border:1px solid ${K.br2}"><div style="font-size:.72rem;font-weight:500">Section ${i}</div><div style="font-size:.6rem;color:${K.t3}">Scrollable content</div></div>`;
+      scr.innerHTML=`<div class="ph-scroll" style="max-height:310px" id="dsv">${c}</div>`;
+      ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="document.getElementById('dsv')?.scrollTo({top:0,behavior:'smooth'})">⬆ Top</button><button class="demo-ctrl-btn" onclick="var s=document.getElementById('dsv');s?.scrollTo({top:s.scrollHeight,behavior:'smooth'})">⬇ End</button><button class="demo-ctrl-btn" onclick="var s=document.getElementById('dsv');s.insertAdjacentHTML('beforeend','<div style=padding:12px;background:#fff;border-radius:8px;margin-bottom:5px;border:1px_solid_#ededf3><div style=font-size:.72rem;font-weight:500>New Section</div></div>');s.scrollTo({top:s.scrollHeight,behavior:'smooth'})">+ Add</button>`;
+    },
+    flatlist:()=>{
+      let items='';for(let i=1;i<=12;i++)items+=`<div class="ph-list-item"><span>Item ${i}</span><span style="color:${K.a}">Rp ${(Math.random()*1e6|0).toLocaleString()}</span></div>`;
+      scr.innerHTML=`<div style="font-size:.72rem;font-weight:600;margin-bottom:6px">Transaction List</div><div class="ph-scroll" id="dfl" style="max-height:260px"><div id="dfl-ref" style="display:none;text-align:center;padding:6px"><div class="ph-spinner" style="width:16px;height:16px;border-width:2px;margin:0 auto"></div></div>${items}<div id="dfl-ld" style="display:none;text-align:center;padding:6px"><div class="ph-spinner" style="width:14px;height:14px;border-width:2px;margin:0 auto"></div></div></div><div style="font-size:.5rem;color:${K.t3};margin-top:4px" id="dfl-i">12 items</div>`;
+      ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="document.getElementById('dfl-ref').style.display='block';setTimeout(()=>document.getElementById('dfl-ref').style.display='none',1200)">Refresh</button><button class="demo-ctrl-btn" onclick="flMore()">+ Load</button><button class="demo-ctrl-btn" onclick="document.getElementById('dfl').innerHTML='<div style=text-align:center;padding:30px><div style=font-size:1.5rem>📭</div><div style=font-size:.7rem;color:#8a8a9e>Empty</div></div>';document.getElementById('dfl-i').textContent='0 items'">Empty</button>`;
+    },
+    sectionlist:()=>{
+      scr.innerHTML=`<div style="font-size:.58rem;font-weight:700;color:${K.a};padding:5px 8px;background:${K.al};border-radius:6px">HARI INI</div><div class="ph-list-item"><span>Transfer Budi</span><span style="color:${K.r}">-500K</span></div><div class="ph-list-item"><span>Top up GoPay</span><span style="color:${K.r}">-100K</span></div><div style="font-size:.58rem;font-weight:700;color:${K.g};padding:5px 8px;background:${K.g}12;border-radius:6px;margin-top:6px">KEMARIN</div><div class="ph-list-item"><span>Gaji Masuk</span><span style="color:${K.g}">+8.000K</span></div><div class="ph-list-item"><span>Dividen</span><span style="color:${K.g}">+250K</span></div>`;
+    },
+    modal:()=>{
+      scr.innerHTML=`<div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px"><div class="ph-btn" style="width:80%;padding:10px" onclick="document.getElementById('dm-o').style.display='flex'">Open Modal</div></div><div id="dm-o" style="display:none;position:absolute;inset:0;border-radius:26px;overflow:hidden;z-index:5;background:#0005;align-items:flex-end"><div style="position:absolute;inset:0" onclick="document.getElementById('dm-o').style.display='none'"></div><div style="width:100%;background:#fff;border-radius:16px 16px 0 0;padding:16px;position:relative;z-index:2"><div style="width:36px;height:4px;background:${K.br};border-radius:2px;margin:0 auto 14px"></div><div style="font-size:.85rem;font-weight:600;margin-bottom:6px">Modal Sheet</div><div style="font-size:.7rem;color:${K.t3};margin-bottom:14px">visible: true • transparent • slide</div><div class="ph-btn" onclick="document.getElementById('dm-o').style.display='none'">Close</div></div></div>`;
+    },
+    activityindicator:()=>{
+      scr.innerHTML=`<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px"><div class="ph-spinner" id="da-s1" style="width:18px;height:18px;border-width:2px"></div><div class="ph-spinner" id="da-s2"></div><div id="da-ok" style="display:none;text-align:center"><div style="font-size:.82rem;font-weight:600">Data Loaded ✓</div><div style="font-size:.65rem;color:${K.t3}">Spinner hidden</div></div></div>`;
+      ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="var l=window._ld=!window._ld;document.getElementById('da-s1').style.display=l?'block':'none';document.getElementById('da-s2').style.display=l?'block':'none';document.getElementById('da-ok').style.display=l?'none':'block'">Toggle</button>`;
+      window._ld=true;
+    },
+    alert:()=>{
+      scr.innerHTML=`<div style="display:flex;flex-direction:column;gap:8px"><div class="ph-btn" onclick="showAl('s')">Simple Alert</div><div class="ph-btn" style="background:${K.o}" onclick="showAl('c')">Confirm</div><div class="ph-btn" style="background:${K.r}" onclick="showAl('d')">Destructive</div></div><div id="dal-o" style="display:none;position:absolute;inset:0;border-radius:26px;overflow:hidden;z-index:5;background:#0006;align-items:center;justify-content:center"><div style="background:#fff;border-radius:14px;padding:20px;width:82%;text-align:center;box-shadow:0 10px 40px #0002" id="dal-b"></div></div>`;
+    },
+    statusbar:()=>{
+      scr.innerHTML=`<div style="display:flex;justify-content:space-between;padding:0 8px;font-size:.55rem;color:${K.t3};height:18px;align-items:center;background:${K.bg};border-radius:6px;margin-bottom:8px" id="sb-bar"><span>9:41</span><span>📶 🔋</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:${K.t2}">barStyle controls icon color</div>`;
+      ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="var b=document.getElementById('sb-bar');b.style.background=b.style.background==='#1a1a2e'?'${K.bg}':'#1a1a2e';b.style.color=b.style.color==='#fff'?'${K.t3}':'#fff'">Toggle Style</button><button class="demo-ctrl-btn" onclick="document.getElementById('sb-bar').style.display=document.getElementById('sb-bar').style.display==='none'?'flex':'none'">Hide/Show</button>`;
+    },
+    flexbox:()=>{
+      scr.innerHTML=`<div id="dfb" style="display:flex;flex-direction:column;gap:6px;transition:all .3s"><div style="height:36px;background:${K.a};border-radius:6px;display:flex;align-items:center;justify-content:center"><span style="font-size:.6rem;color:#fff">flex: 1</span></div><div style="height:36px;background:${K.g};border-radius:6px;display:flex;align-items:center;justify-content:center"><span style="font-size:.6rem;color:#fff">flex: 2</span></div><div style="height:36px;background:${K.o};border-radius:6px;display:flex;align-items:center;justify-content:center"><span style="font-size:.6rem;color:#fff">flex: 1</span></div></div><div style="font-size:.55rem;color:${K.t3};margin-top:8px;text-align:center" id="dfb-i">flexDirection: column (RN default)</div>`;
+      ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="var c=document.getElementById('dfb');var d=c.style.flexDirection==='row'?'column':'row';c.style.flexDirection=d;document.getElementById('dfb-i').textContent='flexDirection: '+d">Direction</button><button class="demo-ctrl-btn" onclick="var c=document.getElementById('dfb');var j=['flex-start','center','flex-end','space-between','space-around','space-evenly'];window._ji=(window._ji||0)+1;var v=j[window._ji%j.length];c.style.justifyContent=v;document.getElementById('dfb-i').textContent='justify: '+v">Justify</button>`;
+    },
+    stacknav:()=>{
+      scr.innerHTML=`<div id="sn-h"><div style="font-size:.95rem;font-weight:700;margin-bottom:8px">🏠 Home</div><div style="padding:10px;background:#fff;border-radius:8px;border:1px solid ${K.br};cursor:pointer;margin-bottom:5px" onclick="snPush('d')"><div style="font-size:.75rem">Product A →</div></div><div style="padding:10px;background:#fff;border-radius:8px;border:1px solid ${K.br};cursor:pointer" onclick="snPush('d')"><div style="font-size:.75rem">Product B →</div></div></div><div id="sn-d" style="display:none"><div style="color:${K.a};font-size:.75rem;cursor:pointer;margin-bottom:10px" onclick="snPop()">← Back</div><div style="font-size:.95rem;font-weight:700;margin-bottom:6px">📦 Detail</div><div style="font-size:.7rem;color:${K.t3}">route.params: { id }</div><div style="padding:10px;background:#fff;border-radius:8px;border:1px solid ${K.br};cursor:pointer;margin-top:8px" onclick="snPush('s')"><div style="font-size:.72rem">⚙️ Settings →</div></div></div><div id="sn-s" style="display:none"><div style="color:${K.a};font-size:.75rem;cursor:pointer;margin-bottom:10px" onclick="snPop()">← Back</div><div style="font-size:.95rem;font-weight:700">⚙️ Settings</div><div style="font-size:.6rem;color:${K.t3};margin-top:4px">Stack depth: 3</div></div><div style="font-size:.5rem;color:${K.t3};margin-top:8px;text-align:center" id="sn-inf">Stack: [Home]</div>`;
+      window._sn=['h'];
+    },
+    tabnav:()=>{
+      scr.innerHTML=`<div style="flex:1;display:flex;flex-direction:column"><div style="flex:1;display:flex;align-items:center;justify-content:center" id="tn-c"><div style="text-align:center"><div style="font-size:1.5rem">🏠</div><div style="font-size:.78rem;font-weight:600">Home</div></div></div><div class="ph-tab-bar" id="tn-tb"><div class="ph-tab active" onclick="swTab(0)">🏠<br>Home</div><div class="ph-tab" onclick="swTab(1)">🔍<br>Search</div><div class="ph-tab" onclick="swTab(2)" style="position:relative">🛒<br>Cart<span style="position:absolute;top:1px;right:22%;background:${K.r};color:#fff;font-size:.5rem;width:14px;height:14px;border-radius:7px;display:flex;align-items:center;justify-content:center">3</span></div><div class="ph-tab" onclick="swTab(3)">👤<br>Profile</div></div></div>`;
+    },
+    reanimated:()=>{
+      scr.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:16px"><div id="ra-b" style="width:70px;height:70px;background:${K.a};border-radius:12px;transition:all .3s cubic-bezier(.68,-.55,.27,1.55);display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="raAn()"><span style="font-size:1.3rem">🎯</span></div><div style="font-size:.58rem;color:${K.t3}" id="ra-i">Tap or use controls</div><div style="width:100%;height:4px;background:${K.br};border-radius:2px;overflow:hidden;margin-top:8px"><div id="ra-p" style="width:0%;height:100%;background:${K.a2};border-radius:2px;transition:width .5s"></div></div></div>`;
+      ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="var b=document.getElementById('ra-b');b.style.transition='all .5s cubic-bezier(.68,-.55,.27,1.55)';b.style.transform='translateY(-35px) scale(1.1)';setTimeout(()=>b.style.transform='',600);document.getElementById('ra-i').textContent='withSpring'">Spring</button><button class="demo-ctrl-btn" onclick="var b=document.getElementById('ra-b');b.style.transition='all .4s ease-in-out';b.style.transform='translateX(55px)';setTimeout(()=>b.style.transform='',500);document.getElementById('ra-i').textContent='withTiming'">Timing</button><button class="demo-ctrl-btn" onclick="var b=document.getElementById('ra-b');b.style.transition='all .2s';b.style.transform='scale(.8)';setTimeout(()=>{b.style.transform='scale(1.3)'},200);setTimeout(()=>{b.style.transition='all .4s cubic-bezier(.68,-.55,.27,1.55)';b.style.transform=''},400);document.getElementById('ra-i').textContent='withSequence'">Sequence</button><button class="demo-ctrl-btn" onclick="document.getElementById('ra-b').style.transform='';document.getElementById('ra-i').textContent='Reset';document.getElementById('ra-p').style.width='0%'">Reset</button>`;
+    },
+    gesturehandler:()=>{
+      scr.innerHTML=`<div style="height:280px;position:relative;border:1.5px dashed ${K.br};border-radius:12px;overflow:hidden" id="gh-a"><div id="gh-b" style="width:56px;height:56px;background:${K.g};border-radius:12px;position:absolute;top:110px;left:82px;cursor:grab;display:flex;align-items:center;justify-content:center;user-select:none;touch-action:none;transition:box-shadow .15s"><span style="font-size:1.1rem;pointer-events:none">✋</span></div><div style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:.55rem;color:${K.t3}" id="gh-i">Drag the box!</div></div>`;
+      setTimeout(initDrag,100);
+    },
+  };
+  const genericDemo=()=>{scr.innerHTML=`<div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;padding:20px"><div style="font-size:1.8rem">📱</div><div style="font-size:.75rem;font-weight:600">${item?.name||'Component'}</div><div style="font-size:.62rem;color:${K.t3};text-align:center">Lihat code di atas</div></div>`;};
+  (demos[d]||genericDemo)();
+}
+
+// ===== Demo Helpers =====
+window.setTL=function(n){var b=document.getElementById('dt-b');if(!b)return;b.style.overflow=n>0?'hidden':'';b.style.display=n>0?'-webkit-box':'';b.style.webkitLineClamp=n>0?n:'';b.style.webkitBoxOrient='vertical';document.getElementById('dt-i').textContent='numberOfLines: '+(n||'unlimited');};
+window.upIS=function(){var e=document.getElementById('di-e')?.value||'',p=document.getElementById('di-p')?.value||'',ph=document.getElementById('di-ph')?.value||'';document.getElementById('di-s').textContent='{ email:"'+e+'", pass:"'+'\u2022'.repeat(p.length)+'", phone:"'+ph+'" }';};
+window.showAl=function(t){var o=document.getElementById('dal-o'),b=document.getElementById('dal-b');o.style.display='flex';var cl="document.getElementById('dal-o').style.display='none'";if(t==='s')b.innerHTML='<div style="font-size:.82rem;font-weight:600;margin-bottom:5px">Berhasil</div><div style="font-size:.68rem;color:#5a5a72;margin-bottom:12px">Data tersimpan!</div><div style="color:#5a4fcf;font-size:.78rem;font-weight:600;cursor:pointer" onclick="'+cl+'">OK</div>';else if(t==='c')b.innerHTML='<div style="font-size:.82rem;font-weight:600;margin-bottom:5px">Simpan?</div><div style="font-size:.68rem;color:#5a5a72;margin-bottom:12px">Perubahan belum disimpan.</div><div style="display:flex;justify-content:center;gap:14px"><span style="color:#8a8a9e;cursor:pointer" onclick="'+cl+'">Batal</span><span style="color:#5a4fcf;font-weight:600;cursor:pointer" onclick="'+cl+'">Simpan</span></div>';else b.innerHTML='<div style="font-size:.82rem;font-weight:600;margin-bottom:5px">Hapus?</div><div style="font-size:.68rem;color:#5a5a72;margin-bottom:12px">Tidak bisa dibatalkan.</div><div style="display:flex;justify-content:center;gap:14px"><span style="color:#8a8a9e;cursor:pointer" onclick="'+cl+'">Batal</span><span style="color:#dc2626;font-weight:600;cursor:pointer" onclick="'+cl+'">Hapus</span></div>';};
+window.flMore=function(){var l=document.getElementById('dfl-ld'),list=document.getElementById('dfl');if(!l||!list)return;l.style.display='block';list.scrollTop=list.scrollHeight;setTimeout(()=>{l.style.display='none';var ct=list.querySelectorAll('.ph-list-item').length;for(var i=1;i<=5;i++){var d=document.createElement('div');d.className='ph-list-item';d.innerHTML='<span>Item '+(ct+i)+'</span><span style="color:#5a4fcf">Rp '+(Math.random()*1e6|0).toLocaleString()+'</span>';list.insertBefore(d,l);}document.getElementById('dfl-i').textContent=(ct+5)+' items';},800);};
+window.snPush=function(n){window._sn.push(n);snU();};
+window.snPop=function(){if(window._sn.length>1)window._sn.pop();snU();};
+function snU(){var c=window._sn[window._sn.length-1];['h','d','s'].forEach(s=>{var e=document.getElementById('sn-'+s);if(e)e.style.display=s===c?'block':'none';});document.getElementById('sn-inf').textContent='Stack: ['+window._sn.join(' \u2192 ')+']';}
+window.swTab=function(i){var tabs=document.getElementById('tn-tb').children,c=document.getElementById('tn-c');var s=[{i:'\ud83c\udfe0',l:'Home'},{i:'\ud83d\udd0d',l:'Search'},{i:'\ud83d\uded2',l:'Cart'},{i:'\ud83d\udc64',l:'Profile'}];for(var j=0;j<tabs.length;j++)tabs[j].classList.toggle('active',j===i);c.innerHTML='<div style="text-align:center"><div style="font-size:1.5rem">'+s[i].i+'</div><div style="font-size:.78rem;font-weight:600">'+s[i].l+'</div></div>';};
+window.raAn=function(){var b=document.getElementById('ra-b');b.style.transform='scale(1.3) rotate(15deg)';setTimeout(()=>b.style.transform='',400);document.getElementById('ra-p').style.width='100%';setTimeout(()=>document.getElementById('ra-p').style.width='0%',1500);};
+
+function initDrag(){
+  var box=document.getElementById('gh-b'),area=document.getElementById('gh-a');
+  if(!box||!area)return;var dr=false,sx,sy,ox,oy;
+  function md(e){dr=true;sx=e.clientX||(e.touches&&e.touches[0].clientX);sy=e.clientY||(e.touches&&e.touches[0].clientY);ox=box.offsetLeft;oy=box.offsetTop;box.style.cursor='grabbing';box.style.boxShadow='0 6px 20px #0003';e.preventDefault();}
+  function mm(e){if(!dr)return;var cx=e.clientX||(e.touches&&e.touches[0].clientX),cy=e.clientY||(e.touches&&e.touches[0].clientY);box.style.left=Math.max(0,Math.min(area.clientWidth-56,ox+(cx-sx)))+'px';box.style.top=Math.max(0,Math.min(area.clientHeight-56,oy+(cy-sy)))+'px';}
+  function mu(){if(!dr)return;dr=false;box.style.cursor='grab';box.style.boxShadow='';document.getElementById('gh-i').textContent='{x:'+parseInt(box.style.left)+', y:'+parseInt(box.style.top)+'}';}
+  box.addEventListener('mousedown',md);box.addEventListener('touchstart',md,{passive:false});
+  document.addEventListener('mousemove',mm);document.addEventListener('touchmove',mm,{passive:false});
+  document.addEventListener('mouseup',mu);document.addEventListener('touchend',mu);
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail();});
+init();
+</script>
+</body>
+</html>
