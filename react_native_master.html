@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +9,7 @@
 :root{--bg:#f5f5f8;--bg2:#fff;--bg3:#eeeef3;--bg4:#e4e4ec;--text:#1a1a2e;--text2:#5a5a72;--text3:#8a8a9e;--accent:#5a4fcf;--accent2:#7c6ff0;--al:#ededfa;--green:#0d9f6e;--gbg:#ecfdf5;--gbd:#a7f3d0;--orange:#d97706;--obg:#fffbeb;--obd:#fcd34d;--red:#dc2626;--rbg:#fef2f2;--rbd:#fca5a5;--blue:#2563eb;--bbg:#eff6ff;--bbd:#93c5fd;--cyan:#0891b2;--br:#e2e2ea;--br2:#ededf3;--radius:12px;--rsm:8px;--mono:'JetBrains Mono',monospace;--sans:'DM Sans',system-ui,sans-serif;--shsm:0 1px 3px rgba(0,0,0,.06);--shmd:0 4px 16px rgba(0,0,0,.08);--shlg:0 12px 40px rgba(0,0,0,.12)}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}::selection{background:var(--accent);color:#fff}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--br);border-radius:3px}
 .app{max-width:1360px;margin:0 auto;padding:1.5rem 1.5rem 4rem}
-.hero{text-align:center;padding:2rem 0 1.2rem}.hero h1{font-size:1.7rem;font-weight:800;letter-spacing:-.03em}.hero h1 span{color:var(--accent)}.hero p{color:var(--text2);font-size:.85rem;margin-top:4px}
-.stats{display:flex;justify-content:center;gap:1.5rem;padding:.8rem 0;margin-bottom:.5rem;flex-wrap:wrap}.stat-item{text-align:center}.stat-num{font-size:1.4rem;font-weight:700;font-family:var(--mono)}.sn-c{color:var(--green)}.sn-i{color:var(--orange)}.sn-a{color:var(--red)}.sn-l{color:var(--blue)}.stat-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);font-weight:600}
+.hero{text-align:center;padding:2rem 0 1.2rem;position:relative}.hero h1{font-size:1.7rem;font-weight:800;letter-spacing:-.03em}.hero h1 span{color:var(--accent)}.hero p{color:var(--text2);font-size:.85rem;margin-top:4px}.hero .lang-toggle{position:absolute;top:1rem;right:0}
 .controls{display:flex;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}.search-box{flex:1;min-width:200px;position:relative}.search-box input{width:100%;padding:9px 14px 9px 38px;font-size:.82rem;background:var(--bg2);border:1px solid var(--br);border-radius:var(--radius);color:var(--text);font-family:var(--sans);outline:none;transition:border .2s;box-shadow:var(--shsm)}.search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--al)}.search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text3)}.filters{display:flex;gap:5px;flex-wrap:wrap}
 .fbtn{padding:5px 14px;font-size:.72rem;border-radius:20px;border:1px solid var(--br);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .15s;font-family:var(--sans);font-weight:600}.fbtn:hover{border-color:var(--text3)}.fbtn.active{background:var(--accent);border-color:var(--accent);color:#fff}.fbtn[data-f="core"].active{background:var(--green);border-color:var(--green)}.fbtn[data-f="important"].active{background:var(--orange);border-color:var(--orange)}.fbtn[data-f="advanced"].active{background:var(--red);border-color:var(--red)}.fbtn[data-f="library"].active{background:var(--blue);border-color:var(--blue)}
 .section{margin-bottom:2rem;animation:fu .35s ease both}@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.sec-head{display:flex;align-items:center;gap:8px;padding-bottom:.6rem;border-bottom:1px solid var(--br2);margin-bottom:.75rem}.sec-icon{font-size:1.1rem}.sec-title{font-size:.92rem;font-weight:700}.sec-sub{font-size:.7rem;color:var(--text3)}.sec-count{margin-left:auto;font-size:.65rem;color:var(--text3);font-family:var(--mono);background:var(--bg3);padding:2px 8px;border-radius:10px}.group-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);font-weight:700;margin:1rem 0 .4rem}
@@ -26,17 +25,841 @@
 .demo-controls{padding:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.demo-ctrl-btn{padding:5px 12px;font-size:.68rem;border-radius:8px;border:1px solid var(--br);background:var(--bg2);color:var(--text2);cursor:pointer;font-family:var(--sans);font-weight:600;transition:all .15s;box-shadow:var(--shsm)}.demo-ctrl-btn:hover{border-color:var(--accent);color:var(--accent)}
 .ph-view{background:var(--al);border:1.5px dashed #b4b0e8;border-radius:8px;padding:10px;margin-bottom:6px}.ph-btn{padding:10px 0;text-align:center;background:var(--accent);color:#fff;border-radius:10px;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s}.ph-btn:active{opacity:.7;transform:scale(.97)}.ph-input{width:100%;padding:9px 12px;background:#fff;border:1.5px solid var(--br);border-radius:10px;color:var(--text);font-size:.78rem;outline:none;font-family:var(--sans)}.ph-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--al)}.ph-scroll{max-height:200px;overflow-y:auto;border:1px solid var(--br2);border-radius:8px;background:#fff}.ph-list-item{padding:9px 12px;border-bottom:1px solid var(--br2);font-size:.72rem;color:var(--text2);display:flex;justify-content:space-between}.ph-list-item:last-child{border-bottom:none}.ph-spinner{width:22px;height:22px;border:2.5px solid var(--br);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:16px auto}@keyframes spin{to{transform:rotate(360deg)}}.ph-tab-bar{display:flex;border-top:1px solid var(--br2);margin-top:auto;background:#fff}.ph-tab{flex:1;padding:7px 0;text-align:center;font-size:.58rem;color:var(--text3);cursor:pointer;transition:color .15s}.ph-tab.active{color:var(--accent)}
 @media(max-width:768px){.app{padding:1rem}.hero h1{font-size:1.3rem}.grid{grid-template-columns:1fr}.detail-modal{width:100%;max-height:100vh;border-radius:12px 12px 0 0;margin:auto 0 0 0}.info-row{flex-direction:column}.demo-phone{width:240px;min-height:370px}}
+
+.lang-toggle{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--br);border-radius:20px;padding:3px;box-shadow:var(--shsm)}.lang-btn{padding:5px 12px;font-size:.7rem;border-radius:16px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:var(--sans);font-weight:700;transition:all .15s}.lang-btn.active{background:var(--accent);color:#fff}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="hero"><h1>React Native — <span>Master Reference</span></h1><p>Semua komponen, API & library. Lengkap dengan props, state, dan interactive demo.</p></div>
-  <div class="stats" id="stats"></div>
-  <div class="controls"><div class="search-box"><svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.3"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="text" id="searchInput" placeholder="Cari komponen, API, props..." oninput="applyFilters()"></div><div class="filters" id="filterBar"></div></div>
+  <div class="hero"><h1>React Native — <span>Master Reference</span></h1><p>All components, APIs & libraries. Complete with props, state, and interactive demos.</p><div class="lang-toggle" id="langToggle"><button class="lang-btn active" id="langEN" onclick="setLang('en')">EN</button><button class="lang-btn" id="langID" onclick="setLang('id')">ID</button></div></div>
+  <div class="controls"><div class="search-box"><svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.3"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="text" id="searchInput" placeholder="Search components, APIs, props..." oninput="applyFilters()"></div><div class="filters" id="filterBar"></div></div>
   <div id="sectionsRoot"></div>
 </div>
 <div class="overlay" id="overlay"><div class="overlay-bg" onclick="closeDetail()"></div><div class="detail-modal"><div class="detail-head"><div class="detail-head-left"><h2 id="dName"></h2><p id="dDesc"></p></div><button class="close-btn" onclick="closeDetail()">✕</button></div><div class="detail-body" id="dBody"></div></div></div>
 <script>
+
+let LANG = 'en';
+
+const UI = {
+  en: {
+    heroSub: 'All components, APIs & libraries. Complete with props, state, and interactive demos.',
+    searchPlaceholder: 'Search components, APIs, props...',
+    all: 'All',
+    core: 'Core',
+    important: 'Important',
+    advanced: 'Advanced',
+    library: 'Library',
+    whenToUse: 'When to Use',
+    level: 'Level',
+    propsTitle: 'Props / Parameters',
+    propDesc: 'Description',
+    stateTitle: 'Commonly Used State',
+    codeTitle: 'Usage Example',
+    demoTitle: 'Interactive Demo',
+  },
+  id: {
+    heroSub: 'Semua komponen, API & library. Lengkap dengan props, state, dan interactive demo.',
+    searchPlaceholder: 'Cari komponen, API, props...',
+    all: 'Semua',
+    core: 'Core',
+    important: 'Penting',
+    advanced: 'Advanced',
+    library: 'Library',
+    whenToUse: 'Kapan Dipake',
+    level: 'Level',
+    propsTitle: 'Props / Parameters',
+    propDesc: 'Deskripsi',
+    stateTitle: 'State yang Biasa Dipakai',
+    codeTitle: 'Contoh Penggunaan',
+    demoTitle: 'Interactive Demo',
+  }
+};
+
+function ui(key) { return UI[LANG][key] || UI['en'][key] || key; }
+
+// English translations for all data items, keyed by component/API name
+const EN = {
+  // === CORE UI ===
+  'View': {
+    desc: 'Main container for layout — equivalent to div on the web',
+    use: 'All layouts. This is the most basic container in React Native. Every screen starts with a View.',
+    gotcha: 'View has no built-in scroll. If content can overflow, wrap it with ScrollView. View also cannot display text directly — you must use <Text>.',
+    props: {
+      'style': 'Styling using Flexbox. Can be an array to merge styles.',
+      'onLayout': 'Called when layout changes. Event contains {x, y, width, height}.',
+      'accessible': 'Whether this view is an accessibility element.',
+      'accessibilityLabel': 'Label read by screen reader.',
+      'accessibilityRole': "Role for screen reader: 'button', 'header', 'image', etc.",
+      'accessibilityState': 'Accessibility state: {disabled, selected, checked, busy, expanded}.',
+      'testID': 'ID for testing (Detox, Appium).',
+      'pointerEvents': 'Controls whether the view can receive touch events.',
+      'collapsable': 'Android: view without children/style can be removed from native hierarchy for optimization.',
+      'nativeID': 'Native ID for reference from native code.',
+      'needsOffscreenAlphaCompositing': 'Render view to offscreen buffer before compositing. Useful for opacity animations.',
+      'hitSlop': 'Expand touch area without changing layout.',
+      'removeClippedSubviews': 'Optimization: unmount child views outside viewport (experimental).',
+      'onMoveShouldSetResponder': 'Gesture responder system — whether view wants to become responder on move.',
+    },
+    states: {
+      'layout': 'View size and position after layout engine calculates ({x, y, width, height}).',
+    }
+  },
+  'Text': {
+    desc: 'Render text — the only way to display strings',
+    use: 'ALL text must use Text. You cannot put strings directly in a View — it will throw an error.',
+    gotcha: 'Nested Text INHERITS parent Text styles (cascading), unlike View. This is similar to inline elements on the web.',
+    props: {
+      'style': 'Font size, weight, color, line height, text align, etc.',
+      'numberOfLines': 'Limit number of lines. Text will be truncated with ellipsis.',
+      'ellipsizeMode': 'Position of ellipsis when text is truncated.',
+      'selectable': 'User can select & copy text.',
+      'onPress': 'Handler when text is tapped. Makes Text act as a link.',
+      'onLongPress': 'Handler when text is long pressed.',
+      'onTextLayout': 'Layout info for each text line (lines array).',
+      'adjustsFontSizeToFit': 'iOS: auto-shrink font to fit container.',
+      'minimumFontScale': 'iOS: minimum scale for adjustsFontSizeToFit. Range 0-1.',
+      'allowFontScaling': 'Whether font follows system accessibility font size.',
+      'maxFontSizeMultiplier': 'Max font scaling limit. 0 = unlimited.',
+      'suppressHighlighting': 'iOS: suppress highlight when text is tapped.',
+      'disabled': 'Disable text press events.',
+      'dataDetectorType': 'Android: auto-detect phone, link, email.',
+      'lineBreakStrategyIOS': 'iOS 14+: line break strategy.',
+    },
+    states: {
+      'pressed': 'Whether text is currently pressed (when onPress is set).',
+    }
+  },
+  'Image': {
+    desc: 'Render local & remote images',
+    use: 'Product images, avatars, banners, bitmap icons. Can use URI or require() local.',
+    gotcha: 'Remote images MUST have explicit width & height — they do not auto-size like web <img>. No dimensions = nothing rendered!',
+    props: {
+      'source': "Image source: { uri: 'https://...' } or require('./img.png').",
+      'style': 'Width, height, borderRadius, tintColor, opacity, etc.',
+      'resizeMode': 'How image is resized to fit container.',
+      'onLoad': 'Called when image loads successfully.',
+      'onLoadStart': 'Called when loading starts.',
+      'onLoadEnd': 'Called when loading ends (success or failure).',
+      'onError': 'Called when image fails to load.',
+      'onProgress': 'iOS: download progress. event.nativeEvent.{loaded, total}.',
+      'blurRadius': 'Blur effect on image. Higher number = more blur.',
+      'loadingIndicatorSource': 'Placeholder image while loading.',
+      'defaultSource': 'iOS: default image before remote image loads.',
+      'fadeDuration': 'Android: fade-in animation duration (ms).',
+      'progressiveRenderingEnabled': 'Android: progressive JPEG rendering.',
+      'accessible': 'Accessibility flag.',
+      'accessibilityLabel': 'Alt text for screen reader.',
+      'tintColor': 'Tint color overlaid on image. Useful for icons.',
+      'crossOrigin': 'CORS mode for image request.',
+    },
+    states: {
+      'loading': 'Whether image is being downloaded/decoded.',
+      'error': 'Whether an error occurred during loading.',
+    }
+  },
+  'TextInput': {
+    desc: 'Text input from user',
+    use: 'Form inputs, search bars, chat inputs — anything needing user text entry.',
+    gotcha: 'Must be controlled (value + onChangeText) or uncontrolled. Do not mix — it can cause weird bugs.',
+    props: {
+      'value': 'Controlled value. Set this + onChangeText for controlled input.',
+      'defaultValue': 'Uncontrolled default value. Do not mix with value.',
+      'onChangeText': 'Called on every character change. Simpler version of onChange.',
+      'onChange': 'Raw event handler. Usually onChangeText is more practical.',
+      'placeholder': 'Placeholder text when input is empty.',
+      'placeholderTextColor': 'Placeholder color.',
+      'secureTextEntry': 'Hide text (for passwords).',
+      'multiline': 'Input can be multi-line (textarea).',
+      'numberOfLines': 'Android: number of visible lines when multiline.',
+      'maxLength': 'Maximum character limit.',
+      'keyboardType': 'Type of keyboard that appears.',
+      'returnKeyType': 'Label of return key on keyboard.',
+      'autoCapitalize': 'Auto capitalize behavior.',
+      'autoCorrect': 'Auto correct text.',
+      'autoComplete': "Hint for autofill: 'email', 'password', 'name', 'tel', etc.",
+      'autoFocus': 'Automatically focus when component mounts.',
+      'editable': 'Whether input can be edited.',
+      'selectTextOnFocus': 'Select all text on focus.',
+      'onFocus': 'Called when input gains focus.',
+      'onBlur': 'Called when input loses focus.',
+      'onSubmitEditing': 'Called when return key is pressed.',
+      'onEndEditing': 'Called when editing ends.',
+      'onSelectionChange': 'Called when selection changes.',
+      'onContentSizeChange': 'Multiline: called when content size changes.',
+      'blurOnSubmit': 'Blur input on submit. Set false for multiline.',
+      'textAlign': 'Text alignment in input.',
+      'textAlignVertical': 'Android: vertical alignment when multiline.',
+      'inputAccessoryViewID': 'iOS: ID for InputAccessoryView toolbar.',
+      'clearButtonMode': 'iOS: when clear button (×) appears.',
+      'enablesReturnKeyAutomatically': 'iOS: disable return key when input is empty.',
+      'ref': 'Ref for .focus(), .blur(), .clear(), .isFocused().',
+    },
+    states: {
+      'value (controlled)': 'Text string typed by user, managed via useState.',
+      'isFocused': 'Whether input is currently active/focused.',
+      'selection': 'Cursor/selection position: {start: number, end: number}.',
+    }
+  },
+  'Pressable': {
+    desc: 'Modern touchable — the one you should use',
+    use: 'All tappable elements: custom buttons, cards, list items. Replaces TouchableOpacity & friends.',
+    gotcha: "Style can be a function that receives { pressed } — use it for visual feedback. Don't forget hitSlop if tap area is small.",
+    props: {
+      'onPress': 'Called when tap completes (finger up).',
+      'onPressIn': 'Called when finger goes down.',
+      'onPressOut': 'Called when finger goes up.',
+      'onLongPress': 'Called on long press (~500ms).',
+      'delayLongPress': 'Duration (ms) before onLongPress fires.',
+      'disabled': 'Disable all press interactions.',
+      'style': 'Can be a function! Receives {pressed, hovered, focused}.',
+      'children': 'Can be a function too, same as style.',
+      'android_ripple': 'Android: ripple effect configuration.',
+      'android_disableSound': 'Android: disable click sound.',
+      'hitSlop': 'Expand touch area. Important for small targets.',
+      'pressRetentionOffset': 'Distance finger can move outside before press is cancelled.',
+      'unstable_pressDelay': 'Delay before pressed state activates (ms). Useful for ScrollView.',
+    },
+    states: {
+      'pressed': 'boolean — whether currently pressed. Accessed via callback style/children.',
+      'hovered': 'boolean — whether currently hovered (web/desktop).',
+      'focused': 'boolean — whether currently focused (keyboard/TV navigation).',
+    }
+  },
+  'Button': {
+    desc: 'Native OS button, very limited styling',
+    use: 'Quick prototyping only. In production, make a custom button from Pressable.',
+    gotcha: "Cannot change border radius, font, padding — nothing. Looks completely different on iOS vs Android.",
+    props: {
+      'title': 'Label text on button.',
+      'onPress': 'Handler when button is pressed.',
+      'color': 'iOS: text color. Android: background color.',
+      'disabled': 'Disable button (grayed out).',
+      'accessibilityLabel': 'Label for screen reader.',
+      'testID': 'ID for testing.',
+      'touchSoundDisabled': 'Android: disable click sound.',
+      'nextFocusDown': 'Android TV: next focus.',
+    },
+    states: {}
+  },
+  'SafeAreaView': {
+    desc: 'Avoid notch & home indicator',
+    use: 'Main screen wrapper so content is not covered by notch, status bar, or home indicator.',
+    gotcha: 'On Android the effect is minimal. For per-edge control, use react-native-safe-area-context (useSafeAreaInsets).',
+    props: {
+      'style': 'Container style. Usually flex: 1.',
+      'edges': '(react-native-safe-area-context) Which edges to pad.',
+      'mode': '(react-native-safe-area-context) Whether to use padding or margin.',
+    },
+    states: {
+      'insets': '(useSafeAreaInsets) Object {top, right, bottom, left} — inset values in points.',
+    }
+  },
+  'ScrollView': {
+    desc: 'Scrollable container for content',
+    use: 'Form pages, product details, settings. For long lists (>50 items), use FlatList instead.',
+    gotcha: 'ScrollView renders ALL children at once. Do not put 1000 items here — performance will be terrible.',
+    props: {
+      'contentContainerStyle': 'Style for inner container. NOT the outer ScrollView style.',
+      'horizontal': 'Horizontal scroll direction.',
+      'showsVerticalScrollIndicator': 'Show vertical scroll indicator.',
+      'showsHorizontalScrollIndicator': 'Show horizontal scroll indicator.',
+      'scrollEnabled': 'Enable/disable scrolling.',
+      'pagingEnabled': 'Snap to pages (full-screen swipe).',
+      'bounces': 'iOS: bounce effect at scroll edges.',
+      'overScrollMode': 'Android: overscroll glow effect.',
+      'refreshControl': 'Pull-to-refresh component (RefreshControl).',
+      'onScroll': 'Called on scroll. Event has contentOffset.',
+      'scrollEventThrottle': 'iOS: interval (ms) onScroll is called. Set 16 for smooth.',
+      'keyboardShouldPersistTaps': 'Keyboard behavior when tapping inside ScrollView.',
+      'keyboardDismissMode': 'When keyboard dismisses on scroll.',
+      'stickyHeaderIndices': 'Index of children that stick at top on scroll.',
+      'nestedScrollEnabled': 'Android: enable nested scrolling.',
+      'snapToInterval': 'Snap scroll to specific interval (px).',
+      'snapToOffsets': 'Snap to specific offsets.',
+      'decelerationRate': 'Deceleration speed after user lifts finger.',
+      'onMomentumScrollEnd': 'Called when momentum scroll finishes.',
+      'onScrollBeginDrag': 'Called when user starts dragging.',
+      'scrollTo({x,y,animated})': 'Imperative method: scroll to position via ref.',
+      'scrollToEnd({animated})': 'Imperative: scroll to end.',
+    },
+    states: {
+      'contentOffset': '{x, y} — current scroll position.',
+      'contentSize': '{width, height} — total content size.',
+      'layoutMeasurement': '{width, height} — visible area size.',
+    }
+  },
+  'FlatList': {
+    desc: 'High-performance list with virtualization',
+    use: 'Long lists: feeds, products, transactions, contacts. MUST use this for lists with many items.',
+    gotcha: 'keyExtractor MUST return a unique string. Forgetting this = re-render bugs that are very hard to debug.',
+    props: {
+      'data': 'Array of data to render.',
+      'renderItem': 'Function to render each item.',
+      'keyExtractor': 'Return unique string key. Critical for performance.',
+      'ListHeaderComponent': 'Component above the list (header).',
+      'ListFooterComponent': 'Component below the list (footer/loader).',
+      'ListEmptyComponent': 'Shown when data is empty.',
+      'ItemSeparatorComponent': 'Separator between items.',
+      'horizontal': 'Horizontal list.',
+      'numColumns': 'Grid layout. Cannot be used with horizontal.',
+      'inverted': 'Inverted list (chat-like). Last item at bottom.',
+      'onEndReached': 'Called when scroll approaches end. For infinite scroll.',
+      'onEndReachedThreshold': 'Distance to trigger onEndReached. 0.5 = 50% of visible height.',
+      'refreshControl': 'Pull-to-refresh.',
+      'onRefresh': 'Shortcut for pull-to-refresh (auto-wraps RefreshControl).',
+      'refreshing': 'Refreshing state (paired with onRefresh).',
+      'windowSize': 'Number of viewports to render. Smaller = saves memory.',
+      'initialNumToRender': 'Number of items for initial render.',
+      'maxToRenderPerBatch': 'Number of items per batch render.',
+      'removeClippedSubviews': 'Detach views outside viewport. Saves memory.',
+      'getItemLayout': 'HUGE optimization. Skip measurement if item height is fixed.',
+      'onViewableItemsChanged': 'Called when visible items change (analytics, lazy load).',
+      'viewabilityConfig': 'Config for onViewableItemsChanged.',
+      'extraData': 'Trigger re-render when data outside the data prop changes.',
+      'scrollToIndex({index})': 'Imperative: scroll to specific item.',
+      'scrollToOffset({offset})': 'Imperative: scroll to offset.',
+    },
+    states: {
+      'data': 'Data array from state/store.',
+      'refreshing': 'boolean — whether pull-to-refresh is active.',
+      'loading / loadingMore': 'boolean — state for initial and pagination load.',
+    }
+  },
+  'SectionList': {
+    desc: 'FlatList with section headers',
+    use: 'Lists that need grouping: A-Z contacts, transactions by date, menu by category.',
+    gotcha: 'Data format differs from FlatList — must be array of { title, data[] }. Easy to forget this.',
+    props: {
+      'sections': 'Array of section objects. Each section has a data array.',
+      'renderItem': 'Render each item. Also receives section info.',
+      'renderSectionHeader': 'Render section header.',
+      'renderSectionFooter': 'Render section footer.',
+      'keyExtractor': 'Unique key per item.',
+      'stickySectionHeadersEnabled': 'Section header sticks at top on scroll.',
+      'ListHeaderComponent': 'Header above all sections.',
+      'ListEmptyComponent': 'Shown when all sections are empty.',
+      'SectionSeparatorComponent': 'Separator between sections.',
+      'ItemSeparatorComponent': 'Separator between items within a section.',
+      'onEndReached': 'Infinite scroll callback.',
+      'refreshControl': 'Pull-to-refresh.',
+    },
+    states: {
+      'sections data': 'Array of sections from state/API.',
+    }
+  },
+  'KeyboardAvoidingView': {
+    desc: 'Shift content when keyboard appears',
+    use: 'Screens with TextInput at bottom — chat, login, checkout form.',
+    gotcha: 'behavior MUST differ between iOS and Android. Always use Platform.OS check.',
+    props: {
+      'behavior': "How to avoid keyboard. iOS: 'padding'. Android: 'height'.",
+      'keyboardVerticalOffset': 'Additional offset. Adjust if there is a header/tabbar.',
+      'contentContainerStyle': "Inner container style (only for behavior='position').",
+      'enabled': 'Enable/disable keyboard avoiding.',
+      'style': 'Outer container style.',
+    },
+    states: {
+      'keyboardHeight': 'Current keyboard height (from Keyboard API).',
+    }
+  },
+  'Modal': {
+    desc: 'Built-in React Native full-screen overlay',
+    use: 'Bottom sheet, confirm dialog, image viewer, onboarding overlay, picker.',
+    gotcha: "onRequestClose is REQUIRED on Android — called when back button is pressed. Without this, modal can't be closed with back.",
+    props: {
+      'visible': 'Controls whether modal is displayed.',
+      'transparent': 'Transparent background (for custom overlay).',
+      'animationType': 'Enter/exit animation type.',
+      'onRequestClose': 'REQUIRED on Android. Called when back button is pressed.',
+      'onShow': 'Called after modal is visible.',
+      'onDismiss': 'iOS: called after modal is dismissed.',
+      'statusBarTranslucent': 'Android: modal extends under status bar.',
+      'presentationStyle': 'iOS: modal presentation style.',
+      'supportedOrientations': 'iOS: supported orientations.',
+      'hardwareAccelerated': 'Android: hardware acceleration.',
+    },
+    states: {
+      'visible / isOpen': 'boolean — controls open/close modal via useState.',
+    }
+  },
+  'ActivityIndicator': {
+    desc: 'Native loading spinner',
+    use: 'Loading states: data fetch, form submit, processing.',
+    gotcha: 'Just a standard spinner. For skeleton loaders or custom loading, build your own or use a library.',
+    props: {
+      'animating': 'Whether spinner is spinning. False = hide.',
+      'size': 'Spinner size. Number only on Android.',
+      'color': 'Spinner color.',
+      'hidesWhenStopped': 'iOS: hide when animating=false.',
+    },
+    states: {
+      'isLoading': 'boolean — usually from fetch/mutation state.',
+    }
+  },
+  'Alert': {
+    desc: 'Native OS alert dialog',
+    use: 'Confirm destructive actions, error messages, simple prompts.',
+    gotcha: 'Alert.prompt() is iOS only. For Android, create a custom input modal.',
+    props: {
+      'Alert.alert(title, message?, buttons?, options?)': 'Display alert dialog.',
+      'title': 'Alert title.',
+      'message': 'Detail message.',
+      'buttons': "Array of buttons. Max 3 on iOS. style: 'default'|'cancel'|'destructive'.",
+      'options': 'Android: cancelable (tap outside to dismiss). iOS: userInterfaceStyle.',
+      'Alert.prompt(title, msg?, callbackOrButtons?, type?, defaultValue?)': 'Alert with text input. iOS ONLY.',
+    },
+    states: {}
+  },
+  'StatusBar': {
+    desc: 'Control OS status bar',
+    use: 'Set status bar color/style per screen.',
+    gotcha: 'On Android, backgroundColor only works when translucent={false}.',
+    props: {
+      'barStyle': 'Status bar icon color.',
+      'backgroundColor': 'Android: status bar background color.',
+      'translucent': 'Android: content below status bar.',
+      'hidden': 'Hide status bar.',
+      'animated': 'Animate transition changes.',
+      'networkActivityIndicatorVisible': 'iOS: network activity indicator.',
+      'showHideTransition': 'iOS: show/hide animation.',
+    },
+    states: {}
+  },
+  'TouchableOpacity': {
+    desc: 'Touchable with opacity feedback (legacy)',
+    use: 'Legacy. Still common in old codebases. For new code, use Pressable.',
+    gotcha: 'Deprecated de facto. Pressable is more flexible and modern.',
+    props: {
+      'onPress': 'Tap handler.',
+      'onLongPress': 'Long press handler.',
+      'activeOpacity': 'Opacity when pressed (0-1).',
+      'disabled': 'Disable interaction.',
+      'style': 'Container style.',
+      'delayPressIn': 'Delay before opacity changes (ms).',
+      'delayPressOut': 'Delay before opacity returns to normal (ms).',
+      'delayLongPress': 'Long press duration (ms).',
+    },
+    states: {}
+  },
+  // === CORE APIS ===
+  'AppState': {
+    desc: 'Detect app foreground/background/inactive',
+    use: 'Refresh data when app returns active, pause video/audio when backgrounded, session tracking.',
+    gotcha: "Always remove listener in useEffect cleanup. Memory leak if forgotten. On iOS there's an 'inactive' state (transitional).",
+    props: {
+      'AppState.currentState': 'Current app state.',
+      'AppState.addEventListener(\'change\', handler)': 'Listen for state changes. Returns subscription.',
+      'AppState.addEventListener(\'memoryWarning\', handler)': 'iOS: memory warning notification.',
+      'AppState.addEventListener(\'focus\', handler)': 'App gains focus.',
+      'AppState.addEventListener(\'blur\', handler)': 'App loses focus.',
+    },
+    states: {
+      'appState': "'active' | 'background' | 'inactive' — current app state.",
+    }
+  },
+  'Platform': {
+    desc: 'Detect OS, version, and platform branching',
+    use: 'Code branching iOS vs Android, platform-specific styling, check OS version.',
+    gotcha: 'Shadow CSS differs completely: iOS uses shadowColor/shadowOffset, Android uses elevation.',
+    props: {
+      'Platform.OS': 'Current OS.',
+      'Platform.Version': 'OS version. Android: API level (number). iOS: version string.',
+      'Platform.select({ios, android, default})': 'Return value based on platform.',
+      'Platform.isPad': 'iOS: whether iPad.',
+      'Platform.isTV': 'Whether TV platform.',
+      'Platform.isTesting': 'Whether in test environment.',
+      'Platform.constants': 'Platform-specific constants.',
+    },
+    states: {}
+  },
+  'Linking': {
+    desc: 'Open URL, deep link, external app',
+    use: 'Open browser, email, WhatsApp, phone, deep link to specific screen.',
+    gotcha: "Always check canOpenURL() first — target app may not be installed. On iOS you need to whitelist URL schemes in Info.plist.",
+    props: {
+      'Linking.openURL(url)': 'Open URL. Can be http, tel, mailto, custom scheme.',
+      'Linking.canOpenURL(url)': 'Check if URL can be opened.',
+      'Linking.getInitialURL()': 'URL that opened the app (cold start deep link).',
+      'Linking.addEventListener(\'url\', handler)': 'Listen for deep links while app is running.',
+      'Linking.sendIntent(action, extras)': 'Android: send intent to another app.',
+    },
+    states: {
+      'initialUrl': 'URL that first opened the app.',
+    }
+  },
+  'Keyboard': {
+    desc: 'Control & listen to keyboard events',
+    use: 'Dismiss keyboard, listen to show/hide, adjust layout based on keyboard height.',
+    gotcha: 'keyboardWillShow is iOS only. Android uses keyboardDidShow. Timing differs!',
+    props: {
+      'Keyboard.dismiss()': 'Dismiss keyboard programmatically.',
+      'Keyboard.addListener(\'keyboardDidShow\', handler)': 'Keyboard has appeared.',
+      'Keyboard.addListener(\'keyboardDidHide\', handler)': 'Keyboard has hidden.',
+      'Keyboard.addListener(\'keyboardWillShow\', handler)': 'Keyboard will appear (with height info).',
+      'Keyboard.addListener(\'keyboardWillHide\', handler)': 'Keyboard will hide.',
+      'Keyboard.addListener(\'keyboardWillChangeFrame\', handler)': 'Keyboard frame is changing.',
+      'Keyboard.metrics()': 'Last keyboard metrics.',
+      'Keyboard.isVisible()': 'Whether keyboard is currently visible.',
+      'Keyboard.scheduleLayoutAnimation(event)': 'Schedule LayoutAnimation matching keyboard animation.',
+    },
+    states: {
+      'keyboardHeight': 'number — current keyboard height.',
+      'isKeyboardVisible': 'boolean — whether keyboard is currently showing.',
+    }
+  },
+  'Dimensions': {
+    desc: 'Get screen & window dimensions',
+    use: 'Responsive layout, positioning, size calculations.',
+    gotcha: 'Not reactive on rotation. Use useWindowDimensions() hook for reactive updates.',
+    props: {
+      'Dimensions.get(\'window\')': 'Window size (without system UI).',
+      'Dimensions.get(\'screen\')': 'Full screen size (including system UI).',
+      'Dimensions.addEventListener(\'change\', handler)': 'Listen for dimension changes (rotation, resize).',
+      'Dimensions.set(dims)': 'Override dimensions (rare use case).',
+    },
+    states: {}
+  },
+  'Vibration': {
+    desc: 'Trigger haptic/vibration feedback',
+    use: 'Feedback for important actions, errors, success, notifications.',
+    gotcha: 'iOS only supports single short vibration built-in. For rich haptics, use react-native-haptic-feedback.',
+    props: {
+      'Vibration.vibrate(duration?)': 'Single vibration. Duration on Android only.',
+      'Vibration.vibrate(pattern, repeat?)': 'Pattern vibration [wait, vibrate, wait, vibrate...].',
+      'Vibration.cancel()': 'Stop vibration.',
+    },
+    states: {}
+  },
+  'BackHandler': {
+    desc: 'Handle Android back button',
+    use: 'Custom back behavior, prevent exit, close modal with back button.',
+    gotcha: 'Return true = block default back. Return false = allow default. Android only.',
+    props: {
+      'BackHandler.addEventListener(\'hardwareBackPress\', handler)': 'Listen for back button press.',
+      'BackHandler.exitApp()': 'Force exit app.',
+      'BackHandler.removeEventListener(\'hardwareBackPress\', handler)': 'Legacy: remove listener.',
+    },
+    states: {}
+  },
+  'RefreshControl': {
+    desc: 'Pull-to-refresh component',
+    use: 'Refresh feed, reload latest data.',
+    gotcha: 'refreshing must be set to false after fetch completes, otherwise spinner never stops.',
+    props: {
+      'refreshing': 'Whether currently refreshing. MUST be controlled.',
+      'onRefresh': 'Called when user pulls to refresh.',
+      'colors': 'Android: array of spinner colors.',
+      'tintColor': 'iOS: spinner color.',
+      'title': 'iOS: text below spinner.',
+      'titleColor': 'iOS: title text color.',
+      'progressBackgroundColor': 'Android: spinner background.',
+      'progressViewOffset': 'Android: spinner offset from top.',
+      'size': 'Android: spinner size.',
+      'enabled': 'Android: enable/disable.',
+    },
+    states: {
+      'refreshing': 'boolean — controlled state.',
+    }
+  },
+  // === STYLING ===
+  'StyleSheet': {
+    desc: 'Create optimized stylesheets',
+    use: 'Define styles outside components. Faster than inline objects.',
+    gotcha: 'No CSS selectors, pseudo-classes, cascade, or media queries. All styles are explicit.',
+    props: {
+      'StyleSheet.create(styles)': 'Create stylesheet. Auto-validates and optimizes.',
+      'StyleSheet.flatten(style)': 'Flatten array of styles into one object.',
+      'StyleSheet.compose(style1, style2)': 'Compose two styles.',
+      'StyleSheet.hairlineWidth': '1 physical pixel. For ultra-thin borders.',
+      'StyleSheet.absoluteFillObject': "Shortcut: {position:'absolute', left:0, right:0, top:0, bottom:0}.",
+      'StyleSheet.absoluteFill': 'Same but as a registered style ID.',
+    },
+    states: {}
+  },
+  'Flexbox Layout': {
+    desc: 'Default layout system in React Native',
+    use: 'ALL layouts in RN. Flexbox is the default — no need to declare display: flex.',
+    gotcha: 'flexDirection defaults to COLUMN in RN, not row like web CSS. This often causes confusion.',
+    props: {
+      'flex': 'Space ratio taken. flex: 1 = take all remaining space.',
+      'flexDirection': 'Main axis direction. DEFAULT is COLUMN, not row!',
+      'justifyContent': 'Distribution along main axis.',
+      'alignItems': 'Alignment on cross axis.',
+      'alignSelf': 'Override alignItems for a specific child.',
+      'flexWrap': 'Wrap children to next line.',
+      'gap': 'Gap between children (since RN 0.71).',
+      'rowGap': 'Gap between rows specifically.',
+      'columnGap': 'Gap between columns specifically.',
+      'flexGrow': 'How much an item can grow.',
+      'flexShrink': 'How much an item can shrink.',
+      'flexBasis': 'Initial size before grow/shrink.',
+      'position': 'Positioning. Absolute = out of flow.',
+      'overflow': 'Overflow handling.',
+      'display': 'Show/hide element.',
+      'zIndex': 'Stacking order.',
+    },
+    states: {}
+  },
+  // === NAVIGATION ===
+  'Stack Navigator': {
+    desc: 'Push/pop screens like a stack of cards',
+    use: 'Standard flow: Home → Detail, Login → OTP → Success, onboarding steps.',
+    gotcha: "navigate() doesn't push if screen already exists in stack. Use push() if you want duplicates.",
+    props: {
+      'Stack.Navigator': 'Navigator container.',
+      'screenOptions': 'Default options for all screens.',
+      'initialRouteName': 'First screen to display.',
+      'Stack.Screen': 'Screen definition.',
+      'name': 'Route name (unique).',
+      'component': 'Screen component.',
+      'options': 'Per-screen options (title, headerStyle, etc).',
+      'initialParams': 'Default params for screen.',
+      'navigation.navigate(name, params?)': 'Navigate to screen.',
+      'navigation.push(name, params?)': 'Push new screen onto stack (can duplicate).',
+      'navigation.goBack()': 'Go back to previous screen.',
+      'navigation.pop(n?)': 'Pop n screens from stack.',
+      'navigation.popToTop()': 'Go back to first screen.',
+      'navigation.replace(name, params?)': 'Replace current screen.',
+      'navigation.reset({routes})': 'Reset stack navigation state.',
+      'navigation.setOptions(options)': 'Update screen options dynamically.',
+      'route.params': 'Parameters sent to screen.',
+      'route.name': 'Current route name.',
+      'route.key': 'Unique key for route instance.',
+    },
+    states: {
+      'navigation state': 'Stack of screens managed by React Navigation.',
+      'route.params': 'Data passed between screens.',
+    }
+  },
+  'Tab Navigator': {
+    desc: 'Bottom tab navigation',
+    use: 'Main app navigation: Home, Search, Cart, Profile.',
+    gotcha: 'All tab screens are mounted at once. Use lazy: true for optimization.',
+    props: {
+      'Tab.Navigator': 'Tab navigator container.',
+      'screenOptions': 'Default options. Usually set tabBarIcon here.',
+      'tabBarIcon': 'Icon per tab.',
+      'tabBarLabel': 'Label text per tab.',
+      'tabBarStyle': 'Tab bar container style.',
+      'tabBarActiveTintColor': 'Icon/label color when active.',
+      'tabBarInactiveTintColor': 'Icon/label color when inactive.',
+      'tabBarBadge': 'Notification badge on tab icon.',
+      'tabBarShowLabel': 'Show label text.',
+      'tabBarHideOnKeyboard': 'Hide tab bar when keyboard appears.',
+      'lazy': 'Lazy mount screens on first visit.',
+    },
+    states: {
+      'focused tab': 'Which tab is currently active.',
+    }
+  },
+  // === GESTURE & ANIMATION ===
+  'Reanimated': {
+    desc: '60/120fps animations on UI thread',
+    use: 'Smooth animations: swipe cards, shared elements, scroll-driven animations, micro-interactions.',
+    gotcha: 'Worklet functions must be pure — no JS side effects allowed. Use runOnJS() to access JS.',
+    props: {
+      'useSharedValue(initialValue)': 'Animatable value. Like useRef but can animate.',
+      'useAnimatedStyle(() => style)': 'Style reactive to shared values.',
+      'withSpring(toValue, config?)': 'Spring animation (bouncy).',
+      'withTiming(toValue, config?)': 'Timing animation (easing).',
+      'withSequence(...animations)': 'Run animations sequentially.',
+      'withRepeat(animation, count, reverse)': 'Repeat animation.',
+      'withDelay(delay, animation)': 'Delay before animation.',
+      'interpolate(value, input, output)': 'Map value range to another range.',
+      'useAnimatedScrollHandler': 'Scroll handler running on UI thread.',
+      'Animated.View / .Text / .Image': 'Animatable view components.',
+      'useDerivedValue(() => value)': 'Derived from other shared values (computed).',
+      'runOnJS(fn)(...args)': 'Call JS function from worklet (UI thread).',
+      'cancelAnimation(sharedValue)': 'Cancel running animation.',
+      'measure(animatedRef)': 'Measure layout on UI thread.',
+      'useAnimatedRef()': 'Ref usable in worklets.',
+      'Easing (module)': 'Easing functions: linear, ease, bezier, etc.',
+    },
+    states: {
+      'sharedValue.value': 'Animated value — assignable, triggers animation.',
+    }
+  },
+  'Gesture Handler': {
+    desc: 'Smooth & reliable gesture handling',
+    use: 'Swipe to delete, drag & drop, pinch to zoom, double tap. React Navigation dependency.',
+    gotcha: 'MUST wrap root app with GestureHandlerRootView. Without this, all gestures will not work.',
+    props: {
+      'GestureDetector': 'Wrapper component for gestures. Uses Gesture API (v2).',
+      'Gesture.Pan()': 'Drag/swipe gesture.',
+      'Gesture.Tap()': 'Tap gesture (single/double).',
+      'Gesture.Pinch()': 'Pinch to zoom.',
+      'Gesture.Rotation()': 'Rotation gesture.',
+      'Gesture.LongPress()': 'Long press gesture.',
+      'Gesture.Fling()': 'Quick swipe/fling gesture.',
+      'Gesture.Race(...gestures)': 'First matching gesture wins.',
+      'Gesture.Simultaneous(...gestures)': 'Gestures can run simultaneously.',
+      'Gesture.Exclusive(...gestures)': 'Mutually exclusive gestures.',
+      '.onBegin(callback)': 'Gesture begins.',
+      '.onUpdate(callback)': 'Gesture updates (continuous).',
+      '.onEnd(callback)': 'Gesture ends.',
+      '.onFinalize(callback)': 'Gesture finalized (after any state).',
+      '.minDistance(d)': 'Pan: minimum distance before gesture activates.',
+      '.numberOfTaps(n)': 'Tap: number of taps required (double tap = 2).',
+      '.enabled(boolean)': 'Enable/disable gesture.',
+      'GestureHandlerRootView': 'MUST wrap root app. Without this gestures will not work.',
+    },
+    states: {
+      'gesture state': 'Gesture state: UNDETERMINED, BEGAN, ACTIVE, END, CANCELLED, FAILED.',
+      'translationX/Y': 'Drag distance from starting point.',
+      'velocityX/Y': 'Gesture velocity.',
+      'scale': 'Pinch scale factor.',
+      'rotation': 'Rotation angle (radians).',
+    }
+  },
+  // === PERFORMANCE ===
+  'FlashList': {
+    desc: 'FlatList drop-in replacement, 10x faster',
+    use: 'Complex lists where FlatList feels slow: trading apps, social feeds, e-commerce.',
+    gotcha: 'estimatedItemSize MUST be set. The more accurate = the better performance.',
+    props: {
+      'data': 'Data array.',
+      'renderItem': 'Render function.',
+      'estimatedItemSize': 'Estimated item height. MUST be set.',
+      'keyExtractor': 'Unique key.',
+      'overrideItemLayout': 'Override layout per-item (variable height).',
+      'drawDistance': 'Distance (px) outside viewport that is still rendered.',
+      'estimatedListSize': 'Estimated list container size.',
+      'horizontal': 'Horizontal list.',
+      'numColumns': 'Grid columns.',
+      'inverted': 'Inverted list.',
+      'ListHeaderComponent': 'Header.',
+      'ListFooterComponent': 'Footer.',
+      'ListEmptyComponent': 'Empty state.',
+      'onEndReached': 'Infinite scroll.',
+      'onEndReachedThreshold': 'Trigger threshold.',
+      'refreshControl': 'Pull-to-refresh.',
+    },
+    states: {}
+  },
+  // === FORMS ===
+  'react-hook-form': {
+    desc: 'Efficient form state & validation',
+    use: 'Any form with validation. Minimal re-renders compared to Formik.',
+    gotcha: 'In RN use Controller, not register. register is for web <input> only.',
+    props: {
+      'useForm(options?)': 'Main hook. Returns control, handleSubmit, formState, etc.',
+      'control': 'Pass to Controller component.',
+      'handleSubmit(onValid, onInvalid?)': 'Wrap submit handler — auto validates.',
+      'formState.errors': 'Error object per field.',
+      'formState.isSubmitting': 'Whether form is submitting.',
+      'formState.isValid': 'Whether all fields are valid.',
+      'formState.isDirty': 'Whether any field has changed.',
+      'formState.dirtyFields': 'Which fields have changed.',
+      'formState.touchedFields': 'Which fields have been focused.',
+      'watch(name?)': 'Watch field value (triggers re-render).',
+      'setValue(name, value)': 'Set field value programmatically.',
+      'getValues(name?)': 'Get values without re-render.',
+      'reset(values?)': 'Reset form to default values.',
+      'setError(name, error)': 'Set error manually (server validation).',
+      'clearErrors(name?)': 'Clear errors.',
+      'trigger(name?)': 'Trigger validation manually.',
+      'Controller': 'Wrapper for controlled components in RN.',
+      'rules': 'Validation rules: required, min, max, pattern, validate, etc.',
+    },
+    states: {
+      'form values': 'All field values — managed internally by react-hook-form.',
+      'errors': 'Error object per field.',
+      'isSubmitting': 'boolean.',
+      'isDirty': 'boolean.',
+    }
+  },
+  // === ADVANCED ===
+  'Native Modules': {
+    desc: 'Bridge to Swift/Kotlin code',
+    use: "Features not available in RN: Face ID, custom camera, payment SDK, Bluetooth.",
+    gotcha: 'Requires writing native code (Swift/Kotlin). Check first if a library already wraps this.',
+    props: {
+      'NativeModules.ModuleName': 'Access native module from JS.',
+      '.method(args)': 'Call native method.',
+      '@ReactMethod (Android)': 'Annotation to mark Kotlin/Java method as accessible from JS.',
+      '@objc func (iOS)': 'Keyword to mark Swift method as accessible from JS.',
+      'NativeEventEmitter': 'Listen for events from native to JS.',
+      'requiresMainQueueSetup (iOS)': 'iOS: module needs setup on main thread.',
+    },
+    states: {}
+  },
+  'New Architecture': {
+    desc: 'Fabric + TurboModules + JSI',
+    use: 'RN 0.71+. Better performance, sync communication between JS and native.',
+    gotcha: 'Not all libraries support it yet. Check compatibility before enabling.',
+    props: {
+      'Fabric': 'New rendering engine. Synchronous layout measurement.',
+      'TurboModules': 'Lazy-loaded native modules. Faster startup.',
+      'JSI (JavaScript Interface)': 'Sync JS ↔ Native communication without bridge overhead.',
+      'Codegen': 'Auto-generate type-safe specs for native modules.',
+      'Bridgeless mode': 'No bridge at all — full JSI.',
+      'newArchEnabled': 'Flag to enable new architecture.',
+    },
+    states: {}
+  },
+};
+
+function tDesc(item) {
+  if (LANG === 'en' && EN[item.name]) return EN[item.name].desc || item.desc;
+  return item.desc;
+}
+function tUse(item) {
+  var d = item.detail;
+  if (LANG === 'en' && EN[item.name]) return EN[item.name].use || d.use;
+  return d.use;
+}
+function tGotcha(item) {
+  var d = item.detail;
+  if (LANG === 'en' && EN[item.name]) return EN[item.name].gotcha || d.gotcha;
+  return d.gotcha;
+}
+function tPropDs(item, propName) {
+  if (LANG === 'en' && EN[item.name] && EN[item.name].props && EN[item.name].props[propName])
+    return EN[item.name].props[propName];
+  return null;
+}
+function tStateDs(item, stateName) {
+  if (LANG === 'en' && EN[item.name] && EN[item.name].states && EN[item.name].states[stateName])
+    return EN[item.name].states[stateName];
+  return null;
+}
+
+function setLang(l) {
+  LANG = l;
+  document.getElementById('langEN').classList.toggle('active', l === 'en');
+  document.getElementById('langID').classList.toggle('active', l === 'id');
+  document.documentElement.lang = l;
+  document.querySelector('.hero p').textContent = ui('heroSub');
+  document.getElementById('searchInput').placeholder = ui('searchPlaceholder');
+  renderFilters();
+  renderSections();
+  applyFilters();
+  // Re-open detail if it was open
+  var overlay = document.getElementById('overlay');
+  if (overlay.classList.contains('open')) {
+    var name = document.getElementById('dName').textContent;
+    if (name) openDetail(name);
+  }
+}
+
+const SEC_SUB = {
+  id: {
+    'core-ui': 'Official React Native',
+    'core-api': 'Built-in React Native',
+    'styling': 'Core styling di React Native',
+    'navigation': 'React Navigation',
+    'gesture': 'Production-level UX',
+    'performance': 'Untuk data besar',
+    'forms': 'State management form',
+    'advanced': 'Senior / Engineering level',
+  }
+};
+function tSecSub(sec) {
+  if (LANG !== 'en' && SEC_SUB[LANG] && SEC_SUB[LANG][sec.id]) return SEC_SUB[LANG][sec.id];
+  return sec.sub;
+}
+
+
 const DATA = { sections: [
 // ──────────────────── SECTION 1: CORE UI ────────────────────
 {
@@ -1255,7 +2078,7 @@ const onRefresh = async () => {
 },
 // ──────────────────── SECTION 3: STYLING ────────────────────
 {
-  id:"styling", icon:"🎨", title:"Styling System", sub:"Core styling di React Native",
+  id:"styling", icon:"🎨", title:"Styling System", sub:"Core React Native styling",
   groups:[
     { label:"", items:[
 { name:"StyleSheet", badge:"core", desc:"Buat stylesheet yang dioptimasi",
@@ -1651,7 +2474,7 @@ const SwipeableCard = () => {
 },
 // ──────────────────── SECTION 6: PERFORMANCE ────────────────────
 {
-  id:"performance", icon:"⚡", title:"Performance & Lists", sub:"Untuk data besar",
+  id:"performance", icon:"⚡", title:"Performance & Lists", sub:"For large datasets",
   groups:[
     { label:"", items:[
 { name:"FlashList", badge:"important", desc:"FlatList drop-in replacement, 10x lebih cepat",
@@ -1908,14 +2731,15 @@ sub.remove();
 
 
 let activeFilter='all';
-const BL={core:'Core',important:'Penting',advanced:'Advanced',library:'Library'};
+function BLget(k){var m={en:{core:'Core',important:'Important',advanced:'Advanced',library:'Library'},id:{core:'Core',important:'Penting',advanced:'Advanced',library:'Library'}};return (m[LANG]||m['en'])[k]||k;}
+const BL={core:'Core',important:'Important',advanced:'Advanced',library:'Library'};
 function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function init(){renderFilters();renderSections();updateStats();}
 function renderFilters(){
-  const bar=document.getElementById('filterBar');
+  const bar=document.getElementById('filterBar');bar.innerHTML='';
   ['all','core','important','advanced','library'].forEach(f=>{
-    const b=document.createElement('button');b.className='fbtn'+(f==='all'?' active':'');b.dataset.f=f;
-    b.textContent=f==='all'?'Semua':BL[f]||f;
+    const b=document.createElement('button');b.className='fbtn'+(f===activeFilter?' active':'');b.dataset.f=f;
+    b.textContent=f==='all'?ui('all'):BLget(f);
     b.onclick=()=>{activeFilter=f;document.querySelectorAll('.fbtn').forEach(x=>x.classList.toggle('active',x.dataset.f===f));applyFilters();};
     bar.appendChild(b);
   });
@@ -1924,14 +2748,14 @@ function renderSections(){
   const root=document.getElementById('sectionsRoot');root.innerHTML='';
   DATA.sections.forEach(sec=>{
     const tot=sec.groups.reduce((a,g)=>a+g.items.length,0);
-    let h=`<div class="section" id="sec-${sec.id}"><div class="sec-head"><span class="sec-icon">${sec.icon}</span><span class="sec-title">${sec.title}</span><span class="sec-sub">${sec.sub}</span><span class="sec-count">${tot}</span></div>`;
+    let h=`<div class="section" id="sec-${sec.id}"><div class="sec-head"><span class="sec-icon">${sec.icon}</span><span class="sec-title">${sec.title}</span><span class="sec-sub">${tSecSub(sec)}</span><span class="sec-count">${tot}</span></div>`;
     sec.groups.forEach(g=>{
       h+=`<div class="sub-group">`;
       if(g.label)h+=`<div class="group-label">${g.label}</div>`;
       h+=`<div class="grid">`;
       g.items.forEach(item=>{
         const en=escapeHtml(item.name),ed=escapeHtml(item.desc);
-        h+=`<div class="card" data-name="${en}" data-badge="${item.badge}" data-desc="${ed}" onclick='openDetail(${JSON.stringify(item.name)})'><div class="card-top"><span class="card-name">${en}</span><span class="badge badge-${item.badge}">${BL[item.badge]||item.badge}</span></div><div class="card-desc">${ed}</div></div>`;
+        var td=escapeHtml(tDesc(item));h+=`<div class="card" data-name="${en}" data-badge="${item.badge}" data-desc="${td}" onclick='openDetail(${JSON.stringify(item.name)})'><div class="card-top"><span class="card-name">${en}</span><span class="badge badge-${item.badge}">${BLget(item.badge)}</span></div><div class="card-desc">${td}</div></div>`;
       });
       h+=`</div></div>`;
     });
@@ -1939,17 +2763,7 @@ function renderSections(){
     root.insertAdjacentHTML('beforeend',h);
   });
 }
-function updateStats(){
-  const vis=document.querySelectorAll('.card:not(.hidden)');
-  let c={t:vis.length,core:0,imp:0,adv:0,lib:0};
-  vis.forEach(x=>{const b=x.dataset.badge;if(b==='core')c.core++;else if(b==='important')c.imp++;else if(b==='advanced')c.adv++;else if(b==='library')c.lib++;});
-  document.getElementById('stats').innerHTML=`
-    <div class="stat-item"><div class="stat-num">${c.t}</div><div class="stat-label">Total</div></div>
-    <div class="stat-item"><div class="stat-num sn-c">${c.core}</div><div class="stat-label">Core</div></div>
-    <div class="stat-item"><div class="stat-num sn-i">${c.imp}</div><div class="stat-label">Important</div></div>
-    <div class="stat-item"><div class="stat-num sn-a">${c.adv}</div><div class="stat-label">Advanced</div></div>
-    <div class="stat-item"><div class="stat-num sn-l">${c.lib}</div><div class="stat-label">Library</div></div>`;
-}
+function updateStats(){}
 function applyFilters(){
   const q=document.getElementById('searchInput').value.toLowerCase();
   document.querySelectorAll('.card').forEach(c=>{
@@ -1969,40 +2783,42 @@ function openDetail(name){
   const item=findItem(name);if(!item)return;
   const d=item.detail;
   document.getElementById('dName').textContent=item.name;
-  document.getElementById('dDesc').textContent=item.desc;
+  document.getElementById('dDesc').textContent=tDesc(item);
   const body=document.getElementById('dBody');
   let h='';
 
   // 1) OVERVIEW
+  var _use = tUse(item) || '';
+  var _gotcha = tGotcha(item) || '';
   h+=`<div class="d-section"><div class="d-section-title">Overview</div>
     <div class="info-row">
-      <div class="info-box"><h4>Kapan Dipake</h4><p>${d.use||''}</p></div>
-      <div class="info-box"><h4>Level</h4><p><span class="badge badge-${item.badge}" style="font-size:.7rem;padding:3px 10px">${BL[item.badge]}</span></p></div>
+      <div class="info-box"><h4>${ui('whenToUse')}</h4><p>${_use}</p></div>
+      <div class="info-box"><h4>${ui('level')}</h4><p><span class="badge badge-${item.badge}" style="font-size:.7rem;padding:3px 10px">${BLget(item.badge)}</span></p></div>
     </div>
-    ${d.gotcha?`<div class="gotcha-box" style="margin-top:.75rem"><p>⚠️ ${d.gotcha}</p></div>`:''}
+    ${_gotcha?`<div class="gotcha-box" style="margin-top:.75rem"><p>⚠️ ${_gotcha}</p></div>`:''}
   </div>`;
 
   // 2) PROPS TABLE
   if(d.props&&d.props.length){
-    h+=`<div class="d-section"><div class="d-section-title">Props / Parameters</div>
-      <div class="props-wrap"><table class="props-table"><thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Req</th><th>Deskripsi</th></tr></thead><tbody>`;
+    h+=`<div class="d-section"><div class="d-section-title">${ui('propsTitle')}</div>
+      <div class="props-wrap"><table class="props-table"><thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Req</th><th>${ui('propDesc')}</th></tr></thead><tbody>`;
     d.props.forEach(p=>{
       if(typeof p==='string'){h+=`<tr><td class="prop-name">${escapeHtml(p)}</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>`;}
-      else{h+=`<tr><td class="prop-name">${escapeHtml(p.n)}</td><td class="prop-type">${escapeHtml(p.t||'-')}</td><td class="prop-default">${escapeHtml(p.d||'-')}</td><td>${p.r?'<span class="prop-req">YES</span>':'<span class="prop-opt">no</span>'}</td><td class="prop-desc">${escapeHtml(p.ds||'-')}</td></tr>`;}
+      else{var _pds=tPropDs(item,p.n)||p.ds||'-';h+=`<tr><td class="prop-name">${escapeHtml(p.n)}</td><td class="prop-type">${escapeHtml(p.t||'-')}</td><td class="prop-default">${escapeHtml(p.d||'-')}</td><td>${p.r?'<span class="prop-req">YES</span>':'<span class="prop-opt">no</span>'}</td><td class="prop-desc">${escapeHtml(_pds)}</td></tr>`;}
     });
     h+=`</tbody></table></div></div>`;
   }
 
   // 3) STATE
   if(d.states&&d.states.length){
-    h+=`<div class="d-section"><div class="d-section-title">State yang Biasa Dipakai</div><div class="state-panel">`;
-    d.states.forEach(s=>{h+=`<div class="state-row"><span class="state-key">${escapeHtml(s.n)}</span><span class="state-val">${escapeHtml(s.ds)}</span></div>`;});
+    h+=`<div class="d-section"><div class="d-section-title">${ui('stateTitle')}</div><div class="state-panel">`;
+    d.states.forEach(s=>{var _sds=tStateDs(item,s.n)||s.ds;h+=`<div class="state-row"><span class="state-key">${escapeHtml(s.n)}</span><span class="state-val">${escapeHtml(_sds)}</span></div>`;});
     h+=`</div></div>`;
   }
 
   // 4) CODE
   if(d.code){
-    h+=`<div class="d-section"><div class="d-section-title">Contoh Penggunaan</div>
+    h+=`<div class="d-section"><div class="d-section-title">${ui('codeTitle')}</div>
       <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>${escapeHtml(d.code)}</div></div>`;
   }
 
@@ -2037,7 +2853,9 @@ function initDemo(item){
       ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="var r=document.getElementById('dv-r');r.style.flexDirection=r.style.flexDirection==='column'?'row':'column'">Toggle Dir</button><button class="demo-ctrl-btn" onclick="var o=document.getElementById('dv-o');o.style.padding=o.style.padding==='0px'?'10px':'0px'">Padding</button><button class="demo-ctrl-btn" onclick="var r=document.getElementById('dv-r');var b=document.createElement('div');b.className='ph-view';b.style.cssText='flex:1;text-align:center;border-color:${K.r}60;background:${K.r}08';b.innerHTML='<span style=font-size:.7rem>New</span>';r.appendChild(b)">+ Box</button>`;
     },
     text:()=>{
-      scr.innerHTML=`<div style="margin-bottom:10px"><div style="font-size:1rem;font-weight:700" id="dt-t">Judul Halaman</div><div style="font-size:.75rem;color:${K.t2};line-height:1.6;margin-top:4px" id="dt-b">Ini contoh text yang bisa dikonfigurasi. Ubah numberOfLines untuk lihat efek truncation.</div></div><div style="background:${K.al};border-radius:8px;padding:8px;margin-bottom:8px"><span style="font-size:.7rem;color:${K.a}">Nested: </span><span style="font-size:.7rem;font-weight:700">Bold inherited</span><span style="font-size:.7rem;color:${K.cy};cursor:pointer" onclick="alert('Tapped!')"> &amp; Tappable</span></div><div style="font-size:.55rem;color:${K.t3}" id="dt-i">numberOfLines: unlimited</div>`;
+      var _th=LANG==='en'?'Page Title':'Judul Halaman';
+      var _td=LANG==='en'?'This is a configurable text example. Change numberOfLines to see truncation effect.':'Ini contoh text yang bisa dikonfigurasi. Ubah numberOfLines untuk lihat efek truncation.';
+      scr.innerHTML=`<div style="margin-bottom:10px"><div style="font-size:1rem;font-weight:700" id="dt-t">${_th}</div><div style="font-size:.75rem;color:${K.t2};line-height:1.6;margin-top:4px" id="dt-b">${_td}</div></div><div style="background:${K.al};border-radius:8px;padding:8px;margin-bottom:8px"><span style="font-size:.7rem;color:${K.a}">Nested: </span><span style="font-size:.7rem;font-weight:700">Bold inherited</span><span style="font-size:.7rem;color:${K.cy};cursor:pointer" onclick="alert('Tapped!')"> &amp; Tappable</span></div><div style="font-size:.55rem;color:${K.t3}" id="dt-i">numberOfLines: unlimited</div>`;
       ctrl.innerHTML=`<button class="demo-ctrl-btn" onclick="setTL(1)">1 Line</button><button class="demo-ctrl-btn" onclick="setTL(2)">2 Lines</button><button class="demo-ctrl-btn" onclick="setTL(0)">All</button><button class="demo-ctrl-btn" onclick="var t=document.getElementById('dt-t');t.style.fontWeight=t.style.fontWeight==='400'?'700':'400'">Bold</button>`;
     },
     image:()=>{
@@ -2107,7 +2925,7 @@ function initDemo(item){
 // ===== Demo Helpers =====
 window.setTL=function(n){var b=document.getElementById('dt-b');if(!b)return;b.style.overflow=n>0?'hidden':'';b.style.display=n>0?'-webkit-box':'';b.style.webkitLineClamp=n>0?n:'';b.style.webkitBoxOrient='vertical';document.getElementById('dt-i').textContent='numberOfLines: '+(n||'unlimited');};
 window.upIS=function(){var e=document.getElementById('di-e')?.value||'',p=document.getElementById('di-p')?.value||'',ph=document.getElementById('di-ph')?.value||'';document.getElementById('di-s').textContent='{ email:"'+e+'", pass:"'+'\u2022'.repeat(p.length)+'", phone:"'+ph+'" }';};
-window.showAl=function(t){var o=document.getElementById('dal-o'),b=document.getElementById('dal-b');o.style.display='flex';var cl="document.getElementById('dal-o').style.display='none'";if(t==='s')b.innerHTML='<div style="font-size:.82rem;font-weight:600;margin-bottom:5px">Berhasil</div><div style="font-size:.68rem;color:#5a5a72;margin-bottom:12px">Data tersimpan!</div><div style="color:#5a4fcf;font-size:.78rem;font-weight:600;cursor:pointer" onclick="'+cl+'">OK</div>';else if(t==='c')b.innerHTML='<div style="font-size:.82rem;font-weight:600;margin-bottom:5px">Simpan?</div><div style="font-size:.68rem;color:#5a5a72;margin-bottom:12px">Perubahan belum disimpan.</div><div style="display:flex;justify-content:center;gap:14px"><span style="color:#8a8a9e;cursor:pointer" onclick="'+cl+'">Batal</span><span style="color:#5a4fcf;font-weight:600;cursor:pointer" onclick="'+cl+'">Simpan</span></div>';else b.innerHTML='<div style="font-size:.82rem;font-weight:600;margin-bottom:5px">Hapus?</div><div style="font-size:.68rem;color:#5a5a72;margin-bottom:12px">Tidak bisa dibatalkan.</div><div style="display:flex;justify-content:center;gap:14px"><span style="color:#8a8a9e;cursor:pointer" onclick="'+cl+'">Batal</span><span style="color:#dc2626;font-weight:600;cursor:pointer" onclick="'+cl+'">Hapus</span></div>';};
+window.showAl=function(t){var o=document.getElementById('dal-o'),b=document.getElementById('dal-b');o.style.display='flex';var cl="document.getElementById('dal-o').style.display='none'";var L=LANG==='en';if(t==='s')b.innerHTML='<div style="font-size:.82rem;font-weight:600;margin-bottom:5px">'+(L?'Success':'Berhasil')+'</div><div style="font-size:.68rem;color:#5a5a72;margin-bottom:12px">'+(L?'Data saved!':'Data tersimpan!')+'</div><div style="color:#5a4fcf;font-size:.78rem;font-weight:600;cursor:pointer" onclick="'+cl+'">OK</div>';else if(t==='c')b.innerHTML='<div style="font-size:.82rem;font-weight:600;margin-bottom:5px">'+(L?'Save?':'Simpan?')+'</div><div style="font-size:.68rem;color:#5a5a72;margin-bottom:12px">'+(L?'Unsaved changes.':'Perubahan belum disimpan.')+'</div><div style="display:flex;justify-content:center;gap:14px"><span style="color:#8a8a9e;cursor:pointer" onclick="'+cl+'">'+(L?'Cancel':'Batal')+'</span><span style="color:#5a4fcf;font-weight:600;cursor:pointer" onclick="'+cl+'">'+(L?'Save':'Simpan')+'</span></div>';else b.innerHTML='<div style="font-size:.82rem;font-weight:600;margin-bottom:5px">'+(L?'Delete?':'Hapus?')+'</div><div style="font-size:.68rem;color:#5a5a72;margin-bottom:12px">'+(L?'This cannot be undone.':'Tidak bisa dibatalkan.')+'</div><div style="display:flex;justify-content:center;gap:14px"><span style="color:#8a8a9e;cursor:pointer" onclick="'+cl+'">'+(L?'Cancel':'Batal')+'</span><span style="color:#dc2626;font-weight:600;cursor:pointer" onclick="'+cl+'">'+(L?'Delete':'Hapus')+'</span></div>';};
 window.flMore=function(){var l=document.getElementById('dfl-ld'),list=document.getElementById('dfl');if(!l||!list)return;l.style.display='block';list.scrollTop=list.scrollHeight;setTimeout(()=>{l.style.display='none';var ct=list.querySelectorAll('.ph-list-item').length;for(var i=1;i<=5;i++){var d=document.createElement('div');d.className='ph-list-item';d.innerHTML='<span>Item '+(ct+i)+'</span><span style="color:#5a4fcf">Rp '+(Math.random()*1e6|0).toLocaleString()+'</span>';list.insertBefore(d,l);}document.getElementById('dfl-i').textContent=(ct+5)+' items';},800);};
 window.snPush=function(n){window._sn.push(n);snU();};
 window.snPop=function(){if(window._sn.length>1)window._sn.pop();snU();};
