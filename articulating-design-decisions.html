@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Articulating Design Decisions — Modul E-Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1714;
+  --ink-2: #3d3a36;
+  --ink-3: #7a766f;
+  --ink-4: #b8b3ab;
+  --paper: #f7f4ef;
+  --paper-2: #ede9e2;
+  --paper-3: #e2ddd5;
+  --accent: #c4490c;
+  --accent-2: #e8693a;
+  --accent-light: #fdeee7;
+  --teal: #0f6e56;
+  --teal-light: #e1f5ee;
+  --blue: #185fa5;
+  --blue-light: #e6f1fb;
+  --amber: #854f0b;
+  --amber-light: #faeeda;
+  --purple: #534ab7;
+  --purple-light: #eeedfe;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --shadow: 0 2px 16px rgba(26,23,20,.08);
+  --shadow-md: 0 4px 24px rgba(26,23,20,.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--ink);
+  color: var(--paper);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.sidebar-brand {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.sidebar-brand .label {
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-bottom: 6px;
+}
+
+.sidebar-brand h2 {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.3;
+  color: var(--paper);
+}
+
+.sidebar-brand .author {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+
+.sidebar-progress {
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.progress-label {
+  font-size: 11px;
+  color: var(--ink-4);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-bar-outer {
+  background: rgba(255,255,255,.1);
+  border-radius: 4px;
+  height: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-inner {
+  height: 100%;
+  background: var(--accent-2);
+  border-radius: 4px;
+  transition: width .4s ease;
+  width: 0%;
+}
+
+.sidebar-nav { flex: 1; padding: 12px 0; }
+
+.nav-section-label {
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 16px 24px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 24px;
+  cursor: pointer;
+  transition: background .15s;
+  border: none;
+  background: none;
+  color: var(--ink-4);
+  text-align: left;
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.4;
+  border-left: 3px solid transparent;
+}
+
+.nav-item:hover { background: rgba(255,255,255,.06); color: var(--paper); }
+.nav-item.active { background: rgba(196,73,12,.15); color: var(--paper); border-left-color: var(--accent-2); }
+
+.nav-item .num {
+  font-size: 10px;
+  background: rgba(255,255,255,.1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  flex-shrink: 0;
+  font-weight: 500;
+  letter-spacing: .03em;
+}
+
+.nav-item.active .num { background: var(--accent); color: #fff; }
+.nav-item.done .num { background: var(--teal); color: #fff; }
+
+.sidebar-footer {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+/* ── HAMBURGER ── */
+.mobile-header {
+  display: none;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 14px 20px;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+
+.mobile-header h3 { font-family: var(--serif); font-size: 15px; }
+
+.hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--paper);
+  border-radius: 2px;
+  transition: .2s;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 150;
+}
+
+/* ── MAIN CONTENT ── */
+.main { flex: 1; min-width: 0; }
+
+.module-container {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 48px 40px 80px;
+}
+
+/* ── MODULE SECTIONS ── */
+.module { display: none; animation: fadeIn .3s ease; }
+.module.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── TYPOGRAPHY ── */
+.module-eyebrow {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.module-title {
+  font-family: var(--serif);
+  font-size: clamp(26px, 4vw, 38px);
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.module-intro {
+  font-size: 17px;
+  color: var(--ink-2);
+  line-height: 1.75;
+  margin-bottom: 36px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--paper-3);
+}
+
+h3.section-head {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--ink);
+  margin: 36px 0 14px;
+  line-height: 1.25;
+}
+
+h4.sub-head {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 28px 0 10px;
+}
+
+p { color: var(--ink-2); margin-bottom: 14px; font-size: 15.5px; line-height: 1.75; }
+
+/* ── CARDS ── */
+.card {
+  background: #fff;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--radius-lg);
+  padding: 22px 26px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 20px 0 28px;
+}
+
+.card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.card h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.card p { font-size: 13.5px; margin: 0; line-height: 1.6; }
+
+/* ── COLOR VARIANTS ── */
+.accent-card { border-left: 4px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0; }
+.teal-card { border-left: 4px solid var(--teal); border-radius: 0 var(--radius) var(--radius) 0; }
+.blue-card { border-left: 4px solid var(--blue); border-radius: 0 var(--radius) var(--radius) 0; }
+.amber-card { border-left: 4px solid var(--amber); border-radius: 0 var(--radius) var(--radius) 0; }
+.purple-card { border-left: 4px solid var(--purple); border-radius: 0 var(--radius) var(--radius) 0; }
+
+/* ── CALLOUT BOXES ── */
+.callout {
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin: 22px 0;
+}
+
+.callout-accent { background: var(--accent-light); border: 1px solid #f5c4ae; }
+.callout-teal { background: var(--teal-light); border: 1px solid #9fe1cb; }
+.callout-blue { background: var(--blue-light); border: 1px solid #b5d4f4; }
+.callout-amber { background: var(--amber-light); border: 1px solid #fac775; }
+.callout-purple { background: var(--purple-light); border: 1px solid #cecbf6; }
+
+.callout-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.callout-accent .callout-label { color: var(--accent); }
+.callout-teal .callout-label { color: var(--teal); }
+.callout-blue .callout-label { color: var(--blue); }
+.callout-amber .callout-label { color: var(--amber); }
+.callout-purple .callout-label { color: var(--purple); }
+
+.callout p { font-size: 14px; margin: 0; line-height: 1.65; }
+.callout-accent p { color: #5a2108; }
+.callout-teal p { color: #085041; }
+.callout-blue p { color: #0c447c; }
+.callout-amber p { color: #633806; }
+.callout-purple p { color: #3c3489; }
+
+/* ── QUOTE ── */
+.quote-block {
+  border-left: 3px solid var(--accent);
+  padding: 16px 24px;
+  margin: 24px 0;
+  background: #fff;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.quote-block blockquote {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.quote-block cite {
+  font-size: 12px;
+  color: var(--ink-3);
+  font-style: normal;
+  letter-spacing: .03em;
+}
+
+/* ── STEP LIST ── */
+.step-list { list-style: none; margin: 16px 0 24px; }
+
+.step-list li {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--paper-3);
+  align-items: flex-start;
+}
+
+.step-list li:last-child { border-bottom: none; }
+
+.step-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.step-content h5 {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.step-content p { font-size: 13.5px; margin: 0; line-height: 1.6; }
+
+/* ── TAG PILLS ── */
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 20px; }
+
+.tag {
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--paper-3);
+  color: var(--ink-2);
+  background: #fff;
+}
+
+/* ── TABLE ── */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  margin: 20px 0 28px;
+  background: #fff;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.styled-table th {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.styled-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--paper-2);
+  color: var(--ink-2);
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.styled-table tr:last-child td { border-bottom: none; }
+.styled-table tr:nth-child(even) td { background: var(--paper); }
+
+/* ── ACCORDION ── */
+.accordion { margin: 12px 0; }
+
+.accordion-item {
+  background: #fff;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.accordion-trigger {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: left;
+  gap: 12px;
+  transition: background .15s;
+}
+
+.accordion-trigger:hover { background: var(--paper); }
+
+.accordion-trigger .chevron {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: transform .25s ease;
+  color: var(--ink-3);
+}
+
+.accordion-item.open .chevron { transform: rotate(180deg); }
+
+.accordion-body {
+  display: none;
+  padding: 0 20px 18px;
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.7;
+  border-top: 1px solid var(--paper-2);
+}
+
+.accordion-body p { font-size: 14px; margin-bottom: 10px; }
+.accordion-body p:last-child { margin-bottom: 0; }
+.accordion-item.open .accordion-body { display: block; }
+
+/* ── SCENARIO CARDS (Case Studies) ── */
+.scenario {
+  background: #fff;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.scenario-header {
+  padding: 18px 22px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border-bottom: 1px solid var(--paper-2);
+}
+
+.scenario-num {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.scenario-title { font-size: 15px; font-weight: 500; color: var(--ink); line-height: 1.35; }
+
+.scenario-body { padding: 16px 22px; }
+.scenario-body .label { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; color: var(--ink-3); margin-bottom: 6px; }
+.scenario-body p { font-size: 13.5px; margin-bottom: 14px; line-height: 1.65; }
+.scenario-body p:last-child { margin: 0; }
+
+.scenario-solution {
+  background: var(--paper);
+  border-top: 1px solid var(--paper-3);
+  padding: 14px 22px;
+}
+
+.scenario-solution .label { color: var(--teal); }
+.scenario-solution p { font-size: 13.5px; margin: 0; line-height: 1.65; color: #085041; }
+
+/* ── QUIZ ── */
+.quiz-card {
+  background: #fff;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+
+.quiz-q {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 18px;
+  line-height: 1.45;
+}
+
+.quiz-q span {
+  display: inline-block;
+  font-size: 11px;
+  background: var(--paper-2);
+  color: var(--ink-3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+
+.quiz-option {
+  padding: 12px 16px;
+  border: 1.5px solid var(--paper-3);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--ink-2);
+  transition: border-color .15s, background .15s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  text-align: left;
+  font-family: var(--sans);
+  width: 100%;
+  line-height: 1.45;
+}
+
+.quiz-option:hover { border-color: var(--ink-4); background: var(--paper); }
+.quiz-option.correct { border-color: var(--teal); background: var(--teal-light); color: #085041; }
+.quiz-option.wrong { border-color: #e24b4a; background: #fcebeb; color: #791f1f; }
+.quiz-option.disabled { cursor: default; }
+
+.quiz-option .opt-letter {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--paper-2);
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--ink-3);
+  transition: background .15s;
+}
+
+.quiz-option.correct .opt-letter { background: var(--teal); color: #fff; }
+.quiz-option.wrong .opt-letter { background: #e24b4a; color: #fff; }
+
+.quiz-feedback {
+  display: none;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct-fb { background: var(--teal-light); color: #085041; border: 1px solid #9fe1cb; }
+.quiz-feedback.wrong-fb { background: #fcebeb; color: #791f1f; border: 1px solid #f7c1c1; }
+
+.quiz-score {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  text-align: center;
+  display: none;
+  margin-top: 24px;
+}
+
+.quiz-score.show { display: block; }
+.quiz-score .big-num { font-family: var(--serif); font-size: 56px; color: var(--accent-2); line-height: 1; margin-bottom: 8px; }
+.quiz-score p { color: var(--ink-4); font-size: 14px; margin: 0; }
+
+/* ── NAV BUTTONS ── */
+.module-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--paper-3);
+  gap: 16px;
+}
+
+.btn {
+  padding: 11px 22px;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn-primary:hover { background: var(--ink-2); }
+
+.btn-ghost {
+  background: none;
+  color: var(--ink-2);
+  border: 1.5px solid var(--paper-3);
+}
+
+.btn-ghost:hover { border-color: var(--ink-4); color: var(--ink); }
+
+.btn-accent {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-accent:hover { background: var(--accent-2); }
+
+/* ── HERO MODULE ── */
+.hero-module {
+  text-align: center;
+  padding: 48px 0 32px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.hero-module .module-title { font-size: clamp(30px, 5vw, 46px); }
+.hero-module .module-intro { text-align: left; }
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin: 32px 0;
+}
+
+.stat-box {
+  background: #fff;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-box .stat-num {
+  font-family: var(--serif);
+  font-size: 32px;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-box .stat-label {
+  font-size: 11px;
+  color: var(--ink-3);
+  line-height: 1.4;
+}
+
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 28px 0;
+}
+
+.toc-item {
+  background: #fff;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  font-family: var(--sans);
+  text-align: left;
+  box-shadow: var(--shadow);
+}
+
+.toc-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.toc-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.toc-text h5 { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.toc-text p { font-size: 11px; color: var(--ink-3); margin: 0; line-height: 1.3; }
+
+/* ── FRAMEWORK VISUAL ── */
+.framework-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 20px 0 28px;
+}
+
+.fw-step {
+  background: #fff;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  text-align: center;
+  position: relative;
+  box-shadow: var(--shadow);
+}
+
+.fw-step .step-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 20px;
+}
+
+.fw-step h5 { font-size: 13.5px; font-weight: 500; color: var(--ink); margin-bottom: 6px; }
+.fw-step p { font-size: 12px; color: var(--ink-3); margin: 0; line-height: 1.5; }
+
+/* ── PERSONA CARDS ── */
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin: 20px 0 28px;
+}
+
+.persona-card {
+  background: #fff;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--radius-lg);
+  padding: 20px 18px;
+  box-shadow: var(--shadow);
+}
+
+.persona-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  font-family: var(--serif);
+}
+
+.persona-card h5 { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.persona-card .role { font-size: 11px; color: var(--ink-3); margin-bottom: 10px; }
+.persona-card .concern { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; }
+.persona-card .tip { font-size: 11.5px; color: var(--accent); margin-top: 8px; font-weight: 500; }
+
+/* ── REMOTE CASES ── */
+.case-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--paper-3);
+  margin: 32px 0;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .layout { flex-direction: column; }
+  .sidebar { display: none; width: 100%; height: auto; position: fixed; top: 0; left: 0; transform: translateX(-100%); transition: transform .3s ease; }
+  .sidebar.open { display: flex; transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+  .mobile-header { display: flex; }
+  .module-container { padding: 28px 20px 60px; }
+  .framework-steps { grid-template-columns: 1fr; }
+  .module-nav { flex-direction: column-reverse; }
+  .module-nav .btn { width: 100%; justify-content: center; }
+  .styled-table { font-size: 12px; }
+  .styled-table th, .styled-table td { padding: 10px 12px; }
+  .toc-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .persona-grid { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- Mobile Header -->
+<div class="mobile-header">
+  <h3>Articulating Design Decisions</h3>
+  <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="label">Modul E-Learning</div>
+      <h2>Articulating Design Decisions</h2>
+      <div class="author">Tom Greever — Panduan Lengkap</div>
+    </div>
+    <div class="sidebar-progress">
+      <div class="progress-label">
+        <span>Progress</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="progress-bar"></div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Pendahuluan</div>
+      <button class="nav-item active" onclick="goTo(0)" data-idx="0">
+        <span class="num">00</span> Tentang Modul Ini
+      </button>
+      <div class="nav-section-label">Inti Buku</div>
+      <button class="nav-item" onclick="goTo(1)" data-idx="1">
+        <span class="num">01</span> Mindset: Designer sebagai Komunikator
+      </button>
+      <button class="nav-item" onclick="goTo(2)" data-idx="2">
+        <span class="num">02</span> Memahami Stakeholder
+      </button>
+      <button class="nav-item" onclick="goTo(3)" data-idx="3">
+        <span class="num">03</span> Seni Mendengarkan
+      </button>
+      <button class="nav-item" onclick="goTo(4)" data-idx="4">
+        <span class="num">04</span> Menyusun Respons
+      </button>
+      <button class="nav-item" onclick="goTo(5)" data-idx="5">
+        <span class="num">05</span> Mendesain Meeting
+      </button>
+      <button class="nav-item" onclick="goTo(6)" data-idx="6">
+        <span class="num">06</span> Menangani Kritik & Negosiasi
+      </button>
+      <button class="nav-item" onclick="goTo(7)" data-idx="7">
+        <span class="num">07</span> Membangun Kepercayaan Jangka Panjang
+      </button>
+      <div class="nav-section-label">Dari Wawancara & Talk</div>
+      <button class="nav-item" onclick="goTo(8)" data-idx="8">
+        <span class="num">08</span> Insight dari Wawancara & Q&A
+      </button>
+      <button class="nav-item" onclick="goTo(9)" data-idx="9">
+        <span class="num">09</span> Kerja Remote: 10 Kasus Nyata
+      </button>
+      <div class="nav-section-label">Evaluasi</div>
+      <button class="nav-item" onclick="goTo(10)" data-idx="10">
+        <span class="num">10</span> Kuis & Latihan
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      Berdasarkan buku, wawancara, dan presentasi Tom Greever
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="module-container">
+
+      <!-- MODULE 0: INTRO -->
+      <section class="module active" id="mod-0">
+        <div class="hero-module">
+          <div class="hero-badge">Modul E-Learning Lengkap</div>
+          <h1 class="module-title">Articulating Design Decisions</h1>
+          <p style="font-size:18px;color:var(--ink-2);margin-bottom:32px;line-height:1.7;">Panduan komprehensif untuk desainer yang ingin mengomunikasikan keputusan desain mereka secara efektif — kepada stakeholder, klien, dan tim.</p>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-box"><div class="stat-num">7</div><div class="stat-label">Modul utama</div></div>
+          <div class="stat-box"><div class="stat-num">10</div><div class="stat-label">Kasus kerja remote</div></div>
+          <div class="stat-box"><div class="stat-num">15</div><div class="stat-label">Soal kuis</div></div>
+          <div class="stat-box"><div class="stat-num">20+</div><div class="stat-label">Insight praktis</div></div>
+        </div>
+
+        <div class="callout callout-accent">
+          <div class="callout-label">Premis Utama</div>
+          <p>Kemampuan menjelaskan <em>mengapa</em> sebuah keputusan desain dibuat sama pentingnya — bahkan kadang lebih penting — dari kemampuan mendesain itu sendiri. Desainer yang tidak bisa mengomunikasikan pekerjaan mereka akan selalu kalah argumen, terlepas dari seberapa bagus desainnya.</p>
+        </div>
+
+        <h3 class="section-head">Apa yang akan kamu pelajari</h3>
+        <div class="toc-grid">
+          <button class="toc-item" onclick="goTo(1)">
+            <div class="toc-num" style="background:var(--accent)">01</div>
+            <div class="toc-text"><h5>Mindset</h5><p>Cara berpikir sebagai komunikator</p></div>
+          </button>
+          <button class="toc-item" onclick="goTo(2)">
+            <div class="toc-num" style="background:var(--teal)">02</div>
+            <div class="toc-text"><h5>Stakeholder</h5><p>Kenali audiens & motif tersembunyi</p></div>
+          </button>
+          <button class="toc-item" onclick="goTo(3)">
+            <div class="toc-num" style="background:var(--blue)">03</div>
+            <div class="toc-text"><h5>Mendengarkan</h5><p>Implicit & explicit listening</p></div>
+          </button>
+          <button class="toc-item" onclick="goTo(4)">
+            <div class="toc-num" style="background:var(--amber)">04</div>
+            <div class="toc-text"><h5>Respons</h5><p>Formula & taktik membentuk argumen</p></div>
+          </button>
+          <button class="toc-item" onclick="goTo(5)">
+            <div class="toc-num" style="background:var(--purple)">05</div>
+            <div class="toc-text"><h5>Meeting</h5><p>Desain meeting yang efektif</p></div>
+          </button>
+          <button class="toc-item" onclick="goTo(6)">
+            <div class="toc-num" style="background:#3b6d11">06</div>
+            <div class="toc-text"><h5>Negosiasi</h5><p>Menangani kritik & konflik</p></div>
+          </button>
+          <button class="toc-item" onclick="goTo(7)">
+            <div class="toc-num" style="background:#854f0b">07</div>
+            <div class="toc-text"><h5>Trust</h5><p>Kepercayaan jangka panjang</p></div>
+          </button>
+          <button class="toc-item" onclick="goTo(8)">
+            <div class="toc-num" style="background:#5a2565">08</div>
+            <div class="toc-text"><h5>Insight Ekstra</h5><p>Dari wawancara & Q&A langsung</p></div>
+          </button>
+          <button class="toc-item" onclick="goTo(9)">
+            <div class="toc-num" style="background:#185fa5">09</div>
+            <div class="toc-text"><h5>Remote Work</h5><p>10 kasus nyata kerja remote</p></div>
+          </button>
+          <button class="toc-item" onclick="goTo(10)">
+            <div class="toc-num" style="background:var(--ink)">10</div>
+            <div class="toc-text"><h5>Kuis</h5><p>Uji pemahamanmu</p></div>
+          </button>
+        </div>
+
+        <div class="quote-block">
+          <blockquote>"The difference between a good designer and a great designer is the way they can articulate their design decisions."</blockquote>
+          <cite>— Tom Greever, Articulating Design Decisions</cite>
+        </div>
+
+        <div class="module-nav">
+          <span></span>
+          <button class="btn btn-primary" onclick="goTo(1)">Mulai Belajar →</button>
+        </div>
+      </section>
+
+      <!-- MODULE 1: MINDSET -->
+      <section class="module" id="mod-1">
+        <div class="module-eyebrow">Modul 01</div>
+        <h1 class="module-title">Mindset: Designer sebagai Komunikator</h1>
+        <p class="module-intro">Kebanyakan desainer terlatih untuk mendesain, bukan untuk <em>berbicara tentang</em> desain. Modul ini membahas pergeseran cara berpikir yang fundamental — dari craftsperson menjadi komunikator.</p>
+
+        <div class="callout callout-accent">
+          <div class="callout-label">Dari pengalaman Tom</div>
+          <p>Di awal karier, Tom mengakui ia cukup arogan — merasa idenya selalu lebih baik dari orang lain. Titik balik terjadi ketika ia tinggal di China selama 4 tahun dan menempuh studi <em>Cross-Cultural Communications</em>. Ia menyadari bahwa bahkan untuk makan di restoran pun, kemampuan membaca nuansa budaya dan komunikasi sangat menentukan. Pengalaman inilah yang membentuk seluruh filosofinya.</p>
+        </div>
+
+        <h3 class="section-head">Pergeseran Paradigma yang Harus Terjadi</h3>
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-icon" style="background:var(--accent-light)">✗</div>
+            <h4 style="color:var(--accent)">Cara Lama</h4>
+            <p>"Desainku harus berbicara sendiri. Jika mereka tidak mengerti, itu masalah mereka."</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:var(--teal-light)">✓</div>
+            <h4 style="color:var(--teal)">Cara Baru</h4>
+            <p>"Tugas saya bukan hanya mendesain — tapi juga menjelaskan mengapa keputusan ini adalah yang terbaik untuk pengguna dan bisnis."</p>
+          </div>
+        </div>
+
+        <h3 class="section-head">Tiga Prinsip Mindset</h3>
+        <ul class="step-list">
+          <li>
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h5>Desain bukan seni pribadi</h5>
+              <p>Desain adalah solusi untuk masalah bisnis dan pengguna. Begitu desainer memahami ini, kritik tidak lagi terasa seperti serangan personal.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h5>Setiap keputusan harus bisa dipertanggungjawabkan</h5>
+              <p>Setiap pilihan — warna, layout, copy — harus punya alasan yang bisa dijelaskan. "Terlihat bagus" bukan alasan. "Membantu pengguna mencapai X" adalah alasan.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h5>Kamu adalah advokat pengguna, bukan pembela estetika</h5>
+              <p>Bingkai semua argumen dari perspektif pengguna, bukan selera pribadi. Ini juga yang membuat argumenmu jauh lebih kuat di depan stakeholder non-desainer.</p>
+            </div>
+          </li>
+        </ul>
+
+        <h3 class="section-head">Tiga Tujuan Komunikasi Desain</h3>
+        <div class="framework-steps">
+          <div class="fw-step">
+            <div class="step-icon">💡</div>
+            <h5>Memahami</h5>
+            <p>Membantu stakeholder memahami keputusan yang dibuat</p>
+          </div>
+          <div class="fw-step">
+            <div class="step-icon">✅</div>
+            <h5>Menyetujui</h5>
+            <p>Mendapatkan persetujuan untuk melanjutkan pekerjaan</p>
+          </div>
+          <div class="fw-step">
+            <div class="step-icon">🤝</div>
+            <h5>Mempercayai</h5>
+            <p>Membangun keyakinan bahwa desainer tahu apa yang mereka lakukan</p>
+          </div>
+        </div>
+
+        <div class="callout callout-teal">
+          <div class="callout-label">Poin Kunci dari Presenter (Elham)</div>
+          <p>Desain itu subjektif — seperti lukisan yang bisa dianggap mahakarya oleh sebagian orang dan sampah oleh orang lain. Karena subjektivitas ini tidak bisa dihilangkan, satu-satunya cara untuk membuat keputusan desain diterima adalah dengan memberikannya fondasi yang objektif melalui argumentasi yang terstruktur. Desainmu baru bisa dikatakan baik ketika kamu bisa menjelaskan <em>mengapa</em> ia baik.</p>
+        </div>
+
+        <div class="module-nav">
+          <button class="btn btn-ghost" onclick="goTo(0)">← Kembali</button>
+          <button class="btn btn-primary" onclick="goTo(2)">Modul 02 →</button>
+        </div>
+      </section>
+
+      <!-- MODULE 2: STAKEHOLDERS -->
+      <section class="module" id="mod-2">
+        <div class="module-eyebrow">Modul 02</div>
+        <h1 class="module-title">Memahami Stakeholder</h1>
+        <p class="module-intro">Setiap stakeholder punya kebutuhan, ketakutan, dan agenda yang berbeda. Desainer yang bisa membaca peta ini akan jauh lebih efektif dalam mempresentasikan dan mempertahankan keputusan mereka.</p>
+
+        <h3 class="section-head">Peta Stakeholder</h3>
+        <div class="persona-grid">
+          <div class="persona-card">
+            <div class="persona-avatar" style="background:#faeeda;color:#633806">E</div>
+            <h5>Eksekutif (CEO, VP)</h5>
+            <div class="role">Level C-Suite</div>
+            <p class="concern">Peduli pada dampak bisnis: pendapatan, efisiensi, dan brand. Tidak tertarik pada detail teknis desain.</p>
+            <p class="tip">→ Bicara dalam bahasa bisnis: "Ini akan meningkatkan konversi karena..."</p>
+          </div>
+          <div class="persona-card">
+            <div class="persona-avatar" style="background:#e1f5ee;color:#085041">PM</div>
+            <h5>Product Manager</h5>
+            <div class="role">Gate-keeper roadmap</div>
+            <p class="concern">Peduli pada roadmap, prioritas, dan tradeoff. Mereka adalah penjaga pintu antara desain dan delivery.</p>
+            <p class="tip">→ Jadikan mereka sekutu, bukan musuh. Libatkan lebih awal.</p>
+          </div>
+          <div class="persona-card">
+            <div class="persona-avatar" style="background:#e6f1fb;color:#0c447c">Dev</div>
+            <h5>Developer / Engineer</h5>
+            <div class="role">Tim implementasi</div>
+            <p class="concern">Peduli pada feasibility dan technical debt. Akan menolak desain yang tidak realistis.</p>
+            <p class="tip">→ Libatkan sejak awal. Tunjukkan kamu memahami constraint teknis.</p>
+          </div>
+          <div class="persona-card">
+            <div class="persona-avatar" style="background:#eeedfe;color:#3c3489">MK</div>
+            <h5>Marketing / Sales</h5>
+            <div class="role">Tim bisnis</div>
+            <p class="concern">Peduli pada pesan brand dan kebutuhan customer. Sering meminta perubahan berdasarkan anekdot satu pelanggan.</p>
+            <p class="tip">→ Bantu mereka melihat perbedaan antara apa yang pelanggan "katakan" vs apa yang mereka "butuhkan."</p>
+          </div>
+          <div class="persona-card">
+            <div class="persona-avatar" style="background:var(--accent-light);color:var(--accent)">K</div>
+            <h5>Klien (Agency)</h5>
+            <div class="role">Pemberi proyek</div>
+            <p class="concern">Punya agenda yang sering tidak terucapkan secara eksplisit. Ekspektasi mereka bisa jauh dari scope proyek.</p>
+            <p class="tip">→ Gali tujuan tersembunyi dengan pertanyaan terbuka. Jangan asumsikan apa yang mereka inginkan.</p>
+          </div>
+        </div>
+
+        <h3 class="section-head">Motif Tersembunyi — Konsep Kunci</h3>
+        <div class="callout callout-amber">
+          <div class="callout-label">Insight Penting</div>
+          <p>Setiap stakeholder datang dengan <strong>agenda yang tidak selalu mereka ungkapkan secara eksplisit.</strong> Misalnya, seorang manajer yang terus meminta revisi mungkin sebenarnya khawatir proyeknya tidak akan selesai tepat waktu — bukan benar-benar tidak suka desainnya. Tom pernah bertanya langsung kepada stakeholder: <em>"Bagaimana proyek ini mempengaruhi Anda secara personal?"</em> — dan jawabannya membuka konteks yang sepenuhnya mengubah cara ia merespons.</p>
+        </div>
+
+        <h3 class="section-head">Teknik: Pre-Meeting Research</h3>
+        <ul class="step-list">
+          <li>
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h5>Pelajari latar belakang stakeholder</h5>
+              <p>Apa prioritas mereka bulan ini? Apa tekanan yang sedang mereka hadapi?</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h5>Identifikasi siapa yang paling berpengaruh</h5>
+              <p>Tidak selalu orang dengan jabatan tertinggi. Cari tahu siapa yang benar-benar membuat keputusan.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h5>Antisipasi keberatan yang paling mungkin muncul</h5>
+              <p>Siapkan jawaban sebelum pertanyaan diajukan. Ini menunjukkan preparasi yang solid.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h5>Identifikasi influencer internal</h5>
+              <p>Ada selalu orang-orang di project yang bisa mempengaruhi outcome. Mereka bisa di level tim, eksekutif, atau eksternal. Bangun relasi dengan mereka sebelum meeting kritis terjadi.</p>
+            </div>
+          </li>
+        </ul>
+
+        <h3 class="section-head">Cara Menjelaskan UX kepada Non-Desainer</h3>
+        <div class="card accent-card card" style="border-radius:0 var(--radius) var(--radius) 0;padding:20px 24px;background:#fff;box-shadow:var(--shadow)">
+          <p style="margin:0;font-size:14.5px;"><strong>Hindari jargon.</strong> Alih-alih "kami akan melakukan contextual inquiry," katakan: "Saya ingin mengunjungi salah satu site customer dan melihat langsung bagaimana mereka menggunakan software kita." Siapapun bisa memahami itu. Lalu <em>demonstrasikan</em> nilai UX — jangan hanya ceritakan. Lakukan riset meski belum ada izin resmi, bangun momentum, biarkan hasilnya berbicara sendiri.</p>
+        </div>
+
+        <div class="module-nav">
+          <button class="btn btn-ghost" onclick="goTo(1)">← Modul 01</button>
+          <button class="btn btn-primary" onclick="goTo(3)">Modul 03 →</button>
+        </div>
+      </section>
+
+      <!-- MODULE 3: LISTENING -->
+      <section class="module" id="mod-3">
+        <div class="module-eyebrow">Modul 03</div>
+        <h1 class="module-title">Seni Mendengarkan</h1>
+        <p class="module-intro">Mendengarkan adalah keterampilan aktif, bukan pasif. Stakeholder yang merasa didengar jauh lebih terbuka terhadap sudut pandang berbeda. Ini bukan kesopanan semata — ini strategi.</p>
+
+        <h3 class="section-head">Dua Kategori Mendengarkan</h3>
+        <div class="card-grid">
+          <div class="card teal-card" style="background:#fff">
+            <h4>Implicit (Pasif)</h4>
+            <ul style="font-size:13.5px;color:var(--ink-2);padding-left:18px;margin-top:8px;line-height:1.9;">
+              <li>Beri ruang dan waktu yang cukup bagi mereka untuk bicara</li>
+              <li>Dengarkan apa yang <em>tidak</em> dikatakan</li>
+              <li>Fokus pada <em>masalah</em> yang mereka coba selesaikan, bukan solusi yang mereka usulkan</li>
+              <li>Praktikkan <strong>"The Art of the Pause"</strong> — jangan langsung merespons secara defensif</li>
+            </ul>
+          </div>
+          <div class="card blue-card" style="background:#fff">
+            <h4>Explicit (Aktif)</h4>
+            <ul style="font-size:13.5px;color:var(--ink-2);padding-left:18px;margin-top:8px;line-height:1.9;">
+              <li>Catat dengan serius — tulis apapun</li>
+              <li>Tanya banyak pertanyaan untuk memastikan pemahaman</li>
+              <li>Ulangi dan parafrase kembali apa yang didengar</li>
+              <li>Dokumentasikan keputusan dan hal yang didengar</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout callout-blue">
+          <div class="callout-label">The Art of the Pause</div>
+          <p>Jangan langsung merespons setelah stakeholder selesai bicara. Biarkan ada jeda. Bahkan kalimat sederhana seperti <em>"let me think about that for a minute"</em> sudah cukup untuk memberi ruang yang diperlukan — dan memberi otakmu waktu untuk memproses respons yang lebih baik.</p>
+        </div>
+
+        <h3 class="section-head">Bedakan Permintaan vs Kebutuhan</h3>
+        <div class="scenario">
+          <div class="scenario-header">
+            <div class="scenario-num" style="background:var(--accent-light);color:var(--accent)">Contoh</div>
+            <div class="scenario-title">Klien meminta tombol yang lebih besar</div>
+          </div>
+          <div class="scenario-body">
+            <div class="label">Permintaan (surface)</div>
+            <p>"Tolong besarkan tombol CTA-nya."</p>
+            <div class="label">Kebutuhan sesungguhnya</div>
+            <p>Mereka khawatir tombol tidak cukup terlihat dan tidak akan diklik. Masalah sebenarnya mungkin bukan ukuran, tapi kontras, posisi, atau copy.</p>
+          </div>
+          <div class="scenario-solution">
+            <div class="label">Pendekatan yang tepat</div>
+            <p>Gali dengan bertanya: "Apa yang Anda khawatirkan dengan tombol ini?" — bukan langsung menolak atau langsung menerima permintaannya.</p>
+          </div>
+        </div>
+
+        <h3 class="section-head">Pertanyaan Diagnostik yang Efektif</h3>
+        <div class="accordion">
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              "Apa yang Anda harapkan pengguna lakukan setelah melihat ini?"
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p>Pertanyaan ini mengalihkan fokus dari estetika ke behavior yang diinginkan. Sangat efektif untuk menghentikan diskusi tentang "apakah ini indah" dan menggantinya dengan "apakah ini akan berhasil."</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              "Apa yang berhasil dari desain sebelumnya yang ingin kita pertahankan?"
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p>Pertanyaan ini membantu mengidentifikasi apa yang sudah berjalan baik sebelum fokus pada perubahan. Mencegah redesign yang menghilangkan hal-hal yang sebenarnya sudah efektif.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              "Apa yang paling Anda khawatirkan dari desain ini?"
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p>Pertanyaan terbuka ini memberi izin kepada stakeholder untuk mengungkapkan kekhawatiran yang mungkin tidak mereka ungkapkan secara spontan. Sering kali jawabannya mengungkapkan agenda tersembunyi atau constraint yang belum diketahui.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              "Bagaimana proyek ini mempengaruhi Anda secara personal?"
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p>Pertanyaan langsung ini — bukan tentang KPI atau tujuan perusahaan, tapi sebagai individu — sering membuka konteks yang sangat berbeda. Tom pernah mendapati bahwa stakeholder yang tiba-tiba terburu-buru ternyata sedang dalam tekanan pemotongan anggaran yang baru saja diterimanya.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="module-nav">
+          <button class="btn btn-ghost" onclick="goTo(2)">← Modul 02</button>
+          <button class="btn btn-primary" onclick="goTo(4)">Modul 04 →</button>
+        </div>
+      </section>
+
+      <!-- MODULE 4: RESPONSE -->
+      <section class="module" id="mod-4">
+        <div class="module-eyebrow">Modul 04</div>
+        <h1 class="module-title">Menyusun Respons</h1>
+        <p class="module-intro">Formula inti buku ini: bagaimana merespons kritik dan keberatan dengan cara yang terstruktur, tidak defensif, dan selalu berorientasi pada tujuan bersama.</p>
+
+        <div class="callout callout-accent">
+          <div class="callout-label">Formula Inti</div>
+          <p>Setiap respons terhadap kritik desain harus mengikuti struktur: <strong>① Akui → ② Jelaskan → ③ Hubungkan ke Tujuan</strong></p>
+        </div>
+
+        <h3 class="section-head">Contoh Penerapan Formula</h3>
+        <div class="scenario">
+          <div class="scenario-header">
+            <div class="scenario-num" style="background:var(--accent-light);color:var(--accent)">Situasi</div>
+            <div class="scenario-title">Stakeholder: "Tombol CTA-nya harus lebih besar"</div>
+          </div>
+          <div class="scenario-body">
+            <div class="label">Respons buruk</div>
+            <p>"Tidak, ukurannya sudah tepat secara visual." <em>(Defensif, tidak memberi alasan, menutup diskusi)</em></p>
+            <div class="label">Respons yang baik (Formula Tom)</div>
+            <p>"Saya mengerti kenapa itu terasa seperti solusi yang masuk akal — visibilitas memang sangat penting. Yang kami temukan dalam pengujian adalah ukuran saat ini sudah cukup kontras dengan background. Yang justru membantu lebih banyak adalah posisi dan copy-nya, yang sudah kami optimalkan. Apakah ada kekhawatiran spesifik tentang performa yang ingin kita bahas?"</p>
+          </div>
+          <div class="scenario-solution">
+            <div class="label">Mengapa ini berhasil</div>
+            <p>Mengakui kekhawatiran mereka valid → menjelaskan alasan berbasis data → mengalihkan ke masalah sesungguhnya → membuka dialog lanjutan.</p>
+          </div>
+        </div>
+
+        <h3 class="section-head">Empat Cara Membingkai Keputusan Desain</h3>
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-icon" style="background:var(--teal-light)">👤</div>
+            <h4>Bingkai Pengguna</h4>
+            <p>Hubungkan keputusan ke perilaku pengguna nyata. "Dalam riset kami, pengguna cenderung..."</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:var(--blue-light)">📊</div>
+            <h4>Bingkai Data</h4>
+            <p>Gunakan angka, hasil A/B test, atau analytics. "Ketika kami menguji kedua versi..."</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:var(--amber-light)">💼</div>
+            <h4>Bingkai Bisnis</h4>
+            <p>Hubungkan ke tujuan bisnis yang disepakati. "Ini mendukung target konversi Q3 karena..."</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:var(--purple-light)">📚</div>
+            <h4>Bingkai Best Practice</h4>
+            <p>Referensikan standar industri yang diakui. "Pola ini digunakan secara luas karena..."</p>
+          </div>
+        </div>
+
+        <h3 class="section-head">Kata-Kata yang Harus Dihindari</h3>
+        <table class="styled-table">
+          <thead>
+            <tr><th>Hindari</th><th>Ganti dengan</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>"Saya rasa..." / "Menurut saya..."</td><td>"Berdasarkan data/riset/pengujian..."</td></tr>
+            <tr><td>"Itu terlihat bagus"</td><td>"Tujuan dari keputusan ini adalah..."</td></tr>
+            <tr><td>"Ini adalah pilihan estetika"</td><td>"Pola ini membantu pengguna mencapai X karena..."</td></tr>
+            <tr><td>"Percayakan saja pada saya"</td><td>"Pengalaman kami di proyek serupa menunjukkan bahwa..."</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="section-head">Empat Taktik Membentuk Respons</h3>
+        <ul class="step-list">
+          <li>
+            <div class="step-num" style="background:var(--teal)">1</div>
+            <div class="step-content">
+              <h5>Tunjukkan perbandingan side-by-side</h5>
+              <p>Jika stakeholder minta perubahan, buat perubahan itu — lalu tampilkan sebelum vs sesudah. Biarkan mereka melihat perbedaannya dan membuat keputusan sendiri berdasarkan visual nyata.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" style="background:var(--blue)">2</div>
+            <div class="step-content">
+              <h5>Proposkan alternatif</h5>
+              <p>Jika ada pendekatan yang menurutmu lebih baik, siapkan dan tampilkan sebagai alternatif. Kebebasan memilih antara beberapa opsi sering membuat diskusi jauh lebih produktif.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" style="background:var(--amber)">3</div>
+            <div class="step-content">
+              <h5>Minta dukungan dari influencer</h5>
+              <p>Gunakan orang-orang berpengaruh yang sudah kamu identifikasi sebelumnya. Mereka bisa membantu mendukung keputusanmu dan membawa percakapan ke arah yang lebih konstruktif.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" style="background:var(--purple)">4</div>
+            <div class="step-content">
+              <h5>Tunda keputusan jika perlu</h5>
+              <p>Jika semua taktik gagal, tunda — bukan menyerah. Keputusan buruk di bawah tekanan waktu bisa berdampak jauh lebih buruk. "Izinkan saya kembali dengan data yang lebih lengkap besok."</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="callout callout-teal">
+          <div class="callout-label">Lead with Yes</div>
+          <p>Awali respons dengan pengakuan: <em>"Ya, saya memahami kekhawatiran itu."</em> Ini bukan berarti kamu setuju dengan solusi mereka — ini berarti kamu mendengar dan memvalidasi masalah yang mereka lihat. Dari sini, kamu bisa membawa percakapan ke arah yang lebih produktif.</p>
+        </div>
+
+        <div class="module-nav">
+          <button class="btn btn-ghost" onclick="goTo(3)">← Modul 03</button>
+          <button class="btn btn-primary" onclick="goTo(5)">Modul 05 →</button>
+        </div>
+      </section>
+
+      <!-- MODULE 5: MEETING -->
+      <section class="module" id="mod-5">
+        <div class="module-eyebrow">Modul 05</div>
+        <h1 class="module-title">Mendesain Meeting yang Efektif</h1>
+        <p class="module-intro">Meeting yang baik tidak terjadi secara kebetulan — ia didesain. Sama seperti kamu mendesain sebuah interface, kamu harus mendesain setiap sesi review dan diskusi.</p>
+
+        <h3 class="section-head">Blueprint Meeting Desain</h3>
+        <ul class="step-list">
+          <li>
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h5>Set Context terlebih dahulu</h5>
+              <p>Ingatkan semua orang tentang masalah yang sedang dipecahkan. Nyatakan tujuan meeting. Ringkas diskusi terakhir. Tunjukkan di mana kita berada di timeline. Jangan langsung tunjukkan desain.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h5>Walk through keputusan, bukan hanya desain</h5>
+              <p>Jelaskan setiap elemen desain sambil mengartikulasikan <em>mengapa</em> ia ada di sana — bukan hanya <em>apa</em> yang ada. Ini memindahkan diskusi dari reaksi estetika ke evaluasi keputusan.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h5>Antisipasi keberatan sebelum muncul</h5>
+              <p>Sebutkan sendiri potensi masalah sebelum stakeholder mengangkatnya. "Anda mungkin bertanya kenapa kami memilih X daripada Y — alasannya adalah..." Ini menunjukkan bahwa kamu sudah berpikir matang.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h5>Tanyakan satu pertanyaan spesifik</h5>
+              <p>Jangan buka dengan "Ada pertanyaan?" atau "Apa pendapat kalian?" Tanya sesuatu yang spesifik: "Apakah cara widget ini berinteraksi sudah menjawab masalah yang kita diskusikan minggu lalu?"</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <h5>Minta keputusan eksplisit di akhir</h5>
+              <p>Akhiri setiap meeting dengan permintaan keputusan yang konkret: "Apakah kita setuju untuk melanjutkan dengan pendekatan ini?" Jangan biarkan meeting berakhir tanpa keputusan yang jelas.</p>
+            </div>
+          </li>
+        </ul>
+
+        <h3 class="section-head">Assign Peran dalam Meeting</h3>
+        <div class="callout callout-amber">
+          <div class="callout-label">Teknik Sangat Efektif</div>
+          <p>Kebanyakan meeting dihadiri orang-orang yang datang tanpa peran yang jelas — semua merasa bisa berkomentar apa saja. Tom merekomendasikan untuk <strong>memberi peran eksplisit kepada setiap peserta:</strong> siapa decision-maker, siapa contributor utama, siapa observer. Ini mencegah orang yang paling keras suaranya mendominasi, dan memastikan orang yang paling penting justru punya ruang berbicara.</p>
+        </div>
+
+        <h3 class="section-head">Menangani Dinamika Sulit</h3>
+        <div class="accordion">
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              Ada peserta yang terus menginterupsi dan mendominasi
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p>Akui kontribusinya, lalu redirect: <em>"Poin yang bagus — izinkan saya menyelesaikan ini dulu, lalu kita bisa membahasnya lebih dalam."</em> Atau secara proaktif panggil orang lain: <em>"Saya sebenarnya ingin mendengar pendapat [nama] tentang ini dulu."</em></p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              Diskusi melenceng jauh dari topik
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p>Tulis topik yang melenceng di whiteboard atau dokumen dan katakan: <em>"Ini poin yang menarik — saya akan tulis di sini dan kita bahas di sesi terpisah. Sekarang kita perlu fokus kembali pada tujuan meeting ini."</em> Ini menunjukkan kamu mendengar tanpa membiarkan diskusi kehilangan arah.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              Stakeholder penting sangat diam selama meeting
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p>Jangan biarkan keheningan mereka dibaca sebagai persetujuan. Panggil mereka secara langsung (jika sudah memberi tahu sebelumnya): <em>"Saya ingin mendengar pandangan [nama] tentang ini — saya tahu kamu punya konteks yang relevan."</em> Setelah meeting, kirim ringkasan dan minta konfirmasi eksplisit dari mereka.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              Ada keheningan panjang setelah presentasi
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p>Jangan isi dengan defensif atau justifikasi tambahan yang tidak perlu. Biarkan sejenak, lalu tanya dengan tenang: <em>"Apa yang ada di pikiran Anda?"</em> Keheningan sering berarti orang sedang memproses — beri mereka waktu.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="section-head">Template Meeting (Simpan sebagai Bookmark)</h3>
+        <div class="card" style="background:var(--ink);color:var(--paper);border-radius:var(--radius-lg)">
+          <h4 style="color:var(--paper);margin-bottom:12px;">Checklist Pre-Meeting</h4>
+          <ul style="font-size:13.5px;line-height:2;padding-left:18px;color:var(--ink-4);">
+            <li>Apa tujuan meeting ini?</li>
+            <li>Jenis feedback apa yang saya butuhkan?</li>
+            <li>Jenis feedback apa yang <em>tidak</em> relevan untuk sesi ini?</li>
+            <li>Satu pertanyaan spesifik yang akan saya tanyakan di awal?</li>
+            <li>Siapa yang perlu saya assign peran spesifik?</li>
+            <li>Apakah sudah kirim pre-read 24 jam sebelumnya?</li>
+            <li>Apa keputusan konkret yang perlu dicapai di akhir?</li>
+          </ul>
+        </div>
+
+        <div class="module-nav">
+          <button class="btn btn-ghost" onclick="goTo(4)">← Modul 04</button>
+          <button class="btn btn-primary" onclick="goTo(6)">Modul 06 →</button>
+        </div>
+      </section>
+
+      <!-- MODULE 6: NEGOTIATION -->
+      <section class="module" id="mod-6">
+        <div class="module-eyebrow">Modul 06</div>
+        <h1 class="module-title">Menangani Kritik & Negosiasi</h1>
+        <p class="module-intro">Tidak semua kritik diciptakan sama. Mengenali jenis kritik dan merespons dengan cara yang tepat adalah perbedaan antara desainer yang terus direvisi dan desainer yang keputusannya dihormati.</p>
+
+        <h3 class="section-head">Empat Jenis Kritik & Cara Merespons</h3>
+        <div class="scenario">
+          <div class="scenario-header">
+            <div class="scenario-num" style="background:var(--teal-light);color:var(--teal)">Tipe 1</div>
+            <div class="scenario-title">Kritik yang valid dan benar</div>
+          </div>
+          <div class="scenario-body">
+            <p>Mereka melihat sesuatu yang kamu lewatkan. Ini adalah masukan yang genuinely membantu.</p>
+          </div>
+          <div class="scenario-solution">
+            <div class="label">Respons yang tepat</div>
+            <p>Terima dengan terbuka. Ucapkan terima kasih secara tulus. Revisi. Tidak ada yang melemahkan kredibilitas lebih dari desainer yang tidak bisa menerima masukan yang memang tepat.</p>
+          </div>
+        </div>
+
+        <div class="scenario">
+          <div class="scenario-header">
+            <div class="scenario-num" style="background:var(--blue-light);color:var(--blue)">Tipe 2</div>
+            <div class="scenario-title">Kritik valid tapi arah solusinya keliru</div>
+          </div>
+          <div class="scenario-body">
+            <p>Mereka melihat masalah yang nyata, tapi solusi yang mereka usulkan bukan yang terbaik.</p>
+          </div>
+          <div class="scenario-solution">
+            <div class="label">Respons yang tepat</div>
+            <p>"Anda benar bahwa ada masalah di sini — dan saya menghargai Anda menyebutkannya. Tapi saya pikir akar masalahnya adalah X, bukan Y. Bolehkah saya tunjukkan pendekatan alternatif yang mungkin bisa menyelesaikan ini dengan cara yang lebih efektif?"</p>
+          </div>
+        </div>
+
+        <div class="scenario">
+          <div class="scenario-header">
+            <div class="scenario-num" style="background:var(--amber-light);color:var(--amber)">Tipe 3</div>
+            <div class="scenario-title">Kritik berdasarkan preferensi personal</div>
+          </div>
+          <div class="scenario-body">
+            <p>"Saya tidak suka warnanya." "Ini terasa terlalu modern." Tidak ada alasan berbasis pengguna atau bisnis.</p>
+          </div>
+          <div class="scenario-solution">
+            <div class="label">Respons yang tepat</div>
+            <p>Jangan langsung menolak. Gali dulu: "Bisa ceritakan apa yang tidak bekerja untuk Anda?" Cari tahu apakah ada kebutuhan fungsional di balik preferensi tersebut. Kembalikan percakapan ke tujuan dan pengguna: "Pertanyaan kita adalah: apakah keputusan ini membantu pengguna mencapai X?"</p>
+          </div>
+        </div>
+
+        <div class="scenario">
+          <div class="scenario-header">
+            <div class="scenario-num" style="background:#fcebeb;color:#791f1f">Tipe 4</div>
+            <div class="scenario-title">Kritik politis / tidak relevan</div>
+          </div>
+          <div class="scenario-body">
+            <p>Seseorang menolak desain bukan karena alasan desain, melainkan karena agenda lain — territorial, politik, atau yang tidak ada hubungannya dengan proyek.</p>
+          </div>
+          <div class="scenario-solution">
+            <div class="label">Respons yang tepat</div>
+            <p>Hadapi secara langsung tapi sopan. Kembalikan percakapan ke tujuan yang sudah disepakati bersama: "Saya ingin memastikan kita semua berada di halaman yang sama tentang tujuan yang ingin kita capai. Bisakah kita mulai dari sana?"</p>
+          </div>
+        </div>
+
+        <h3 class="section-head">Teknik Tunda yang Anggun</h3>
+        <div class="callout callout-purple">
+          <div class="callout-label">Jangan Kalah — Tunda</div>
+          <p>Ketika kamu tidak siap berargumen, <strong>tunda dengan anggun daripada menyerah</strong>. Contoh: <em>"Itu poin yang menarik — izinkan saya melihat data terbaru dan kembali dengan jawaban yang lebih solid besok."</em> Ini jauh lebih kuat daripada langsung setuju atau langsung menolak tanpa fondasi. Setiap janji untuk kembali dengan data harus ditepati — ini adalah investasi kepercayaan.</p>
+        </div>
+
+        <h3 class="section-head">Mengetahui Kapan Harus Menyerah</h3>
+        <div class="callout callout-teal">
+          <div class="callout-label">Disagree and Commit</div>
+          <p>Tidak semua pertempuran harus dimenangkan. Terkadang menyetujui perubahan yang tidak ideal demi menjaga hubungan dan kepercayaan jangka panjang adalah keputusan strategis yang tepat. Yang penting: <strong>dokumentasikan keputusan tersebut beserta keberatan kamu</strong>, sehingga ada rekam jejak jika hasilnya tidak sesuai harapan. Kamu boleh tidak setuju dengan keputusan, tapi tetap berkomitmen untuk mendukungnya.</p>
+        </div>
+
+        <h3 class="section-head">Tentang "Percakapan Sulit"</h3>
+        <div class="quote-block">
+          <blockquote>"Kita tidak harus menyebut ini 'percakapan sulit.' Kita bisa membingkainya sebagai: kita punya ide yang berbeda, dan ini adalah kesempatan luar biasa untuk menemukan solusi terbaik bersama."</blockquote>
+          <cite>— Tom Greever</cite>
+        </div>
+        <p>Hindari bahasa seperti "pilihan terbaik" atau "cara yang benar" — implikasinya adalah cara lain itu salah, yang langsung memicu defensivitas. Ganti dengan framing berbasis <em>outcome</em>: "Jika kita memilih pendekatan ini, hasilnya akan seperti ini."</p>
+
+        <div class="module-nav">
+          <button class="btn btn-ghost" onclick="goTo(5)">← Modul 05</button>
+          <button class="btn btn-primary" onclick="goTo(7)">Modul 07 →</button>
+        </div>
+      </section>
+
+      <!-- MODULE 7: TRUST -->
+      <section class="module" id="mod-7">
+        <div class="module-eyebrow">Modul 07</div>
+        <h1 class="module-title">Membangun Kepercayaan Jangka Panjang</h1>
+        <p class="module-intro">Setiap interaksi dengan stakeholder adalah investasi atau penarikan dari "rekening kepercayaan." Kepercayaan yang dibangun di luar meeting adalah modal yang menentukan seberapa mudah desainmu diterima saat meeting berlangsung.</p>
+
+        <h3 class="section-head">Tiga Kebiasaan Membangun Trust</h3>
+        <ul class="step-list">
+          <li>
+            <div class="step-num" style="background:var(--teal)">1</div>
+            <div class="step-content">
+              <h5>Transparansi tentang tradeoff</h5>
+              <p>Jangan sembunyikan keterbatasan desain. Akui tradeoff secara proaktif: "Pendekatan ini punya kekurangan X, tapi kami memilihnya karena Y lebih penting dalam konteks ini." Kejujuran ini membangun kredibilitas jauh lebih kuat dari klaim bahwa desainnya sempurna.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" style="background:var(--blue)">2</div>
+            <div class="step-content">
+              <h5>Tindak lanjut yang konsisten</h5>
+              <p>Jika kamu berjanji akan meneliti sesuatu atau membawa data di pertemuan berikutnya, lakukan tanpa pengecualian. Setiap janji yang tidak ditepati mengikis kepercayaan secara signifikan — bahkan janji-janji kecil.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" style="background:var(--amber)">3</div>
+            <div class="step-content">
+              <h5>Rayakan keputusan tim, bukan keputusan diri sendiri</h5>
+              <p>Ketika desain berhasil, bingkainya sebagai "kita berhasil" bukan "saya benar." Ini membangun rasa memiliki bersama dan membuat stakeholder lebih invested dalam kesuksesan desain ke depannya.</p>
+            </div>
+          </li>
+        </ul>
+
+        <h3 class="section-head">Dokumentasi Keputusan Desain</h3>
+        <div class="callout callout-accent">
+          <div class="callout-label">Alat Komunikasi, Bukan Formalitas</div>
+          <p>Dokumentasi yang baik menjawab tiga pertanyaan: <strong>Apa yang diputuskan? Mengapa? Alternatif apa yang dipertimbangkan?</strong> Ini sangat berguna ketika keputusan dipertanyakan kembali di kemudian hari — kamu bisa menunjuk langsung ke dokumen alih-alih menjelaskan dari awal setiap kali.</p>
+        </div>
+
+        <h3 class="section-head">Membuktikan Nilai, Bukan Sekadar Mengklaim</h3>
+        <div class="card teal-card" style="background:#fff;padding:22px 26px;box-shadow:var(--shadow)">
+          <h4 style="margin-bottom:10px;">Dari Pengalaman Tom</h4>
+          <p style="font-size:14px;">Di sebuah organisasi sales-driven, timnya terus berbicara tentang nilai riset tapi tidak mendapat izin untuk melakukannya. Solusinya: lakukan saja di sela-sela pekerjaan utama, bangun momentum, biarkan hasilnya berbicara. Ketika tim sales diajak ikut dalam customer journey mapping dan melihat sendiri pain point pengguna — bukan mendengarnya dari desainer — mereka mulai memahami perbedaan antara apa yang pelanggan <em>katakan</em> mereka inginkan dan apa yang mereka <em>benar-benar butuhkan</em>.</p>
+        </div>
+
+        <h3 class="section-head">Design Maturity Tidak Pernah "Selesai"</h3>
+        <div class="callout callout-blue">
+          <div class="callout-label">Realita yang Perlu Diterima</div>
+          <p>Bahkan di organisasi dengan design maturity yang tinggi, advokasi desain tidak pernah benar-benar selesai. Setiap VP baru yang masuk, setiap pergantian orang kunci, bisa mereset sebagian dari modal kepercayaan yang sudah dibangun. <strong>Ini adalah proses yang harus terus dijaga, bukan destinasi yang sudah dicapai.</strong></p>
+        </div>
+
+        <h3 class="section-head">Tiga Langkah Mulai Sekarang</h3>
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-icon" style="background:var(--accent-light)">🎙️</div>
+            <h4>Latihan Presentasi</h4>
+            <p>5 menit sebelum meeting, presentasikan ke diri sendiri dengan suara keras. Kamu akan mendengar hal-hal yang tidak kamu sadari.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:var(--teal-light)">✏️</div>
+            <h4>Mulai Menulis</h4>
+            <p>Buka notepad dan tulis: masalah apa yang dipecahkan? Mengapa solusi ini lebih baik dari alternatif lain? Tulisan mengubah pikiran menjadi kata-kata.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:var(--blue-light)">🤝</div>
+            <h4>Bangun Relasi Aktif</h4>
+            <p>Tanyakan tentang hal-hal di luar pekerjaan. Setiap kesamaan kecil yang ditemukan membangun trust yang menentukan seberapa mudah designmu diterima.</p>
+          </div>
+        </div>
+
+        <div class="module-nav">
+          <button class="btn btn-ghost" onclick="goTo(6)">← Modul 06</button>
+          <button class="btn btn-primary" onclick="goTo(8)">Modul 08 →</button>
+        </div>
+      </section>
+
+      <!-- MODULE 8: INSIGHTS -->
+      <section class="module" id="mod-8">
+        <div class="module-eyebrow">Modul 08 — Wawancara & Q&A</div>
+        <h1 class="module-title">Insight Ekstra dari Wawancara & Talk Langsung</h1>
+        <p class="module-intro">Kumpulan insight dari wawancara Tom Greever dengan Scott Sonia (Proximity Lab) dan sesi Q&A presentasi Elham — hal-hal yang tidak selalu ada di buku tapi sangat berharga dari percakapan langsung.</p>
+
+        <h3 class="section-head">Dua Cerita Konkret dari Tom</h3>
+
+        <div class="scenario">
+          <div class="scenario-header">
+            <div class="scenario-num" style="background:var(--accent-light);color:var(--accent)">Cerita 1</div>
+            <div class="scenario-title">CEO yang sebenarnya hanya "ikut-ikutan"</div>
+          </div>
+          <div class="scenario-body">
+            <p>Dalam sebuah design review, CEO tiba-tiba mulai memberi komentar tentang komponen spesifik — sesuatu yang tidak biasa ia lakukan. Tom punya dua pilihan: engage dengan komentarnya (yang terasa sopan dan positif), atau baca situasinya dengan lebih cermat.</p>
+          </div>
+          <div class="scenario-solution">
+            <div class="label">Yang Tom lakukan dan pelajarannya</div>
+            <p>Tom memilih membaca situasi: CEO kemungkinan hanya sedang "ikut-ikutan" percakapan, ingin terasa relevan. Tom merespons dengan "Lead with Yes": <em>"Ya, ada beberapa cara yang bisa kita lakukan untuk mengatasi itu."</em> — CEO langsung berkata "Oh ya, tentu, lanjutkan saja." Pelajaran: tidak semua komentar senior perlu ditanggapi sebagai keberatan serius. Belajar membaca apakah seseorang sedang memberi feedback sungguhan atau sekadar ikut dalam percakapan.</p>
+          </div>
+        </div>
+
+        <div class="scenario">
+          <div class="scenario-header">
+            <div class="scenario-num" style="background:var(--teal-light);color:var(--teal)">Cerita 2</div>
+            <div class="scenario-title">Klien yang minta reorder form fields</div>
+          </div>
+          <div class="scenario-body">
+            <p>Seorang klien meminta perubahan urutan field dalam sebuah form — perubahan kecil yang mudah dilakukan. Secara teknis bisa langsung dikerjakan. Tapi Tom bertanya: <em>"Mengapa?"</em></p>
+          </div>
+          <div class="scenario-solution">
+            <div class="label">Hasilnya luar biasa</div>
+            <p>Pertanyaan sederhana itu membuka sesuatu yang tidak terduga: klien menunjukkan spreadsheet internal yang ia gunakan sehari-hari yang punya urutan berbeda dari form yang didesain. Tom tidak hanya menyelesaikan masalah satu field — ia mendapat akses ke proses bisnis yang sebelumnya tidak ia ketahui sama sekali, yang akhirnya mempengaruhi keputusan desain yang jauh lebih besar. Menggali alasan di balik permintaan bukan hanya untuk mempertahankan desain — tapi untuk mendapatkan informasi yang lebih baik.</p>
+          </div>
+        </div>
+
+        <h3 class="section-head">Ketika Tidak Ada Data</h3>
+        <div class="callout callout-blue">
+          <div class="callout-label">Insight Q&A</div>
+          <p>Instingmu sebagai desainer bukan sesuatu yang muncul dari udara kosong. Setiap "gut feeling" berakar pada pengalaman nyata — proyek lalu, konferensi, buku, pola yang diamati. <strong>Lacak ke belakang dari mana instingmu berasal.</strong> Jika kamu bisa menjelaskan: <em>"Saya memilih ini karena di proyek X tahun lalu kami mencoba pendekatan berbeda dan hasilnya Y"</em> — itu jauh lebih kredibel daripada sekadar "menurut saya ini lebih baik." Selain itu, cari third-party data dari produk atau industri adjacent yang relevan.</p>
+        </div>
+
+        <h3 class="section-head">Mengusulkan Perubahan Besar / Disruptif</h3>
+        <div class="card blue-card" style="background:#fff;padding:22px 26px;box-shadow:var(--shadow)">
+          <h4 style="margin-bottom:10px;">Waspada terhadap Naivitas</h4>
+          <p style="font-size:14px;margin-bottom:10px;">Desainer kadang naif tentang constraint bisnis. Ketika mengusulkan "kita harus mulai dari nol," mereka sering tidak memperhitungkan warisan teknis, dinamika politik, keterbatasan anggaran, atau keputusan masa lalu yang punya konteks tersendiri.</p>
+          <p style="font-size:14px;">Akibatnya, usulan yang secara desain valid malah dipersepsi sebagai naif — dan kredibilitas jatuh. <strong>Lakukan due diligence terlebih dahulu.</strong> Pahami semua constraint. Atau gunakan perubahan besar itu sebagai <em>visi jangka panjang</em> — north star yang selalu bisa ditunjuk, sementara hari ini kita kerjakan langkah-langkah kecil menuju ke sana.</p>
+        </div>
+
+        <h3 class="section-head">Membuat Engineer Lebih Empati</h3>
+        <div class="callout callout-teal">
+          <div class="callout-label">Bukan Soal Ceramah — Soal Akses</div>
+          <p>Kebanyakan engineer sebenarnya ingin memahami pengguna — yang kurang adalah akses. Solusinya bukan ceramah tentang pentingnya empati, tapi memberikan pengalaman langsung: ajak mereka hadir di sesi user testing, bagikan video rekaman (bukan hanya laporan tertulis), kutipkan langsung perkataan pengguna tanpa terlalu banyak interpretasi. <strong>Seeing is believing.</strong> Pengalaman langsung jauh lebih berpengaruh daripada informasi yang diceritakan orang lain.</p>
+        </div>
+
+        <h3 class="section-head">Tips dari Presenter Elham: Untuk Eksekutif yang Bekerja dengan Desainer</h3>
+        <div class="accordion">
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              Akui expertise desainer — jangan menyerang kerja mereka
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body"><p>Desainer adalah individu dengan expertise di bidangnya. Kritik yang konstruktif dimulai dengan pertanyaan, bukan pernyataan.</p></div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              Berikan masalah, bukan solusi
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body"><p>Jangan datang dengan solusi sudah jadi. Jelaskan masalah dan biarkan desainer menemukan solusi terbaik — itulah mengapa mereka direkrut.</p></div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              Jangan klaim dirimu sebagai "the user"
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body"><p>"Saya adalah pengguna" sama dengan "saya menyukai X." Ada banyak tipe pengguna yang tidak bisa diwakili oleh satu orang. Percayakan riset pengguna kepada tim desain.</p></div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              Beri ruang untuk menjelaskan sebelum menyimpulkan
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body"><p>Sebelum memutuskan apakah desain berhasil atau tidak, beri desainer ruang untuk menjelaskan thought process mereka dan alasan di balik keputusan.</p></div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAcc(this)">
+              Review desain sebelum meeting, bukan saat meeting
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body"><p>Baca pre-read yang dikirim. Hadir dengan feedback yang sudah dipikirkan matang — bukan melihat desain untuk pertama kali saat meeting dimulai.</p></div>
+          </div>
+        </div>
+
+        <div class="module-nav">
+          <button class="btn btn-ghost" onclick="goTo(7)">← Modul 07</button>
+          <button class="btn btn-primary" onclick="goTo(9)">Modul 09 →</button>
+        </div>
+      </section>
+
+      <!-- MODULE 9: REMOTE CASES -->
+      <section class="module" id="mod-9">
+        <div class="module-eyebrow">Modul 09 — Kerja Remote</div>
+        <h1 class="module-title">10 Kasus Umum Kerja Remote</h1>
+        <p class="module-intro">Hampir semua masalah remote bukan soal teknologi — tapi soal kehilangan sinyal komunikasi yang biasanya kita dapatkan secara natural di kantor. Solusinya selalu melibatkan mengganti sinyal yang hilang itu dengan struktur yang disengaja.</p>
+
+        <div class="callout callout-accent">
+          <div class="callout-label">Konteks Tom Greever</div>
+          <p>Tom bekerja secara remote sejak 2012 — jauh sebelum ini jadi norma. Banyak cerita dalam bukunya berlatar remote environment. Ia bahkan menemukan paradoks menarik: setelah bertahun-tahun, ia kini merasa lebih fasih di setting remote daripada meeting tatap muka yang justru terasa canggung secara teknologi.</p>
+        </div>
+
+        <div id="cases-container"></div>
+
+        <h3 class="section-head">Tips Remote dari Tom</h3>
+        <ul class="step-list">
+          <li>
+            <div class="step-num" style="background:var(--teal)">1</div>
+            <div class="step-content">
+              <h5>Async video lebih efektif dari teks</h5>
+              <p>Rekaman Loom atau Zoom singkat (2-3 menit) jauh lebih kaya dari DM atau email untuk hal yang kompleks — karena tone, ekspresi, dan nuansa ikut tersampaikan.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" style="background:var(--blue)">2</div>
+            <div class="step-content">
+              <h5>Struktur lebih ketat di video call</h5>
+              <p>Di tatap muka, bahasa tubuh membantu mengatur giliran bicara. Di remote, tidak ada sinyal itu. Panggil nama orang secara eksplisit, tanyakan pertanyaan spesifik kepada individu tertentu.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" style="background:var(--amber)">3</div>
+            <div class="step-content">
+              <h5>Manfaatkan keuntungan remote</h5>
+              <p>Recording otomatis, transkrip, kemudahan berbagi screen, kolaborasi real-time di Miro/Figma — ini semua keuntungan yang tidak ada di meeting tatap muka tradisional.</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="module-nav">
+          <button class="btn btn-ghost" onclick="goTo(8)">← Modul 08</button>
+          <button class="btn btn-primary" onclick="goTo(10)">Kuis →</button>
+        </div>
+      </section>
+
+      <!-- MODULE 10: QUIZ -->
+      <section class="module" id="mod-10">
+        <div class="module-eyebrow">Evaluasi</div>
+        <h1 class="module-title">Kuis Pemahaman</h1>
+        <p class="module-intro">Uji pemahamanmu tentang prinsip-prinsip dari modul ini. Setiap soal hanya bisa dijawab sekali.</p>
+
+        <div id="quiz-container"></div>
+
+        <div class="quiz-score" id="quiz-score">
+          <div class="big-num" id="score-num">0/15</div>
+          <p id="score-msg">Selesai! Cek hasilmu di atas.</p>
+        </div>
+
+        <div class="module-nav">
+          <button class="btn btn-ghost" onclick="goTo(9)">← Modul 09</button>
+          <button class="btn btn-accent" onclick="goTo(0)">Kembali ke Awal ↩</button>
+        </div>
+      </section>
+
+    </div><!-- /module-container -->
+  </main>
+</div>
+
+<script>
+// ── DATA ──
+const remoteCases = [
+  { num:"01", color:"#E6F1FB", numColor:"#0C447C", title:"Feedback stakeholder hilang di thread chat", scenario:"Desainer mengirim mockup via Slack. Beberapa orang merespons dengan emoji, beberapa berkomentar singkat, satu orang senior sama sekali diam. Dua hari kemudian muncul komentar baru yang bertentangan dengan yang sebelumnya, dan tidak ada yang tahu mana keputusan finalnya.", solution:"Kirim mockup lewat pesan terstruktur: sertakan konteks singkat, satu pertanyaan spesifik, dan deadline respons. Setelah diskusi selesai, kirim ringkasan keputusan dalam thread yang sama — siapa setuju apa, dan apa langkah selanjutnya. Gunakan async video untuk mockup yang kompleks agar tone tersampaikan dengan benar." },
+  { num:"02", color:"#FAEEDA", numColor:"#633806", title:"Meeting review diisi orang yang salah", scenario:"Sebuah review session dihadiri 8 orang tapi hanya 2 yang relevan. Yang lain ikut memberikan feedback tanpa konteks, mengalihkan diskusi ke hal-hal di luar scope, dan keputusan akhirnya kabur karena terlalu banyak pendapat.", solution:"Kirim pre-read 24 jam sebelumnya dengan konteks dan tujuan meeting yang jelas. Assign peran eksplisit: siapa decision-maker, siapa contributor, siapa observer. Buka meeting dengan menyatakan tujuan dan jenis feedback yang dibutuhkan. Catat topik yang keluar jalur di 'parking lot.'" },
+  { num:"03", color:"#E1F5EE", numColor:"#085041", title:"Misinterpretasi tone dalam pesan teks", scenario:"PM mengirim pesan singkat: 'Ini belum sesuai ekspektasi kita.' Desainer membacanya sebagai kritik keras dan merasa diserang. Sebenarnya PM hanya sedang terburu-buru dan tidak berniat negatif. Hubungan jadi tegang tanpa ada yang memahami akar masalahnya.", solution:"Sebelum bereaksi terhadap pesan ambigu, ambil jeda — praktikkan 'art of the pause'. Respond dengan pertanyaan klarifikasi yang netral. Untuk feedback penting atau sensitif, hindari teks saja — gunakan async video atau voice note agar tone bisa tersampaikan dengan benar." },
+  { num:"04", color:"#FAECE7", numColor:"#712B13", title:"Tidak tahu apakah karya disetujui", scenario:"Setelah presentasi via Zoom, semua orang bilang 'terlihat bagus' tapi tidak ada keputusan eksplisit. Minggu berikutnya ternyata ada yang tidak setuju tapi tidak mengatakannya saat meeting. Desainer sudah lanjut development, tapi stakeholder merasa belum memberi approval.", solution:"Akhiri setiap meeting dengan permintaan keputusan spesifik: 'Apakah kita setuju untuk lanjut dengan pendekatan ini ke development?' Kirim ringkasan 30 menit setelah meeting: apa yang didiskusikan, apa yang diputuskan, siapa bertanggung jawab, deadline apa." },
+  { num:"05", color:"#EEEDFE", numColor:"#3C3489", title:"Stakeholder senior veto di menit terakhir", scenario:"VP hadir di design review tapi tidak berkomentar sama sekali. Tim mengira semua oke. Dua minggu kemudian, saat hampir launch, VP menyatakan ketidaksetujuannya dan meminta revisi besar yang mengundur jadwal.", solution:"Jangan biarkan keheningan senior stakeholder dibaca sebagai persetujuan. Kirim async video khusus untuk mereka setelah meeting — pendek, 2-3 menit — yang merangkum keputusan dan secara eksplisit meminta konfirmasi. Beri deadline respons yang konkret." },
+  { num:"06", color:"#EAF3DE", numColor:"#27500A", title:"Konteks latar proyek tidak tersebar ke semua", scenario:"Designer senior tahu kenapa sebuah keputusan desain dibuat — ada riset, constraint teknis, diskusi panjang 3 bulan lalu. Tapi anggota tim baru terus mempertanyakan keputusan yang sama berulang kali.", solution:"Buat dan maintain 'design decision log' — dokumen yang mencatat setiap keputusan penting: apa yang diputuskan, mengapa, alternatif apa yang dipertimbangkan. Ini bukan formalitas — ini alat komunikasi aktif yang bisa langsung ditunjuk saat ada pertanyaan." },
+  { num:"07", color:"#FBEAF0", numColor:"#72243E", title:"Tidak bisa 'membaca ruangan' saat presentasi", scenario:"Dalam presentasi tatap muka, desainer bisa melihat ekspresi muka dan bahasa tubuh. Di Zoom, semua kamera mati. Desainer presentasi 20 menit tanpa tahu apakah orang-orang mengerti, bosan, atau diam-diam tidak setuju.", solution:"Bangun micro-checkpoints setiap 5-7 menit: pause dan tanya satu pertanyaan spesifik kepada seseorang. Minta peserta aktifkan kamera jika memungkinkan. Gunakan polling atau sticky note di Miro untuk mengukur sentimen. Kirim pre-read sebelumnya agar meeting bisa lebih fokus pada diskusi." },
+  { num:"08", color:"#F1EFE8", numColor:"#444441", title:"Revisi berulang karena ekspektasi tidak selaras", scenario:"Klien minta 'redesign homepage yang lebih modern'. Desainer menginterpretasikannya satu cara, klien punya gambaran berbeda. Setelah 3 putaran revisi, keduanya frustrasi.", solution:"Lakukan sesi discovery sebelum mulai: gali masalah di balik permintaan. Tanya: 'Apa yang tidak bekerja dari design saat ini?' dan 'Bagaimana Anda tahu kalau redesign berhasil?' Presentasikan 2-3 direction berbeda di awal — bukan satu solusi final — agar klien bisa mengarahkan sebelum terlalu banyak waktu terbuang." },
+  { num:"09", color:"#FCEBEB", numColor:"#791F1F", title:"Burnout diam-diam karena batas kerja-rumah kabur", scenario:"Seorang desainer remote selalu available — membalas Slack jam 9 malam, ikut meeting di luar jam kerja. Awalnya terlihat produktif dan berdedikasi. Tapi setelah beberapa bulan, kualitas kerja menurun dan kreativitas stagnan.", solution:"Set status 'offline' di luar jam kerja dan komunikasikan kapan kamu available. Jadwalkan deep work time di kalender sebagai blocker. Sebagai manajer: perhatikan perubahan pola komunikasi seseorang — respons yang melambat atau kualitas menurun bisa jadi sinyal burnout." },
+  { num:"10", color:"#E6F1FB", numColor:"#0C447C", title:"Relasi tim terasa transaksional dan dingin", scenario:"Semua komunikasi remote bersifat task-based: update project, assign ticket, request review. Tidak ada small talk. Setelah 6 bulan, anggota tim merasa tidak saling mengenal, trust rendah, dan ada resistensi diam-diam terhadap keputusan satu sama lain.", solution:"Investasikan waktu di luar agenda kerja — virtual coffee, sesi show-and-tell non-kerja, atau 5 menit awal meeting untuk check-in personal. Relasi yang dibangun di luar meeting adalah modal kepercayaan yang menentukan seberapa mudah keputusan desain diterima saat meeting berlangsung." }
+];
+
+const quizData = [
+  { q:"Apa perbedaan utama antara desainer yang 'baik' dan 'hebat' menurut Tom Greever?", opts:["Desainer hebat lebih mahir menggunakan tools desain","Desainer hebat mampu mengartikulasikan keputusan desain mereka dengan baik","Desainer hebat punya portfolio yang lebih kaya","Desainer hebat lebih banyak menghasilkan alternatif desain"], ans:1, fb:"Benar! Menurut Tom, perbedaan utama bukan pada skill teknis desain, melainkan pada kemampuan mengartikulasikan — menjelaskan mengapa keputusan tersebut dibuat.", fbw:"Kurang tepat. Menurut Tom Greever, yang membedakan desainer baik dan hebat adalah kemampuan mengartikulasikan keputusan desain, bukan skill teknis semata." },
+  { q:"Apa yang dimaksud dengan 'The Art of the Pause' dalam konteks listening?", opts:["Diam sepenuhnya selama meeting","Memberi jeda sebelum merespons agar tidak reaktif dan defensif","Menunda keputusan hingga minggu berikutnya","Meminta rekaman meeting untuk ditonton ulang"], ans:1, fb:"Tepat! Art of the pause adalah praktik memberikan jeda setelah stakeholder selesai bicara — mencegah respons yang defensif dan memberi otakmu waktu untuk memproses.", fbw:"Tidak tepat. Art of the pause adalah tentang memberi jeda singkat sebelum merespons, bukan diam sepenuhnya atau menunda keputusan." },
+  { q:"Ketika stakeholder meminta perubahan yang tidak kamu setujui, formula respons yang tepat menurut buku ini adalah:", opts:["Langsung menolak dengan data yang kuat","Setuju dan lanjutkan revisi tanpa bertanya","Akui → Jelaskan → Hubungkan ke tujuan bersama","Tanyakan siapa yang paling senior di ruangan"], ans:2, fb:"Benar! Formula tiga langkah ini adalah inti dari buku: akui kekhawatiran mereka, jelaskan alasan keputusanmu, lalu hubungkan ke tujuan bisnis atau pengguna yang disepakati.", fbw:"Kurang tepat. Formula yang direkomendasikan adalah: Akui → Jelaskan → Hubungkan ke tujuan bersama." },
+  { q:"Apa yang harus selalu dilakukan di akhir setiap design review meeting?", opts:["Kirim desain terbaru via email","Minta keputusan yang eksplisit dan spesifik","Tanyakan 'Ada pertanyaan?' ke semua peserta","Buka sesi brainstorming bebas"], ans:1, fb:"Benar! Menutup meeting dengan permintaan keputusan spesifik — bukan pertanyaan terbuka — mencegah situasi di mana semua orang pergi tanpa ada yang tahu apa yang sudah diputuskan.", fbw:"Tidak tepat. Setiap meeting harus ditutup dengan permintaan keputusan yang eksplisit dan spesifik, bukan pertanyaan umum seperti 'Ada pertanyaan?'" },
+  { q:"Ketika stakeholder senior diam selama design review, apa artinya?", opts:["Mereka sudah setuju dengan desainmu","Mereka tidak tertarik dengan proyek ini","Keheningan tidak bisa langsung diartikan sebagai persetujuan","Mereka memilih untuk abstain dari keputusan"], ans:2, fb:"Tepat! Keheningan senior stakeholder tidak boleh dibaca sebagai persetujuan. Mereka mungkin memproses, mungkin tidak setuju tapi tidak mengungkapkannya, atau punya kekhawatiran yang perlu digali lebih dalam.", fbw:"Tidak tepat. Keheningan tidak bisa langsung diartikan sebagai persetujuan. Follow up secara proaktif setelah meeting untuk memastikan." },
+  { q:"Mengapa Tom Greever merekomendasikan menulis 'design decision log'?", opts:["Untuk menunjukkan ke klien bahwa tim bekerja keras","Sebagai alat komunikasi aktif yang mencegah pertanyaan berulang","Untuk memenuhi persyaratan dokumentasi perusahaan","Karena pimpinan memintanya"], ans:1, fb:"Benar! Design decision log adalah alat komunikasi aktif — bukan formalitas. Ketika keputusan dipertanyakan kembali, kamu bisa langsung menunjuk ke dokumen yang menjelaskan apa yang diputuskan, mengapa, dan alternatif apa yang sudah dipertimbangkan.", fbw:"Tidak tepat. Design decision log adalah alat komunikasi aktif yang memungkinkan tim merujuk kembali ke alasan di balik keputusan, mencegah pertanyaan dan perdebatan yang berulang." },
+  { q:"Bagaimana cara paling efektif untuk membuat engineer lebih empati terhadap pengguna?", opts:["Memberikan ceramah tentang pentingnya UX","Membuat laporan riset yang sangat detail","Mengajak mereka ke sesi user testing secara langsung","Mengirim email ringkasan temuan riset"], ans:2, fb:"Tepat! 'Seeing is believing.' Pengalaman langsung jauh lebih berpengaruh daripada informasi yang diceritakan. Ajak engineer hadir di sesi user testing, bagikan video rekaman, biarkan mereka menarik kesimpulan sendiri.", fbw:"Tidak tepat. Cara paling efektif adalah memberikan akses dan pengalaman langsung — mengajak mereka ke sesi user testing atau membagikan video rekaman, bukan ceramah atau laporan." },
+  { q:"Apa perbedaan antara 'permintaan' dan 'kebutuhan' stakeholder dalam konteks listening?", opts:["Tidak ada perbedaan — keduanya sama","Permintaan adalah apa yang mereka katakan; kebutuhan adalah masalah sebenarnya di balik itu","Kebutuhan selalu lebih penting dari permintaan","Permintaan datang dari klien; kebutuhan datang dari pengguna akhir"], ans:1, fb:"Benar! Stakeholder sering meminta solusi spesifik (misalnya 'besarkan tombolnya'), padahal kebutuhan sesungguhnya adalah sesuatu yang berbeda (meningkatkan visibilitas CTA). Desainer harus bisa menggali dari permintaan ke kebutuhan.", fbw:"Tidak tepat. Permintaan adalah apa yang stakeholder katakan mereka inginkan (solusi spesifik), sementara kebutuhan adalah masalah sesungguhnya yang perlu diselesaikan." },
+  { q:"Ketika mengusulkan perubahan desain yang besar dan disruptif, apa risiko terbesar yang harus diwaspadai?", opts:["Proposal akan ditolak karena terlalu mahal","Dipersepsi sebagai naif karena tidak memperhitungkan constraint bisnis","Tidak ada cukup waktu untuk mengimplementasikannya","Stakeholder tidak akan mengerti konsepnya"], ans:1, fb:"Tepat! Tom menekankan bahwa desainer sering naif tentang constraint bisnis — warisan teknis, dinamika politik, keterbatasan anggaran. Proposal yang secara desain valid bisa dipersepsi sebagai naif jika tidak mempertimbangkan semua faktor ini.", fbw:"Tidak tepat. Risiko terbesar adalah dipersepsi sebagai naif karena tidak memperhitungkan semua constraint bisnis yang ada — dan begitu dipersepsi naif, kredibilitas jatuh dan proposal tidak akan didengar." },
+  { q:"Dalam konteks remote work, mengapa masalah komunikasi lebih sering terjadi dibanding di kantor?", opts:["Karena teknologi remote masih kurang canggih","Karena sinyal komunikasi non-verbal yang biasanya ada secara natural di kantor tidak tersedia","Karena orang lebih malas ketika bekerja dari rumah","Karena zona waktu yang berbeda"], ans:1, fb:"Benar! Ekspresi wajah, bahasa tubuh, small talk di koridor, dan keputusan informal di tepi meja — semua sinyal komunikasi ini hilang di remote. Solusinya adalah mengganti sinyal yang hilang dengan struktur yang disengaja.", fbw:"Tidak tepat. Masalah utama remote bukan teknologi atau kemalasan — tapi hilangnya sinyal komunikasi non-verbal yang biasanya ada secara natural di kantor." },
+  { q:"Manakah yang BUKAN merupakan bingkai (frame) yang direkomendasikan untuk mempertahankan keputusan desain?", opts:["Bingkai pengguna — berdasarkan perilaku pengguna","Bingkai personal — berdasarkan preferensi estetika desainer","Bingkai data — berdasarkan hasil pengujian","Bingkai bisnis — berdasarkan tujuan perusahaan"], ans:1, fb:"Tepat! Bingkai personal — 'menurut saya lebih bagus' atau 'ini pilihan estetika saya' — adalah bingkai terlemah dan paling mudah ditolak. Keempat bingkai yang direkomendasikan selalu mengacu ke luar diri: pengguna, data, bisnis, atau best practice.", fbw:"Tidak tepat. Bingkai personal (preferensi estetika pribadi) adalah bingkai yang paling lemah dan harus dihindari. Empat bingkai yang direkomendasikan adalah: pengguna, data, bisnis, dan best practice." },
+  { q:"Apa yang dimaksud Tom Greever dengan 'mendemonstrasikan' nilai UX, bukan sekadar 'mengklaim'nya?", opts:["Membuat presentasi yang lebih panjang dan detail","Melakukan riset atau studi dan membiarkan hasilnya berbicara sendiri","Mendapatkan sertifikasi UX yang diakui","Memenangkan design awards"], ans:1, fb:"Benar! Tom berbagi pengalaman di mana timnya melakukan riset 'off to the side' — meski belum ada izin resmi — dan ketika hasilnya terlihat, orang-orang mulai mengerti. Kata-kata saja tidak cukup; hasilnya harus bisa dilihat.", fbw:"Tidak tepat. Mendemonstrasikan nilai UX berarti melakukan pekerjaan nyata (riset, testing, mapping) dan membiarkan hasilnya berbicara — bukan membuat presentasi atau klaim verbal." },
+  { q:"Apa yang sebaiknya dilakukan ketika seorang anggota tim tidak setuju dengan keputusan desain yang sudah disepakati mayoritas?", opts:["Abaikan ketidaksetujuannya dan lanjutkan","Gali alasan ketidaksetujuan dan berikan ruang untuk disagree and commit","Tunda seluruh proyek hingga semua sepakat","Eskalasi ke manajemen untuk keputusan akhir"], ans:1, fb:"Benar! Tom merekomendasikan untuk menggali alasan ketidaksetujuan terlebih dahulu — ada informasi berharga di sana. Jika keputusan tetap diambil, beri mereka ruang untuk 'disagree and commit': tidak setuju dengan keputusan tapi tetap mendukung proyek untuk bergerak maju.", fbw:"Tidak tepat. Langkah yang tepat adalah: gali alasan ketidaksetujuan (ada informasi berharga), lalu jika keputusan tetap diambil, berikan ruang untuk 'disagree and commit.'" },
+  { q:"Mengapa design maturity sebuah organisasi tidak pernah bisa dianggap 'selesai' atau 'stabil'?", opts:["Karena standar desain selalu berubah setiap tahun","Karena setiap pergantian orang kunci bisa mereset sebagian dari modal kepercayaan yang sudah dibangun","Karena teknologi desain berkembang terus","Karena pengguna selalu berubah ekspektasinya"], ans:1, fb:"Tepat! Tom menekankan bahwa bahkan di organisasi dengan design maturity tinggi, setiap VP atau pemimpin baru yang masuk bisa membawa ekspektasi yang berbeda. Advokasi desain adalah proses berkelanjutan, bukan destinasi.", fbw:"Tidak tepat. Design maturity tidak pernah stabil karena setiap pergantian orang kunci membawa ekspektasi dan pemahaman baru tentang nilai desain — advokasi harus terus dilakukan." },
+  { q:"Apa teknik Tom untuk mengatasi obsesi stakeholder terhadap mockup high-fidelity?", opts:["Berhenti membuat mockup dan beralih ke prototyping","Membuat design system terpisah khusus untuk wireframe yang terlihat rough (seperti Balsamiq)","Menggunakan hanya sketsa tangan","Melarang stakeholder melihat mockup sebelum final"], ans:1, fb:"Benar! Timnya membuat design system khusus wireframe yang secara visual menyerupai Balsamiq — rough, tidak polished — agar diskusi bisa berfokus pada masalah dan solusi, bukan terpaku pada detail visual yang belum final.", fbw:"Tidak tepat. Tom dan timnya membuat design system terpisah khusus untuk wireframe yang terlihat rough (seperti Balsamiq) sehingga diskusi bisa berfokus pada masalah bukan detail visual." }
+];
+
+// ── RENDER CASES ──
+const casesContainer = document.getElementById('cases-container');
+remoteCases.forEach((c, i) => {
+  const el = document.createElement('div');
+  el.className = 'scenario';
+  el.style.marginBottom = '16px';
+  el.innerHTML = `
+    <div class="scenario-header">
+      <div class="scenario-num" style="background:${c.color};color:${c.numColor}">${c.num}</div>
+      <div class="scenario-title">${c.title}</div>
+    </div>
+    <div class="scenario-body">
+      <div class="label">Situasi</div>
+      <p>${c.scenario}</p>
+      <button style="background:none;border:1px solid var(--paper-3);border-radius:var(--radius);padding:7px 14px;font-size:12px;cursor:pointer;color:var(--ink-3);font-family:var(--sans);display:flex;align-items:center;gap:6px;" onclick="toggleCase(${i},this)">
+        <span>Lihat solusi</span>
+      </button>
+      <div id="case-sol-${i}" style="display:none;margin-top:12px;background:var(--teal-light);border:1px solid #9fe1cb;border-radius:var(--radius);padding:12px 16px;font-size:13.5px;color:#085041;line-height:1.65;">
+        <strong style="display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;color:#0f6e56;">Solusi</strong>
+        ${c.solution}
+      </div>
+    </div>`;
+  casesContainer.appendChild(el);
+});
+
+function toggleCase(i, btn) {
+  const sol = document.getElementById('case-sol-' + i);
+  const open = sol.style.display === 'block';
+  sol.style.display = open ? 'none' : 'block';
+  btn.querySelector('span').textContent = open ? 'Lihat solusi' : 'Sembunyikan';
+}
+
+// ── RENDER QUIZ ──
+const quizContainer = document.getElementById('quiz-container');
+let answeredCount = 0;
+let correctCount = 0;
+
+quizData.forEach((q, qi) => {
+  const el = document.createElement('div');
+  el.className = 'quiz-card';
+  el.innerHTML = `
+    <div class="quiz-q"><span>Soal ${qi+1} dari ${quizData.length}</span>${q.q}</div>
+    <div class="quiz-options">
+      ${q.opts.map((opt, oi) => `
+        <button class="quiz-option" data-qi="${qi}" data-oi="${oi}" onclick="answerQuiz(${qi},${oi},${q.ans})">
+          <span class="opt-letter">${String.fromCharCode(65+oi)}</span>
+          ${opt}
+        </button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="qfb-${qi}"></div>`;
+  quizContainer.appendChild(el);
+});
+
+function answerQuiz(qi, oi, correct) {
+  const opts = document.querySelectorAll(`[data-qi="${qi}"]`);
+  if (opts[0].classList.contains('disabled')) return;
+  const q = quizData[qi];
+  const isCorrect = oi === correct;
+  if (isCorrect) correctCount++;
+  answeredCount++;
+  opts.forEach((o, idx) => {
+    o.classList.add('disabled');
+    if (idx === correct) o.classList.add('correct');
+    else if (idx === oi && !isCorrect) o.classList.add('wrong');
+  });
+  const fb = document.getElementById('qfb-' + qi);
+  fb.textContent = isCorrect ? '✓ ' + q.fb : '✗ ' + q.fbw;
+  fb.className = 'quiz-feedback show ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+  if (answeredCount === quizData.length) {
+    setTimeout(() => {
+      const score = document.getElementById('quiz-score');
+      const pct = Math.round(correctCount/quizData.length*100);
+      let msg = pct >= 80 ? 'Luar biasa! Kamu sudah memahami prinsip-prinsip utama dengan baik.' :
+                pct >= 60 ? 'Bagus! Ada beberapa area yang bisa diperdalam lagi.' :
+                'Coba ulangi modul-modul sebelumnya untuk memperkuat pemahamanmu.';
+      document.getElementById('score-num').textContent = correctCount + '/' + quizData.length + ' (' + pct + '%)';
+      document.getElementById('score-msg').textContent = msg;
+      score.classList.add('show');
+      score.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 400);
+  }
+}
+
+// ── NAVIGATION ──
+const totalModules = 11;
+const visited = new Set([0]);
+
+function goTo(idx) {
+  document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+  document.getElementById('mod-' + idx).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', +n.dataset.idx === idx);
+    if (visited.has(+n.dataset.idx) && +n.dataset.idx !== idx) n.classList.add('done');
+  });
+  visited.add(idx);
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (window.innerWidth <= 768) closeSidebar();
+}
+
+function updateProgress() {
+  const pct = Math.round(visited.size / totalModules * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+// ── ACCORDION ──
+function toggleAcc(btn) {
+  const item = btn.parentElement;
+  item.classList.toggle('open');
+}
+
+// ── MOBILE SIDEBAR ──
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+updateProgress();
+</script>
+</body>
+</html>
