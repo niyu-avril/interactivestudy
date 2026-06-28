@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI/UX Competency Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#020203;--bg-base:#050506;--bg-elevated:#0a0a0c;
+    --fg:#EDEDEF;--fg-muted:#8A8F98;--fg-subtle:rgba(255,255,255,0.60);
+    --accent:#5E6AD2;--accent-bright:#6872D9;--accent-glow:rgba(94,106,210,0.3);
+    --hard:#3FB6B2;--soft:#E0A33E;
+    --border:rgba(255,255,255,0.06);--border-hover:rgba(255,255,255,0.10);--border-accent:rgba(94,106,210,0.30);
+    --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+    --sans:"Inter","Geist Sans",system-ui,sans-serif;
+    --ease:cubic-bezier(0.16,1,0.3,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;color:var(--fg);font-family:var(--sans);line-height:1.5;background:radial-gradient(ellipse at top,#0a0a0f 0%,#050506 50%,#020203 100%);-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;min-height:100vh}
+  ::selection{background:var(--accent-glow)}
+  .bg-layers{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .noise{position:absolute;inset:0;opacity:.015;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .grid{position:absolute;inset:0;opacity:.02;background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:64px 64px}
+  .blob{position:absolute;border-radius:50%;filter:blur(140px);will-change:transform;opacity:.8}
+  .blob.b1{top:-300px;left:50%;margin-left:-450px;width:900px;height:1100px;background:radial-gradient(circle,rgba(94,106,210,.25),transparent 70%);animation:float1 9s var(--ease) infinite}
+  .blob.b2{top:200px;left:-200px;width:600px;height:800px;filter:blur(120px);background:radial-gradient(circle,rgba(168,85,247,.15),rgba(236,72,153,.08),transparent 70%);animation:float2 11s var(--ease) infinite}
+  .blob.b3{top:400px;right:-150px;width:500px;height:700px;filter:blur(100px);background:radial-gradient(circle,rgba(79,110,210,.12),rgba(59,130,246,.08),transparent 70%);animation:float3 10s var(--ease) infinite}
+  .blob.b4{bottom:-200px;left:30%;width:700px;height:600px;filter:blur(130px);background:radial-gradient(circle,rgba(94,106,210,.10),transparent 70%);animation:pulse 7s ease-in-out infinite}
+  @keyframes float1{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(1deg)}}
+  @keyframes float2{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(15px,-25px) rotate(-1deg)}}
+  @keyframes float3{0%,100%{transform:translate(0,0)}50%{transform:translate(-18px,18px)}}
+  @keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:.9;transform:scale(1.08)}}
+  .page{position:relative;z-index:1}
+
+  .langtoggle{position:fixed;top:18px;right:18px;z-index:60;display:flex;border:1px solid var(--border-hover);border-radius:8px;overflow:hidden;background:rgba(10,10,12,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .langtoggle button{appearance:none;border:0;background:transparent;color:var(--fg-muted);font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:8px 12px;cursor:pointer;transition:all .2s var(--ease)}
+  .langtoggle button:hover{color:var(--fg)}
+  .langtoggle button.active{background:var(--accent);color:#fff;box-shadow:0 0 14px var(--accent-glow)}
+
+  header.masthead{max-width:1240px;margin:0 auto;padding:54px 24px 30px}
+  .hero{will-change:transform,opacity}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin:0 0 18px;display:inline-flex;align-items:center;gap:8px}
+  .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  h1.title{font-weight:600;font-size:clamp(40px,8vw,84px);line-height:.96;margin:0;letter-spacing:-.03em;background:linear-gradient(to bottom,#fff,rgba(255,255,255,.95) 40%,rgba(255,255,255,.55));-webkit-background-clip:text;background-clip:text;color:transparent}
+  h1.title em{font-style:normal;background:linear-gradient(110deg,var(--accent),#818cf8,var(--accent));background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 6s linear infinite}
+  @keyframes shimmer{to{background-position:200% center}}
+  .sub{margin:20px 0 0;max-width:62ch;color:var(--fg-muted);font-size:clamp(15px,2vw,17px);line-height:1.65}
+
+  .careerbar{display:flex;gap:8px;flex-wrap:wrap;margin:34px 0 0}
+  .rung{flex:1 1 120px;min-width:104px;padding:13px 14px;text-align:left;cursor:pointer;background:linear-gradient(to bottom,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--border);border-radius:14px;transition:all .25s var(--ease);box-shadow:0 0 0 1px rgba(255,255,255,.04),0 2px 14px rgba(0,0,0,.4);font-family:var(--sans);color:var(--fg)}
+  .rung:hover{transform:translateY(-4px);border-color:var(--border-hover);box-shadow:0 0 0 1px rgba(255,255,255,.08),0 8px 30px rgba(0,0,0,.5),0 0 50px rgba(94,106,210,.08)}
+  .rung.active{border-color:var(--border-accent);background:linear-gradient(to bottom,rgba(94,106,210,.18),rgba(94,106,210,.04));box-shadow:0 0 0 1px var(--border-accent),0 8px 30px rgba(0,0,0,.5),0 0 60px rgba(94,106,210,.15)}
+  .rung.alt{border-style:dashed}
+  .rung .rl{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-muted);display:block}
+  .rung.active .rl{color:var(--accent-bright)}
+  .rung .rn{font-size:15px;font-weight:600;display:block;margin-top:4px;line-height:1.1;letter-spacing:-.01em}
+  .rung .rc{font-family:var(--mono);font-size:10px;color:var(--fg-subtle);display:block;margin-top:5px}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+  .controls{position:sticky;top:0;z-index:30;padding:14px 0;margin-top:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:rgba(5,5,6,.8);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+  .search{flex:1;min-width:220px;display:flex;align-items:center;gap:10px;background:var(--bg-elevated);border:1px solid var(--border-hover);padding:10px 14px;border-radius:10px;transition:all .2s var(--ease)}
+  .search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(94,106,210,.18)}
+  .search input{border:0;background:transparent;outline:none;width:100%;font-size:14px;color:var(--fg);font-family:var(--sans)}
+  .search input::placeholder{color:#5a5f68}
+  .search svg{flex:none;color:var(--fg-muted)}
+  .search-scope{font-family:var(--mono);font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;padding:3px 8px;border:1px solid var(--border-accent);border-radius:999px}
+  .toggle{display:flex;align-items:center;gap:9px;cursor:pointer;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--fg-muted);user-select:none}
+  .toggle input{appearance:none;width:36px;height:20px;border-radius:20px;background:rgba(255,255,255,.1);position:relative;cursor:pointer;transition:.25s var(--ease)}
+  .toggle input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#d4d4d8;transition:.25s var(--ease)}
+  .toggle input:checked{background:var(--accent);box-shadow:0 0 14px var(--accent-glow)}
+  .toggle input:checked::after{left:18px;background:#fff}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:18px 0 0}
+  .filters .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-muted);margin-right:2px}
+  .chip{display:inline-flex;align-items:center;gap:7px;cursor:pointer;user-select:none;font-size:12px;padding:6px 13px;border:1px solid var(--border-hover);border-radius:999px;background:rgba(255,255,255,.03);color:var(--fg-muted);transition:all .2s var(--ease)}
+  .chip .cdot{width:8px;height:8px;border-radius:50%}
+  .chip[data-k="h"] .cdot{background:var(--hard)}
+  .chip[data-k="s"] .cdot{background:var(--soft)}
+  .chip:hover{color:var(--fg);border-color:var(--border-accent)}
+  .chip.off{opacity:.4}
+
+  .roleintro{padding:30px 0 8px}
+  .roleintro .mission{font-size:clamp(20px,3.2vw,28px);line-height:1.3;max-width:44ch;margin:0;font-weight:500;letter-spacing:-.01em;background:linear-gradient(to bottom,#fff,rgba(255,255,255,.72));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  .countline{font-family:var(--mono);font-size:11px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.1em;margin:26px 0 4px;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-top:14px;flex-wrap:wrap;border-top:1px solid var(--border)}
+  .countline #shown{color:var(--accent)}
+
+  .group-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin:30px 0 2px;display:flex;align-items:center;gap:10px}
+  .group-label .gd{width:9px;height:9px;border-radius:50%}
+  .group-label.hard{color:var(--hard)} .group-label.hard .gd{background:var(--hard);box-shadow:0 0 10px rgba(63,182,178,.5)}
+  .group-label.soft{color:var(--soft)} .group-label.soft .gd{background:var(--soft);box-shadow:0 0 10px rgba(224,163,62,.5)}
+  .group-label::after{content:"";flex:1;height:1px;background:linear-gradient(to right,currentColor,transparent);opacity:.3}
+  .group-label .gcount{font-size:10px;color:var(--fg-muted);letter-spacing:.05em}
+
+  .cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;padding:12px 0 4px}
+  .cat{position:relative;border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;background:linear-gradient(to bottom,rgba(255,255,255,.05),rgba(255,255,255,.015));box-shadow:0 0 0 1px rgba(255,255,255,.04),0 2px 20px rgba(0,0,0,.4),0 0 40px rgba(0,0,0,.2);transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .25s var(--ease)}
+  .cat::before{content:"";position:absolute;inset:0;border-radius:16px;pointer-events:none;opacity:0;transition:opacity .3s var(--ease);background:radial-gradient(300px circle at var(--mx,50%) var(--my,0%),rgba(94,106,210,.15),transparent 65%)}
+  .cat:hover{transform:translateY(-4px);border-color:var(--border-hover);box-shadow:0 0 0 1px rgba(255,255,255,.1),0 8px 40px rgba(0,0,0,.5),0 0 80px rgba(94,106,210,.1)}
+  .cat:hover::before{opacity:1}
+  .cat-top{position:absolute;top:0;left:0;right:0;height:1px;opacity:0;transition:opacity .3s var(--ease)}
+  .cat.h .cat-top{background:linear-gradient(to right,transparent,rgba(63,182,178,.5),transparent)}
+  .cat.s .cat-top{background:linear-gradient(to right,transparent,rgba(224,163,62,.5),transparent)}
+  .cat:hover .cat-top{opacity:1}
+  .cat-head{padding:18px 20px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;border-bottom:1px solid var(--border)}
+  .cat-ico{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;font-size:18px;background:var(--bg-elevated);border:1px solid var(--border-hover)}
+  .cat-name{font-size:16px;font-weight:600;margin:0;line-height:1.15;letter-spacing:-.01em;color:var(--fg)}
+  .cat-meta{font-family:var(--mono);font-size:11px;color:var(--fg-muted);letter-spacing:.04em;margin-top:3px;display:flex;align-items:center;gap:6px}
+  .cat-meta .tdot{width:6px;height:6px;border-radius:50%}
+  .cat.h .cat-meta .tdot{background:var(--hard)} .cat.s .cat-meta .tdot{background:var(--soft)}
+  .roletag{color:var(--accent)}
+  .cat-count{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--fg);background:rgba(255,255,255,.05);border:1px solid var(--border-hover);border-radius:999px;padding:4px 12px}
+  .cat-body{padding:14px 16px 18px;position:relative;z-index:1}
+  ul.skills{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:7px}
+  ul.skills li{font-size:12.5px;padding:6px 11px 6px 20px;border:1px solid var(--border-hover);border-radius:8px;background:rgba(255,255,255,.03);color:#c5c8ce;transition:all .15s var(--ease);position:relative}
+  ul.skills li::after{content:"";position:absolute;left:8px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%}
+  .cat.h ul.skills li::after{background:var(--hard)} .cat.s ul.skills li::after{background:var(--soft)}
+  ul.skills li:hover{border-color:var(--border-accent);color:var(--fg);background:rgba(94,106,210,.08)}
+  ul.skills li.hit{background:rgba(94,106,210,.22);border-color:var(--accent);color:#fff;font-weight:500;box-shadow:0 0 16px rgba(94,106,210,.25)}
+  .nores{padding:48px 0;text-align:center;color:var(--fg-muted);font-family:var(--mono);font-size:13px;display:none}
+
+  .search .clear{flex:none;width:18px;height:18px;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:var(--fg-muted);cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;transition:all .15s var(--ease)}
+  .search .clear svg{width:11px;height:11px;color:inherit}
+  .search .clear:hover{background:var(--accent);color:#fff}
+  .search.has-text .clear{display:inline-flex}
+
+  footer{padding:28px 24px 50px;max-width:1240px;margin:0 auto;font-family:var(--mono);font-size:12px;color:var(--fg-muted);letter-spacing:.06em;display:flex;justify-content:center;text-align:center}
+  footer #t-foot1{transition:color .2s var(--ease)} footer #t-foot1:hover{color:var(--accent)}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.hero{transform:none!important;opacity:1!important}}
+</style>
+</head>
+<body>
+
+<div class="bg-layers"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div><div class="grid"></div><div class="noise"></div></div>
+
+<div class="page">
+<div class="langtoggle" id="langtoggle">
+  <button data-lang="en" class="active">EN</button>
+  <button data-lang="id">ID</button>
+</div>
+
+<header class="masthead">
+  <div class="hero" id="hero">
+    <p class="eyebrow" id="t-eyebrow"></p>
+    <h1 class="title" id="t-title"></h1>
+    <p class="sub" id="t-sub"></p>
+  </div>
+  <div class="careerbar" id="careerbar"></div>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <label class="search" id="searchBox">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="search">
+      <button type="button" class="clear" id="clearBtn" aria-label="Clear search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <span class="search-scope" id="scopeLbl"></span>
+    </label>
+    <label class="toggle"><input type="checkbox" id="globalsearch"><span id="t-globalsearch"></span></label>
+  </div>
+
+  <div class="filters" id="filters">
+    <span class="flabel" id="t-filterlabel"></span>
+    <span class="chip" data-k="h"><span class="cdot"></span><span id="t-hard"></span></span>
+    <span class="chip" data-k="s"><span class="cdot"></span><span id="t-soft"></span></span>
+  </div>
+
+  <section class="roleintro reveal" id="roleintro"></section>
+
+  <div class="countline"><span id="catlabel"></span><span id="shown"></span></div>
+  <section id="cats"></section>
+  <div class="nores" id="nores"></div>
+</div>
+
+<footer><span id="t-foot1"></span></footer>
+</div>
+
+<script>
+// Part A — Junior, Middle (deduped)
+window.DATA = window.DATA || {};
+
+window.DATA.junior = {
+  name:"Junior UI/UX Designer", level:"Level 1", track:"core",
+  mission:"Learn to design well and build a strong professional foundation across UX, UI, collaboration, data, AI, and communication.",
+  mission_id:"Belajar membuat desain yang benar dan membangun fondasi profesional di UX, UI, kolaborasi, data, AI, dan komunikasi.",
+  cats:[
+    {ico:"🎨",name:"Design Foundation",t:"h",skills:["Design Thinking","User-Centered Design","Human-Centered Design","UX Fundamentals","UI Fundamentals","Visual Hierarchy","Gestalt Principles","Color Theory","Typography","Layout Principles","Grid Systems","White Space Management","Visual Balance","Alignment","Contrast","Proximity","Repetition","Consistency","Design Principles","Design Ethics"]},
+    {ico:"🖥️",name:"UI Design",t:"h",skills:["Responsive Design","Adaptive Design","Mobile-first Design","Web Design","Desktop Design","Tablet Design","Form Design","Navigation Design","Empty States","Loading States","Error States","Success States","Dashboard Design","Card Design","Table Design","Modal Design","Bottom Sheet Design","Dialog Design","Visual Polish","Pixel Perfect Design"]},
+    {ico:"🔄",name:"Interaction Design",t:"h",skills:["Wireframing","User Flow","Task Flow","Screen Flow","Information Architecture","Interaction Design","Clickable Prototype","Interactive Prototype","Microinteractions","Motion Basics","Transition Design","Hover States","Focus States","Disabled States","Touch Target Guidelines","Progressive Disclosure","Feedback Systems","Input Validation","Error Prevention","Recovery Experience"]},
+    {ico:"🔍",name:"UX Research",t:"h",skills:["Competitive Analysis","Benchmark Analysis","Basic User Interview","User Observation","Contextual Inquiry Basics","Persona Creation","Empathy Mapping","Journey Mapping Basics","Basic Survey Design","Basic Usability Testing","Note Taking","Affinity Mapping Basics","Insight Identification","Problem Framing","Hypothesis Basics"]},
+    {ico:"📦",name:"Design System",t:"h",skills:["Figma Components","Component Variants","Auto Layout","Constraints","Styles","Variables","Design Tokens Awareness","Asset Management","Library Usage","Naming Convention"]},
+    {ico:"💻",name:"Technical Collaboration",t:"h",skills:["HTML Awareness","CSS Awareness","Responsive Breakpoints","Platform Guidelines (iOS/Android)","Developer Handoff","Design QA","Bug Verification","Technical Feasibility Awareness","Version Control in Figma","Documentation Basics"]},
+    {ico:"💼",name:"Product Awareness",t:"h",skills:["Product Thinking Basics","Business Goal Awareness","User Goal Understanding","Success Metrics Awareness","Feature Prioritization Basics"]},
+    {ico:"📊",name:"Data Awareness",t:"h",skills:["Basic Analytics Awareness","Funnel Basics","KPI Awareness","Conversion Basics","Data-informed Thinking"]},
+    {ico:"♿",name:"Accessibility",t:"h",skills:["WCAG Basics","Color Contrast","Keyboard Navigation Awareness","Screen Reader Awareness","Inclusive Design Basics"]},
+    {ico:"🤖",name:"AI Skills",t:"h",skills:["AI Literacy","AI-assisted Design","Prompt Engineering Basics","AI Ideation","AI-assisted Research","AI-assisted Wireframing","AI-assisted Copywriting","AI Ethics Awareness","AI Verification","Human-AI Collaboration Basics"]},
+    {ico:"🧠",name:"Self Leadership",t:"s",skills:["Self Awareness","Self Reflection","Growth Mindset","Learning Agility","Curiosity","Self Discipline","Accountability","Ownership","Professionalism","Personal Responsibility","Time Management","Priority Management","Focus Management","Energy Management","Habit Building","Adaptability","Resilience","Stress Management","Emotional Regulation","Continuous Improvement","Goal Setting","Career Ownership","Learning Strategy","Confidence","Humility"]},
+    {ico:"💬",name:"Communication",t:"s",skills:["Active Listening","Empathetic Listening","Clarifying Questions","Asking Good Questions","Requirement Clarification","Clear Communication","Concise Communication","Structured Communication","Verbal Communication","Written Communication","Presentation Skills","Visual Communication","Design Storytelling Basics","Design Rationale","Articulating Design Decisions","Giving Status Updates","Documentation","Meeting Etiquette","Professional Chat Communication","Email Communication","Receiving Feedback","Giving Constructive Feedback","Clarifying Feedback","Responding Professionally","Communication Adaptability","Managing Expectations","Following Up","Escalating Issues Appropriately","Transparency","Communication Consistency"]},
+    {ico:"🤝",name:"Collaboration",t:"s",skills:["Team Collaboration","Respect","Empathy","Reliability","Trust Building","Cross-functional Awareness","Helping Others","Positive Influence","Shared Ownership","Accountability to Team","Openness","Psychological Safety Awareness","Respectful Disagreement","Conflict Awareness","Consensus Awareness","PM Collaboration Basics","Engineer Collaboration Basics","Research Collaboration Basics","QA Collaboration Basics","Stakeholder Awareness","Knowledge Sharing","Asking for Help","Supporting Team Decisions","Collaboration Etiquette","Relationship Building"]},
+    {ico:"🧩",name:"Thinking Skills",t:"s",skills:["Critical Thinking","Structured Thinking","Analytical Thinking","Logical Thinking","Systems Awareness","Problem Solving","Problem Framing Basics","Root Cause Analysis","Opportunity Awareness","Solution Evaluation","Decision Making","Prioritization","Trade-off Awareness","Judgment","Risk Awareness","User Thinking","Customer Thinking","Business Awareness","Outcome Awareness","Attention to Detail","Pattern Recognition","Curiosity-driven Thinking","Creativity","Learning from Mistakes","Process Thinking","Improvement Mindset"]},
+    {ico:"🚀",name:"Execution",t:"s",skills:["Initiative","Follow-through","Commitment","Reliability Under Pressure","Deadline Awareness","Planning","Task Breakdown","Estimation Awareness","Progress Tracking","Quality Mindset","Documentation Discipline","Checklist Thinking","Process Compliance","Adaptability Under Change","Continuous Delivery Mindset","Ownership During Delivery","Escalation Awareness","Solution-oriented Thinking","Execution Discipline"]},
+    {ico:"❤️",name:"Emotional Intelligence",t:"s",skills:["Emotional Intelligence","Self-control","Patience","Emotional Awareness","Reading the Room","Customer Empathy","User Empathy","Team Empathy","Active Empathy","Trustworthiness","Positive Attitude","Cultural Awareness","Professional Ethics","Integrity","Psychological Safety Contribution","Respecting Different Opinions","Relationship Maintenance","Social Awareness","Emotional Maturity"]},
+    {ico:"🌱",name:"Career Growth",t:"s",skills:["Portfolio Storytelling","Personal Branding Basics","Networking Basics","Community Participation","Industry Awareness","AI Curiosity","Business Curiosity","Product Curiosity","Technology Curiosity","Continuous Learning","Reading Habit","Feedback Seeking","Reflection Habit","Knowledge Management","Learning Documentation","Public Learning","Writing Habit","Career Planning","Long-term Thinking"]}
+  ],
+  diff:{title_en:"Junior → Middle promotion signals", title_id:"Pembeda Junior yang cepat naik ke Middle",
+    lead_en:"What a Design Lead looks for before promoting a Junior.", lead_id:"Yang dilihat Design Lead sebelum mempromosikan Junior.",
+    groups:[
+      {ico:"⭐ Top signals",items:["Articulating Design Decisions","Product Thinking","Structured Thinking","Critical Thinking","Design Storytelling","Design QA","Developer Collaboration","AI-assisted Workflow","Ownership","Problem Framing","Receiving Feedback","Reliability"]}
+    ]}
+};
+
+window.DATA.middle = {
+  name:"Middle UI/UX Designer", level:"Level 2", track:"core",
+  mission:"Own a feature end-to-end, make data-informed design decisions, and influence product decisions through communication and collaboration.",
+  mission_id:"Memiliki fitur end-to-end, mengambil keputusan berbasis data, dan memengaruhi keputusan produk lewat komunikasi & kolaborasi.",
+  cats:[
+    {ico:"🎨",name:"Advanced Design Foundation",t:"h",skills:["Advanced Design Thinking","Systems Thinking","User-centered Decision Making","Human-centered Innovation","Design Principles Mastery","Visual Refinement","Design Consistency","Cognitive Psychology Basics","Mental Models","Behavioral Design","Information Scent","Progressive Disclosure","Hick's Law","Fitts's Law","Jakob's Law","Miller's Law","Peak-End Rule","Cognitive Load Reduction","Decision Architecture","Design Trade-off Analysis"]},
+    {ico:"🖥️",name:"UI Excellence",t:"h",skills:["Advanced Responsive Design","Cross-platform Design","Adaptive Layout","Enterprise UI","Complex Dashboard Design","Data Visualization Basics","Complex Form Design","Empty State Strategy","Error Recovery UX","Success Feedback Design","Notification Design","Permission Flow Design","Settings Design","Navigation Architecture","Multi-device Experience","Multi-step Flow Design","Design for Scale","Visual Language","Brand Consistency","UI Quality Standards"]},
+    {ico:"🔄",name:"Interaction Design",t:"h",skills:["Advanced User Flow","Journey Optimization","Task Optimization","Advanced Information Architecture","Interaction Mapping","State Management","Motion Design","Animation Principles","Gesture Design","Accessibility Interaction","Microinteraction Design","Interaction Feedback","Transition Systems","Prototype Validation","Design Edge Cases","Offline Experience","Error Prevention","Recovery Experience","Progressive Onboarding","Empty Journey Optimization"]},
+    {ico:"🔍",name:"UX Research",t:"h",skills:["Research Planning","User Interview","Moderated Testing","Unmoderated Testing","Concept Testing","Preference Testing","Tree Testing","Card Sorting","Survey Design","Affinity Mapping","Journey Mapping","Persona Validation","Research Synthesis","Insight Generation","Opportunity Identification","Assumption Mapping","Hypothesis Building","Problem Validation","JTBD Basics","Research Reporting"]},
+    {ico:"📊",name:"Data & Analytics",t:"h",skills:["Product Analytics","Funnel Analysis","Event Tracking","KPI Definition","North Star Awareness","Success Metrics","Conversion Analysis","Retention Basics","Engagement Metrics","Cohort Awareness","Heatmap Analysis","Session Recording Analysis","A/B Testing","Experiment Design","Data Interpretation","Dashboard Reading","Metric Prioritization","Outcome Measurement","Data-informed Decisions","Evidence-based Design"]},
+    {ico:"📦",name:"Design System",t:"h",skills:["Component Creation","Component Architecture","Component Documentation","Component API Thinking","Design Tokens","Variables","Library Maintenance","Design System Contribution","Pattern Library","Reusable Patterns","Component Auditing","Versioning","Governance Awareness","Naming Standards","Documentation Standards","Accessibility Components","Scalable Components","System Consistency","Design Debt Awareness","Design Quality Review"]},
+    {ico:"💻",name:"Technical Collaboration",t:"h",skills:["HTML/CSS Understanding","Frontend Architecture Awareness","API Awareness","Backend Constraints","Performance Awareness","Responsive Implementation","Technical Feasibility","Dev Handoff Excellence","QA Collaboration","Bug Prioritization","Implementation Review","Release Validation","Engineering Communication","Platform Guidelines","Technical Documentation","Version Control","Git Awareness","Accessibility Implementation","Design Token Handoff","Design Engineering Awareness"]},
+    {ico:"📈",name:"Product Thinking",t:"h",skills:["Product Thinking","Product Discovery","Feature Prioritization","Opportunity Solution Thinking","Value Proposition","MVP Definition","Outcome Thinking","User Value Analysis","Business Value Analysis","Product Roadmap Awareness","Customer Journey Optimization","Feature Scoping","Product Risk Awareness","Assumption Validation","Product Metrics","Product Lifecycle","Market Awareness","Competitor Benchmarking","Stakeholder Alignment","Product Ownership"]},
+    {ico:"💼",name:"Business",t:"h",skills:["Business Model Awareness","Revenue Awareness","ROI Thinking","Cost vs Value Analysis","Strategic Prioritization","Customer Segmentation","Market Positioning","Competitive Strategy","Business Communication","Executive Summary Writing"]},
+    {ico:"🤖",name:"AI Skills",t:"h",skills:["AI Workflow Design","Prompt Engineering","AI-assisted UX Research","AI-assisted Ideation","AI-assisted Prototyping","AI-assisted UI Generation","AI-assisted User Flows","AI-assisted Documentation","AI-assisted QA","AI-assisted Design Review","Prompt Evaluation","Human-AI Collaboration","AI Ethics","Responsible AI Basics","AI Experience Awareness","LLM UX Basics","Conversational UX Basics","AI Productivity Tools","AI Verification","AI-assisted Design System"]},
+    {ico:"🧠",name:"Self Leadership",t:"s",skills:["Ownership","Accountability","Self Leadership","Self Awareness","Self Reflection","Learning Agility","Adaptability","Emotional Regulation","Stress Management","Time Management","Priority Management","Personal Responsibility","Professional Discipline","Resilience","Continuous Improvement"]},
+    {ico:"💬",name:"Communication Excellence",t:"s",skills:["Active Listening","Empathetic Listening","Clear Communication","Concise Communication","Structured Communication","Written Communication","Verbal Communication","Visual Communication","Design Storytelling","Design Rationale","Articulating Design Decisions","Meeting Facilitation Basics","Workshop Participation","Status Reporting","Presentation Skills","Public Speaking","Asking Powerful Questions","Clarifying Requirements","Documentation Writing","Audience Adaptation"]},
+    {ico:"🤝",name:"Collaboration",t:"s",skills:["Cross-functional Collaboration","Teamwork","Partnership Building","Building Trust","Reliability","Stakeholder Collaboration","PM Collaboration","Engineering Collaboration","Research Collaboration","Marketing Collaboration","Respectful Communication","Openness","Constructive Feedback","Receiving Feedback","Giving Feedback","Consensus Building","Relationship Management","Team Contribution","Shared Ownership"]},
+    {ico:"🧩",name:"Thinking Skills",t:"s",skills:["Critical Thinking","Structured Thinking","Analytical Thinking","Strategic Thinking Basics","Business Thinking Basics","Customer Thinking","Root Cause Analysis","Opportunity Thinking","Trade-off Analysis","Decision Making","Prioritization","Problem Framing","Hypothesis Thinking","Logical Reasoning","Curiosity","Pattern Recognition","Judgment","Solution Evaluation"]},
+    {ico:"👥",name:"Stakeholder Skills",t:"s",skills:["Stakeholder Awareness","Stakeholder Communication","Expectation Management","Negotiation Basics","Conflict Resolution","Difficult Conversations","Influence Without Authority","Persuasion","Managing Disagreement","Professional Assertiveness","Managing Feedback Loops","Decision Facilitation Basics","Escalation Awareness","Follow-up Discipline"]},
+    {ico:"🚀",name:"Execution Excellence",t:"s",skills:["Initiative","Proactiveness","Ownership Mindset","Quality Mindset","Detail Orientation","Delivery Focus","Commitment","Reliability Under Pressure","Adaptability to Change","Deadline Management","Risk Awareness","Planning","Estimation","Follow-through","Execution Discipline"]},
+    {ico:"👨‍🏫",name:"Mentoring & Influence",t:"s",skills:["Mentoring Junior Designers","Knowledge Sharing","Peer Coaching","Design Critique","Constructive Criticism","Encouraging Others","Leading by Example","Team Enablement","Facilitating Discussions","Helping Decision Making","Building Team Confidence","Knowledge Documentation","Teaching Mindset","Positive Influence","Collaborative Leadership"]},
+    {ico:"💡",name:"Business & Product Mindset",t:"s",skills:["Business Awareness","Customer Value Thinking","Value-based Decision Making","KPI Awareness","ROI Awareness","Cost Awareness","Product Prioritization Mindset","Strategic Alignment","Commercial Awareness","Product Vision Awareness","Competitive Awareness"]},
+    {ico:"🌿",name:"Growth Mindset",t:"s",skills:["Coachability","Learning from Failure","Seeking Feedback","Reflective Practice","Humility","Confidence","Professional Curiosity","Technology Curiosity","Business Curiosity","User Empathy","Customer Empathy","Openness to Change","Continuous Learning","Personal Development","Career Ownership"]}
+  ],
+  diff:{title_en:"Middle → Senior promotion signals", title_id:"Pembeda Middle yang siap naik ke Senior",
+    lead_en:"What a Design Manager looks for before promoting a Middle.", lead_id:"Yang dilihat Design Manager sebelum mempromosikan Middle.",
+    groups:[
+      {ico:"💬 Communication",items:["Articulating Design Decisions","Design Storytelling","Structured Communication","Active Listening"]},
+      {ico:"🧩 Thinking",items:["Systems Thinking","Product Thinking","Trade-off Analysis","Problem Framing","Opportunity Thinking"]},
+      {ico:"🤝 Collaboration",items:["Stakeholder Alignment","Influence Without Authority","Consensus Building","PM Partnership","Engineering Partnership"]},
+      {ico:"👨‍🏫 Leadership",items:["Mentoring Junior Designers","Knowledge Sharing","Leading by Example"]},
+      {ico:"🚀 Execution",items:["Ownership","Initiative","Outcome Thinking"]}
+    ]}
+};
+// Part B — Senior, Lead (deduped)
+window.DATA = window.DATA || {};
+
+window.DATA.senior = {
+  name:"Senior UI/UX Designer", level:"Level 3", track:"core",
+  mission:"Become an IC design leader who steers product decisions, influences stakeholders, and acts as a multiplier for the team.",
+  mission_id:"Menjadi pemimpin desain IC yang mengarahkan keputusan produk, memengaruhi stakeholder, dan menjadi multiplier bagi tim.",
+  cats:[
+    {ico:"🎯",name:"Design Strategy",t:"h",skills:["UX Strategy","Product Strategy Alignment","Experience Strategy","Vision-driven Design","Design Direction","Systems Thinking","Service Design","Ecosystem Thinking","End-to-end Journey Design","Design Principles Creation","Design Quality Standards","Design Governance","Experience Consistency","Multi-product Experience","Platform Thinking","Opportunity Framing","Problem Framing","Opportunity Prioritization","Outcome Mapping","Strategic Roadmapping"]},
+    {ico:"🎨",name:"Advanced UX & UI",t:"h",skills:["Complex Interaction Design","Enterprise UX","Cross-platform Experience","Cross-device Experience","Design for Scale","Personalization UX","Adaptive UX","Multi-role Experience","Workflow Optimization","Complex Dashboard UX","Data-heavy Interface Design","Accessibility Leadership","Inclusive Design","Emotional Design","Behavioral Design","Trust Design","Ethical Design","Localization Strategy","Internationalization","Future-proof Design"]},
+    {ico:"🔬",name:"Research Leadership",t:"h",skills:["Research Strategy","Mixed-method Research","Qualitative Research","Quantitative Research","Research Prioritization","Research Roadmap","JTBD Mastery","Ethnographic Research","Contextual Inquiry","Diary Studies","Research Repository","Insight Prioritization","Opportunity Discovery","Opportunity Validation","Experiment Planning","Hypothesis Validation","Customer Segmentation","Behavioral Analysis","Evidence-based Design","Research Leadership"]},
+    {ico:"📊",name:"Data & Experimentation",t:"h",skills:["Product Analytics","Advanced Funnel Analysis","Cohort Analysis","Retention Analysis","Churn Analysis","North Star Metrics","KPI Strategy","Experiment Design","A/B Testing Strategy","Success Measurement","Product Health Metrics","Dashboard Interpretation","Behavioral Metrics","Data Storytelling","Statistical Awareness","Metric Prioritization","Outcome Measurement","Data-informed Strategy","Decision Science","Evidence-driven Leadership"]},
+    {ico:"📈",name:"Product Leadership",t:"h",skills:["Product Discovery Leadership","Product Vision Alignment","Feature Strategy","Product Prioritization","Opportunity Solution Tree","Value Proposition Design","Outcome-driven Development","Customer Value Strategy","Product Risk Assessment","Assumption Mapping","Validation Planning","MVP Strategy","Product Lifecycle","Roadmap Collaboration","Product Positioning","Competitive Analysis","Market Analysis","Product Success Evaluation","Portfolio Thinking","Product Influence"]},
+    {ico:"📦",name:"Design Systems",t:"h",skills:["Design System Architecture","Token Strategy","Component Strategy","Component Governance","System Scalability","Pattern Governance","Documentation Strategy","DesignOps Integration","Library Governance","Contribution Model","Migration Planning","Component Auditing","System Health Assessment","Cross-team Adoption","Multi-brand Systems","Multi-platform Systems","Accessibility Standards","Design Debt Management","Quality Framework","Design System Leadership"]},
+    {ico:"💻",name:"Technical Leadership",t:"h",skills:["Frontend Architecture Awareness","Backend Architecture Awareness","API Design Awareness","Performance Optimization","Accessibility Implementation","Technical Constraints","Design Engineering Collaboration","Technical Decision Trade-offs","Platform Architecture","System Dependencies","Engineering Influence","Release Strategy","Technical Risk Assessment","Feasibility Evaluation","Technical Communication","AI Engineering Collaboration","Design Token Implementation","Performance Budget Awareness","Scalability Awareness","Technical Leadership"]},
+    {ico:"🤖",name:"AI & Emerging Tech",t:"h",skills:["AI Product Design","Human-AI Interaction","Conversational UX","Prompt UX","AI Workflow Strategy","Agent Experience Design","Multi-agent UX","AI Transparency","Explainable AI UX","Responsible AI","AI Safety Awareness","AI Bias Mitigation","AI Personalization","AI Evaluation","Prompt Engineering","AI-assisted Research","AI-assisted DesignOps","AI-assisted Analytics","AI Strategy Awareness","Future Technology Awareness"]},
+    {ico:"🧠",name:"Self Mastery",t:"s",skills:["Self Leadership","Emotional Intelligence","Self Awareness","Emotional Regulation","Executive Maturity","Professional Judgment","Adaptability","Resilience","Accountability","Ownership","Discipline","Learning Agility","Reflective Practice","Personal Growth Planning","Long-term Career Thinking"]},
+    {ico:"💬",name:"Advanced Communication",t:"s",skills:["Executive Communication","Strategic Communication","Structured Communication","Audience Adaptation","Storytelling","Executive Storytelling","Design Storytelling","Articulating Design Decisions","Explaining Trade-offs","Simplifying Complexity","Visual Storytelling","Persuasive Communication","Difficult Conversations","Negotiation","Facilitation","Workshop Facilitation","Meeting Leadership","Active Listening","Powerful Questioning","Stakeholder Education","Documentation Excellence","Decision Documentation","Executive Presentation","Influence Through Communication","Communication Coaching"]},
+    {ico:"🤝",name:"Stakeholder Management",t:"s",skills:["Stakeholder Mapping","Stakeholder Management","Executive Stakeholder Management","Product Partnership","Engineering Partnership","Research Partnership","Marketing Partnership","Sales Collaboration","Customer Success Collaboration","Building Trust","Alignment Building","Expectation Management","Consensus Building","Conflict Resolution","Influence Without Authority","Organizational Awareness","Relationship Management","Political Awareness","Strategic Influence","Cross-functional Leadership"]},
+    {ico:"🧩",name:"Advanced Thinking",t:"s",skills:["Strategic Thinking","Critical Thinking","Structured Thinking","Analytical Thinking","First Principles Thinking","Second-order Thinking","Opportunity Thinking","Business Thinking","Product Thinking","Customer Thinking","Outcome Thinking","Trade-off Analysis","Root Cause Analysis","Decision Frameworks","Risk Assessment","Prioritization","Complexity Management","Pattern Recognition","Judgment","Scenario Thinking","Long-term Thinking","Solution Evaluation"]},
+    {ico:"👥",name:"Leadership Without Authority",t:"s",skills:["Leading by Example","Mentoring","Coaching","Peer Coaching","Design Critique Leadership","Knowledge Sharing","Team Enablement","Positive Influence","Servant Leadership","Team Motivation","Team Alignment","Delegation Basics","Conflict Coaching","Building Team Confidence","Facilitating Decisions","Cross-team Enablement","Leadership Presence","Decision Leadership","Leadership Mindset"]},
+    {ico:"💼",name:"Business Acumen",t:"s",skills:["Business Acumen","Commercial Awareness","Revenue Awareness","ROI Thinking","Customer Value Thinking","Cost Awareness","Strategic Alignment","Market Awareness","Competitive Awareness","Customer-centric Thinking","Business Prioritization","Business Storytelling","Product Strategy Awareness","Executive Decision Context","KPI Thinking","Value Communication","Opportunity Evaluation","Business Partnership"]},
+    {ico:"❤️",name:"Emotional & Social Intelligence",t:"s",skills:["Empathy","Organizational Empathy","Customer Empathy","Active Empathy","Psychological Safety","Emotional Resilience","Social Awareness","Reading the Room","Conflict De-escalation","Patience","Respectful Disagreement","Diplomacy","Cultural Awareness","Building Rapport","Influence with Empathy","Trust Building","Relationship Maintenance","Self-control","Emotional Maturity"]},
+    {ico:"🌱",name:"Professional Excellence",t:"s",skills:["Humility","Confidence","Professional Ethics","Integrity","Reliability","Curiosity","Lifelong Learning","Professional Networking","Personal Branding","Thought Leadership","Public Speaking","Writing & Documentation","Community Contribution","Industry Awareness","Portfolio Leadership","Continuous Improvement"]}
+  ],
+  diff:{title_en:"Senior → Lead promotion signals", title_id:"Pembeda Senior yang siap naik ke Lead",
+    lead_en:"What a Head of Design looks for before promoting a Senior.", lead_id:"Yang dilihat Head of Design sebelum mempromosikan Senior.",
+    groups:[
+      {ico:"🧩 Thinking",items:["Systems Thinking","Strategic Thinking","First Principles Thinking","Product Thinking","Business Thinking"]},
+      {ico:"💬 Communication",items:["Articulating Design Decisions","Executive Communication","Design Storytelling","Executive Storytelling","Simplifying Complexity"]},
+      {ico:"🤝 Influence",items:["Influence Without Authority","Stakeholder Management","Organizational Awareness","Consensus Building","Executive Presence"]},
+      {ico:"👥 Leadership",items:["Mentoring","Coaching","Design Critique Leadership","Team Enablement","Leadership Presence"]},
+      {ico:"💼 Business",items:["Business Acumen","Outcome Thinking","ROI Thinking","Strategic Alignment","Decision Quality"]}
+    ]}
+};
+
+window.DATA.lead = {
+  name:"Lead Designer", level:"Level 4", track:"core",
+  mission:"Lead a design team, safeguard quality, develop designers, and align design with product strategy. Build great designers, not just great products.",
+  mission_id:"Memimpin tim desain, menjaga kualitas, mengembangkan designer, dan menyelaraskan desain dengan strategi produk. Membangun designer hebat, bukan sekadar produk hebat.",
+  cats:[
+    {ico:"🧭",name:"Design Leadership",t:"h",skills:["Design Vision","UX Vision","Experience Vision","Design Principles Creation","Design Direction","Quality Standards","Design Governance","Experience Consistency","Design Review Leadership","Design Critique Facilitation","Design Quality Assessment","Design Excellence","Design Roadmap","UX Strategy Execution","Product Strategy Alignment","Cross-product Experience","Design Decision Frameworks","Experience Frameworks","UX Health Assessment","Design Leadership"]},
+    {ico:"🎯",name:"Product Leadership",t:"h",skills:["Product Vision Alignment","Product Strategy","Product Discovery Leadership","Feature Prioritization","Opportunity Prioritization","Product Roadmapping","Outcome Mapping","Customer Value Strategy","Product Metrics","Product Success Evaluation","Product Lifecycle","Product Portfolio","Roadmap Negotiation","Product Influence","Product Risk Analysis","MVP Strategy","Product Trade-offs","Customer Journey Strategy","Platform Strategy","Product Leadership"]},
+    {ico:"📊",name:"Data Leadership",t:"h",skills:["Analytics Strategy","Experiment Strategy","KPI Governance","North Star Alignment","Dashboard Governance","Metric Review","Data Storytelling","Evidence-based Prioritization","Product Health Monitoring","Outcome Evaluation","Business Metrics","Customer Metrics","UX Metrics","Research Metrics","Executive Reporting","Trend Analysis","Forecast Interpretation","Risk Metrics","Success Measurement","Data Leadership"]},
+    {ico:"🔬",name:"Research Leadership",t:"h",skills:["Research Roadmap","Research Prioritization","Discovery Planning","Opportunity Discovery","Research Coaching","Insight Validation","Research Repository Governance","Customer Interview Strategy","Longitudinal Research","Mixed-method Strategy","Research Budget Awareness","Strategic Synthesis","Opportunity Mapping","JTBD Leadership","Evidence Quality Review","Assumption Validation","Research Communication","Insight Storytelling","Research Influence","Research Leadership"]},
+    {ico:"🏛",name:"Design System Leadership",t:"h",skills:["Design System Vision","Governance","Token Strategy","Component Governance","Component Review","Contribution Workflow","Library Management","Documentation Governance","Design Debt Reduction","Design Standards","Accessibility Governance","Cross-team Adoption","Multi-product Libraries","Multi-brand Systems","DesignOps Integration","Version Strategy","Release Planning","System Auditing","Design Scalability","Design System Leadership"]},
+    {ico:"💻",name:"Technical Leadership",t:"h",skills:["Technical Strategy","Engineering Partnership","Frontend Collaboration","Architecture Awareness","API Collaboration","Technical Trade-offs","Technical Roadmap Alignment","Technical Debt Awareness","Scalability","Performance Strategy","Accessibility Implementation","Security Awareness","AI Engineering Partnership","Technical Reviews","Release Readiness","Technical Documentation","Engineering Influence","System Dependencies","Technical Risk Assessment","Technical Leadership"]},
+    {ico:"🤖",name:"AI Leadership",t:"h",skills:["AI Product Strategy","AI UX Strategy","AI Governance","Responsible AI","AI Risk Assessment","Human-AI Collaboration","AI Workflow Design","AI Productivity Strategy","AI Research Integration","AI DesignOps","AI Quality Evaluation","AI Personalization Strategy","Prompt Frameworks","Conversational UX Leadership","AI Ethics","AI Adoption Strategy","AI Training","AI Enablement","Future Technology Strategy","Emerging Technology Evaluation"]},
+    {ico:"🏢",name:"DesignOps",t:"h",skills:["Workflow Optimization","Process Design","Process Governance","Documentation Strategy","Knowledge Management","Asset Management","Tool Evaluation","Tool Adoption","Capacity Planning","Resource Planning","Project Planning","Delivery Planning","Sprint Governance","Cross-team Coordination","Operational Excellence","Design Velocity","Quality Assurance Process","Workflow Automation","Design Maturity Assessment","DesignOps Leadership"]},
+    {ico:"👑",name:"Leadership Presence",t:"s",skills:["Leadership Presence","Executive Presence","Authentic Leadership","Servant Leadership","Situational Leadership","Leading by Example","Vision Communication","Decision Confidence","Accountability Leadership","Ownership Culture","Leadership Consistency","Professional Maturity","Emotional Stability","Integrity","Humility","Confidence","Adaptability","Personal Influence","Credibility","Trustworthiness"]},
+    {ico:"👥",name:"People Leadership",t:"s",skills:["Coaching","Mentoring","Delegation","Empowerment","Team Motivation","Talent Development","Career Coaching","Growth Conversations","Performance Feedback","Difficult Feedback","Constructive Feedback","Recognition","Psychological Safety","Trust Building","Team Engagement","Team Health Monitoring","Conflict Mediation","Emotional Support","Accountability Coaching","Team Enablement","Knowledge Transfer","Onboarding Support","Peer Development","Strength-based Coaching","Managing Different Personalities","Inclusive Leadership","Active Mentorship","Team Alignment","Culture Building","Leadership Multiplication"]},
+    {ico:"💬",name:"Executive Communication",t:"s",skills:["Executive Communication","Executive Storytelling","Strategic Storytelling","Vision Storytelling","Facilitating Meetings","Workshop Facilitation","Decision Facilitation","Cross-functional Communication","Stakeholder Education","Negotiation","Conflict Resolution","Difficult Conversations","Consensus Building","Active Listening","Asking Strategic Questions","Communication Coaching","Simplifying Complexity","Persuasion","Influence Without Authority","Organizational Communication","Executive Presentation","Board-ready Presentation Basics","Alignment Communication","Crisis Communication Basics","Communication Strategy"]},
+    {ico:"🧩",name:"Strategic Thinking",t:"s",skills:["Systems Thinking","Strategic Thinking","Organizational Thinking","Long-term Thinking","Scenario Planning","Opportunity Thinking","Business Thinking","Product Thinking","Customer Thinking","Portfolio Thinking","Trade-off Analysis","Risk Assessment","Prioritization","Decision Frameworks","Problem Framing","Opportunity Framing","Complexity Management","Root Cause Leadership","Pattern Recognition","Judgment","Vision Alignment","Strategic Decision Making","Resource Thinking","Outcome Thinking","Future Thinking"]},
+    {ico:"🤝",name:"Stakeholder Leadership",t:"s",skills:["Stakeholder Mapping","Stakeholder Management","Executive Stakeholder Management","PM Leadership Partnership","Engineering Leadership Partnership","Research Leadership Partnership","Marketing Partnership","Sales Partnership","Customer Success Partnership","Building Organizational Trust","Executive Influence","Organizational Influence","Cross-functional Leadership","Political Awareness","Relationship Management","Expectation Management","Managing Up","Managing Sideways","Stakeholder Alignment","Partnership Development","Organizational Diplomacy","Strategic Negotiation","Executive Alignment","Conflict Leadership","Collaborative Decision Making"]},
+    {ico:"🚀",name:"Team Execution",t:"s",skills:["Delivery Leadership","Planning","Priority Management","Team Coordination","Workflow Management","Delivery Predictability","Risk Mitigation","Decision Velocity","Escalation Management","Continuous Improvement","Operational Awareness","Process Improvement","Quality Culture","Accountability Framework","Execution Discipline","Goal Tracking","Team Focus","Delivery Coaching","Operational Leadership"]},
+    {ico:"💼",name:"Business Leadership",t:"s",skills:["Business Acumen","Strategic Alignment","ROI Thinking","Customer Value","Business Communication","Commercial Awareness","Revenue Awareness","Cost Awareness","Opportunity Evaluation","Business Prioritization","Executive Decision Context","Competitive Thinking","Market Awareness","Business Storytelling","KPI Awareness","Outcome Measurement","Business Partnership","Organizational Goals","Value-based Leadership"]},
+    {ico:"❤️",name:"Emotional Intelligence",t:"s",skills:["Emotional Intelligence","Organizational Empathy","Empathy","Emotional Regulation","Emotional Maturity","Reading Team Dynamics","Reading the Room","Social Awareness","Patience","Diplomacy","Respectful Disagreement","Conflict De-escalation","Psychological Safety Leadership","Relationship Maintenance","Resilience","Self-control","Calm Under Pressure","Compassionate Leadership"]},
+    {ico:"🌿",name:"Talent Development",t:"s",skills:["Skill Matrix Development","Competency Framework Design","Individual Development Plans (IDP)","Career Laddering","Promotion Readiness Assessment","Coaching Plans","Mentoring Programs","Performance Calibration","Talent Identification","Succession Planning","Learning Programs","Design Community Building","Internship Mentorship","Onboarding Strategy","Growth Feedback","Leadership Coaching","Talent Retention","Career Conversations","Team Capability Building","Knowledge Sharing"]},
+    {ico:"🌱",name:"Professional Growth",t:"s",skills:["Thought Leadership","Public Speaking","Conference Speaking","Industry Networking","Personal Branding","Writing & Publishing","Community Leadership","Innovation Leadership","Continuous Learning","Learning Culture","Change Advocacy","Ethics","Accountability","Ownership","Organizational Trust","Legacy Mindset","Professional Excellence"]}
+  ],
+  diff:{title_en:"Lead → Design Manager promotion signals", title_id:"Pembeda Lead yang siap naik ke Design Manager",
+    lead_en:"~25 competencies looked at before promoting a Lead to Manager.", lead_id:"~25 kompetensi yang dilihat sebelum mempromosikan Lead ke Manager.",
+    groups:[
+      {ico:"👥 People",items:["Coaching","Delegation","Performance Feedback","Talent Development","Career Development","Psychological Safety"]},
+      {ico:"💬 Communication",items:["Executive Communication","Difficult Conversations","Negotiation","Executive Storytelling","Communication Coaching"]},
+      {ico:"🤝 Leadership",items:["Influence Without Authority","Organizational Influence","Stakeholder Leadership","Cross-functional Leadership","Vision Communication"]},
+      {ico:"🧩 Thinking",items:["Strategic Thinking","Organizational Thinking","Resource Thinking","Judgment","Long-term Thinking"]},
+      {ico:"💼 Business",items:["Business Acumen","ROI Thinking","Strategic Alignment","Outcome Measurement","Value-based Leadership"]}
+    ]}
+};
+// Part C — Manager, Head (deduped)
+window.DATA = window.DATA || {};
+
+window.DATA.manager = {
+  name:"Design Manager", level:"Level 5", track:"core",
+  mission:"Build high-performing teams, develop talent, run design operations, and ensure the design organization drives measurable business impact.",
+  mission_id:"Membangun tim berkinerja tinggi, mengembangkan talenta, mengelola operasi desain, dan memastikan organisasi desain berdampak terukur pada bisnis.",
+  cats:[
+    {ico:"👥",name:"People Management",t:"h",skills:["Hiring Strategy","Interview Framework Design","Structured Interviewing","Candidate Assessment","Portfolio Review","Hiring Calibration","Workforce Planning","Team Structure Design","Organization Design","Team Scaling","Career Ladder Management","Individual Development Plan (IDP)","Growth Planning","Performance Management","Performance Review","Performance Calibration","Compensation Awareness","Promotion Framework","Succession Planning","Talent Mapping","High-potential Identification","Talent Retention"]},
+    {ico:"🏢",name:"Organizational Leadership",t:"h",skills:["Organizational Strategy","Organizational Design","Change Management","Change Communication","Organizational Influence","Executive Alignment","Cross-functional Leadership","Vision Communication","Goal Alignment","Organizational Prioritization","Portfolio Governance","Strategic Roadmapping","Decision Governance","Operating Model Design","Organizational Agility","Scaling Organizations","Team Topology","Org Health Monitoring","Leadership Alignment","Organizational Excellence"]},
+    {ico:"💼",name:"Business Leadership",t:"h",skills:["Business Strategy","Company Strategy Alignment","Revenue Strategy Awareness","Cost Management","Budget Ownership","Financial Planning","Forecasting","Resource Allocation","ROI Evaluation","Business Case Development","Investment Prioritization","Portfolio Investment","Commercial Awareness","Unit Economics","Customer Lifetime Value","Acquisition Economics","Retention Economics","Market Analysis","Competitive Intelligence","Business Impact Measurement"]},
+    {ico:"📈",name:"Product Leadership",t:"h",skills:["Product Portfolio Strategy","Product Vision Alignment","Product Discovery Governance","Product Prioritization","Opportunity Portfolio","Customer Experience Strategy","Platform Strategy","Ecosystem Strategy","Product Roadmap Governance","Product Success Measurement","Product Metrics","Product Health Monitoring","Product Risk Management","Product Investment Strategy","Product Innovation","Customer Value Strategy","Growth Strategy","Outcome Governance","Executive Product Reviews","Product Leadership"]},
+    {ico:"🎨",name:"Design Organization",t:"h",skills:["Design Strategy","UX Strategy","Design Vision","Design Principles","Design Governance","Design Quality Standards","Design Excellence Framework","Design Review Framework","Critique Culture","Design Maturity Model","Design KPIs","Design OKRs","Design Health Metrics","UX Metrics","Accessibility Governance","Design Ethics","Inclusive Design Governance","Cross-product Consistency","Experience Quality","Design Leadership"]},
+    {ico:"📦",name:"Design Systems & DesignOps",t:"h",skills:["DesignOps Strategy","Workflow Optimization","Tool Strategy","Tool Procurement","Vendor Evaluation","Design System Governance","Token Governance","Library Governance","Contribution Model","Documentation Governance","Asset Governance","Quality Governance","Workflow Automation","Process Standardization","Capacity Planning","Resource Forecasting","Operational KPIs","Operational Excellence","Design Velocity","Design Operations Leadership"]},
+    {ico:"📊",name:"Data & Insights",t:"h",skills:["Executive Analytics","Business Intelligence","KPI Governance","Dashboard Governance","Data Storytelling","Experiment Governance","Research Governance","Customer Insights","Voice of Customer","Analytics Strategy","Forecast Analysis","Trend Analysis","Risk Analytics","Success Metrics","Outcome Tracking","UX Benchmarking","Research Repository Strategy","Insight Prioritization","Data-informed Leadership","Evidence-based Organization"]},
+    {ico:"🤖",name:"AI Leadership",t:"h",skills:["AI Transformation Strategy","AI Governance","Responsible AI","AI Risk Management","AI Adoption Roadmap","AI Change Management","AI DesignOps","AI Productivity Strategy","AI Team Enablement","AI Training Programs","AI-assisted Research Strategy","AI-assisted Analytics","AI Product Strategy","AI UX Governance","Conversational AI Strategy","Agentic UX Strategy","AI Ethics Governance","AI Vendor Evaluation","Emerging Technology Strategy","Innovation Management"]},
+    {ico:"🏭",name:"Business Operations",t:"h",skills:["Budget Management","Financial Reporting","Procurement","Vendor Management","Contract Awareness","Compliance Awareness","Governance Models","Audit Readiness","Risk Governance","Resource Management","Workforce Forecasting","Operational Planning","Delivery Governance","Project Portfolio Management","OKR Governance","KPI Reviews","Quarterly Business Reviews","Annual Planning"]},
+    {ico:"👑",name:"Executive Leadership",t:"s",skills:["Executive Presence","Leadership Presence","Authentic Leadership","Servant Leadership","Situational Leadership","Strategic Leadership","Vision Leadership","Decision Leadership","Calm Under Pressure","Executive Confidence","Integrity","Humility","Accountability Culture","Ownership Culture","Professional Judgment","Leadership Consistency","Adaptability","Organizational Responsibility","Ethical Leadership","Inspirational Leadership","Credibility","Trustworthiness","Leadership Philosophy","Leadership Resilience","Executive Maturity"]},
+    {ico:"🧑‍🤝‍🧑",name:"People Leadership (Soft)",t:"s",skills:["Hiring Judgment","Talent Identification","Career Development","Coaching Managers","Coaching Leads","Mentoring","Delegation Strategy","Empowerment","Building Leadership Pipeline","High-performance Teams","Psychological Safety","Employee Engagement","Burnout Prevention","Difficult Conversations","Conflict Mediation","Team Health Assessment","Leadership Development","Recognition Systems","Accountability Framework","Managing Low Performance","Promotion Readiness Assessment","Team Motivation","Inclusive Leadership","Cross-cultural Leadership","Remote Leadership","Hybrid Leadership","Organizational Coaching","Leadership Multiplication","People-first Leadership"]},
+    {ico:"💬",name:"Executive Communication",t:"s",skills:["Executive Communication","Executive Storytelling","Strategy Communication","Organizational Storytelling","Persuasive Communication","Negotiation","Executive Negotiation","Conflict Resolution","Crisis Communication","Board-ready Communication","Stakeholder Education","Alignment Facilitation","Workshop Facilitation","Decision Facilitation","Active Listening","Executive Listening","Audience Adaptation","Communication Coaching","Simplifying Complexity","Public Speaking","Executive Presentation","Cross-functional Communication","Written Executive Communication","Communication Strategy","Organizational Messaging","Influencing Executives","Diplomacy","Relationship Communication"]},
+    {ico:"🤝",name:"Organizational Influence",t:"s",skills:["Stakeholder Management","Executive Stakeholder Management","Political Awareness","Organizational Navigation","Building Alliances","Partnership Building","Consensus Building","Managing Up","Managing Across","Managing Expectations","Strategic Relationships","Trust Building","Influence Without Authority","Organizational Diplomacy","Change Advocacy","Executive Trust","Network Building","Relationship Maintenance","Executive Sponsorship","Cross-department Alignment","Enterprise Collaboration","Leadership Influence"]},
+    {ico:"🧩",name:"Strategic & Org Thinking",t:"s",skills:["Strategic Thinking","Systems Thinking","Enterprise Thinking","Organizational Thinking","Portfolio Thinking","Long-term Thinking","Future Thinking","Scenario Planning","Opportunity Thinking","Business Thinking","Financial Thinking","Resource Thinking","Trade-off Thinking","Decision Frameworks","Complexity Management","Prioritization","Risk Assessment","Strategic Judgment","Root Cause Leadership","Problem Framing","Opportunity Framing","Outcome Orientation","Vision Alignment","Organizational Design Thinking","Change Leadership","Innovation Thinking","Pattern Recognition","Mental Models","Strategic Adaptability","Enterprise Judgment"]},
+    {ico:"💡",name:"Business Mindset",t:"s",skills:["Business Acumen","Revenue Thinking","Cost Awareness","ROI Thinking","Budget Awareness","Investment Thinking","Value-based Decision Making","Customer Value Thinking","Market Awareness","Competitive Awareness","Business Prioritization","Strategic Alignment","Business Storytelling","KPI Leadership","Executive Decision Context","Portfolio Investment Thinking","Organizational Goals","Product Strategy Alignment","Business Partnership","Financial Communication","Sustainable Growth Thinking","Business Risk Awareness","Opportunity Evaluation","Enterprise Value Thinking"]},
+    {ico:"❤️",name:"Emotional & Social Intelligence",t:"s",skills:["Emotional Intelligence","Organizational Empathy","Executive Empathy","Social Intelligence","Reading Organizational Dynamics","Reading Team Dynamics","Reading the Room","Emotional Regulation","Emotional Maturity","Compassionate Leadership","Trust Development","Psychological Safety Leadership","Conflict De-escalation","Patience","Cultural Intelligence","Relationship Capital","Self-control","Emotional Resilience","Respectful Disagreement","Building Loyalty","Organizational Trust","Active Empathy","Inclusive Mindset","Executive Composure"]},
+    {ico:"🌱",name:"Talent & Culture",t:"s",skills:["Leadership Culture","Feedback Culture","Learning Culture","Coaching Culture","Innovation Culture","Employee Experience","Team Rituals","Recognition Programs","Internal Community Building","Knowledge Management","Mentorship Programs","Leadership Pipeline","Succession Programs","Diversity Programs","Inclusion Strategy","Employee Growth","Organizational Learning","Employer Branding","Talent Brand","Talent Advocacy"]},
+    {ico:"🌍",name:"Industry & Professional Growth",t:"s",skills:["Thought Leadership","Conference Speaking","Writing & Publishing","Executive Writing","Community Leadership","University Partnerships","Industry Networking","Mentoring Outside Organization","Open Source Contribution","Design Awards Participation","Innovation Programs","Research Partnerships","Executive Networking","Advisory Skills","Industry Trend Analysis","Competitive Benchmarking","Market Intelligence","Personal Brand Strategy","Executive Reputation","External Representation","Leadership Legacy","Long-term Impact"]}
+  ],
+  diff:{title_en:"Manager → Head of Design promotion signals", title_id:"Pembeda Manager yang siap naik ke Head of Design",
+    lead_en:"What's looked for when evaluating a Manager for Head of Design.", lead_id:"Yang dicari saat mengevaluasi Manager untuk Head of Design.",
+    groups:[
+      {ico:"👑 Leadership",items:["Executive Presence","Vision Leadership","Strategic Leadership","Leadership Multiplication","Building Leadership Pipeline"]},
+      {ico:"🏢 Organization",items:["Organization Design","Succession Planning","Team Scaling","Change Leadership","Organizational Navigation"]},
+      {ico:"💬 Communication",items:["Executive Communication","Executive Storytelling","Executive Negotiation","Crisis Communication","Board-ready Communication"]},
+      {ico:"💼 Business",items:["Business Acumen","Financial Thinking","ROI Thinking","Portfolio Thinking","Enterprise Value Thinking"]},
+      {ico:"🤝 Influence",items:["Organizational Influence","Executive Trust","Political Awareness","Strategic Relationships","Cross-functional Leadership"]}
+    ]}
+};
+
+window.DATA.head = {
+  name:"Head of Design", level:"Level 6", track:"core",
+  mission:"Build a world-class design organization that drives business impact, shapes company culture, and becomes a competitive advantage.",
+  mission_id:"Membangun organisasi desain kelas dunia yang berdampak pada bisnis, membentuk budaya perusahaan, dan menjadi keunggulan kompetitif.",
+  cats:[
+    {ico:"🏢",name:"Executive Leadership",t:"h",skills:["Executive Leadership","Vision Setting","Company Vision Alignment","Organizational Vision","Strategic Leadership","Executive Decision Making","Leadership Philosophy","Organizational Direction","Leadership Team Building","Enterprise Leadership","Cross-company Alignment","Company Representation","Vision Execution"]},
+    {ico:"📈",name:"Business Strategy",t:"h",skills:["Business Strategy","Corporate Strategy","Company Growth Strategy","Revenue Strategy","Profitability Strategy","Investment Strategy","Portfolio Strategy","Market Expansion","Go-to-market Strategy","Business Model Innovation","Customer Strategy","Competitive Positioning","Strategic Partnerships","M&A Awareness","Market Intelligence","Pricing Strategy Awareness","Cost Optimization","Financial Literacy","P&L Awareness","ROI Governance","Capital Allocation Awareness","Resource Investment","Strategic Planning","Business Risk Management","Opportunity Portfolio","Innovation Portfolio","Growth Portfolio","Enterprise Planning","Company Objectives","Business Transformation"]},
+    {ico:"🎨",name:"Design Organization Strategy",t:"h",skills:["Design Vision","UX Vision","Design Strategy","Experience Strategy","Design Principles","Design Culture","Design Governance","Design Excellence","Design Maturity","Design Transformation","Design Health","Experience Quality","Design KPIs","Design OKRs","UX Metrics","Cross-product Consistency","Multi-brand Strategy","Multi-platform Strategy","Design Innovation","Experience Leadership","Customer Experience Strategy","Service Experience Strategy","Experience Ecosystem","Future Experience Design","Accessibility Leadership","Inclusive Design Governance","Design Ethics","Responsible Innovation","Design Legacy","World-class Design Organization"]},
+    {ico:"👥",name:"Organizational Leadership",t:"h",skills:["Organization Design","Organizational Scaling","Leadership Development","Succession Strategy","Executive Hiring","Director Development","Manager Development","Leadership Pipeline","Talent Strategy","Workforce Planning","Capability Mapping","Competency Framework","Career Framework","Promotion Governance","Compensation Philosophy","Organizational Health","Employee Experience","Learning Organization","Organizational Learning","Culture Transformation","Change Leadership","Team Topologies","Distributed Teams","Global Teams","Cross-cultural Leadership","Organizational Resilience","High-performance Organization","Executive Succession","Organizational Excellence"]},
+    {ico:"📦",name:"DesignOps & Operations",t:"h",skills:["DesignOps Vision","Operational Strategy","Operating Model","Workflow Governance","Tool Strategy","Vendor Strategy","Procurement Strategy","Capacity Planning","Portfolio Planning","Delivery Governance","Resource Forecasting","Budget Governance","Process Standardization","Automation Strategy","AI-enabled Operations","Knowledge Management","Documentation Governance","Quality Systems","Operational Excellence","Enterprise DesignOps"]},
+    {ico:"💰",name:"Financial Leadership",t:"h",skills:["Budget Ownership","Multi-year Budget Planning","Financial Forecasting","Investment Planning","Cost Governance","Vendor Contracts","Procurement Management","Cost-benefit Analysis","ROI Measurement","Resource Optimization","Financial Reporting","Executive Budget Reviews","Portfolio Investment","Capital Efficiency","Financial Risk","Investment Prioritization","Resource Allocation","Financial Governance","Sustainable Growth","Enterprise Finance Awareness"]},
+    {ico:"🤖",name:"AI & Innovation Leadership",t:"h",skills:["AI Transformation","Enterprise AI Strategy","Responsible AI Governance","AI Risk Governance","AI Design Leadership","AI Product Strategy","Human-AI Experience","Agentic UX Strategy","AI Organization Design","AI Productivity","AI Workforce Transformation","Emerging Technology Strategy","Innovation Management","Technology Forecasting","Design Futures","Digital Transformation","Future Organization"]},
+    {ico:"👑",name:"Executive Leadership (Soft)",t:"s",skills:["Visionary Leadership","Executive Presence","Authentic Leadership","Servant Leadership","Adaptive Leadership","Executive Judgment","Executive Confidence","Long-term Vision","Organizational Responsibility","Accountability Culture","Ownership Culture","Values-based Leadership","Ethical Leadership","Integrity","Credibility","Executive Composure","Calm Under Pressure","Leadership Consistency","Humility","Courageous Leadership","Inspirational Leadership","Organizational Stewardship","Enterprise Accountability","Leadership Legacy","Organizational Trust","Executive Maturity","Executive Influence","Enterprise Vision","Mission-driven Leadership","Future-focused Leadership","Legacy Thinking"]},
+    {ico:"💬",name:"Executive Communication",t:"s",skills:["CEO Communication","Board Communication","Executive Storytelling","Vision Storytelling","Organizational Storytelling","Strategic Communication","Executive Negotiation","Crisis Communication","Media Communication","Public Speaking","Keynote Speaking","Executive Presentation","Investor Communication","Stakeholder Diplomacy","Executive Listening","Political Intelligence","Organizational Messaging","Executive Coaching Communication","Communication Strategy","Company-wide Messaging","Narrative Building","Inspiring Communication","Influencing Executives","Cross-company Communication","Alignment Communication","Difficult Executive Conversations","Board-level Facilitation","Public Representation","Reputation Communication","Communication Legacy"]},
+    {ico:"🤝",name:"Enterprise Influence",t:"s",skills:["Enterprise Influence","Executive Relationships","CEO Partnership","CTO Partnership","CPO Partnership","COO Partnership","CFO Partnership","Board Relationships","Investor Relationships","Strategic Alliances","Organizational Diplomacy","Political Awareness","Executive Sponsorship","Influence Without Authority","Enterprise Trust Building","Relationship Capital","Stakeholder Ecosystem Thinking","Cross-company Leadership","Organizational Navigation","Government Relations Awareness","Industry Relationships","Academic Partnerships","Community Influence","Global Collaboration","Enterprise Networking","Cross-industry Collaboration","Industry Influence","Executive Credibility","Enterprise Alignment","Organizational Legitimacy","Executive Consensus Building","Strategic Relationship Management","Ecosystem Thinking","Long-term Partnerships","Influence Legacy"]},
+    {ico:"🧩",name:"Strategic Thinking",t:"s",skills:["Systems Thinking","Enterprise Thinking","Strategic Thinking","Long-term Thinking","Future Thinking","Scenario Planning","Strategic Judgment","Decision Science","Complexity Leadership","Portfolio Thinking","Opportunity Thinking","Business Thinking","Organizational Thinking","Market Thinking","Global Thinking","Innovation Thinking","Risk Thinking","Resource Thinking","Trade-off Thinking","First Principles Thinking","Second-order Thinking","Pattern Recognition","Strategic Prioritization","Problem Framing","Opportunity Framing","Systems Optimization","Organizational Systems Thinking","Future Forecasting","Enterprise Adaptability","Mental Models","Strategic Curiosity","Decision Architecture","Enterprise Design Thinking","Sustainable Thinking","Resilience Thinking","Transformational Thinking","Global Awareness","Wisdom"]},
+    {ico:"❤️",name:"Emotional & Social Intelligence",t:"s",skills:["Emotional Intelligence","Executive Empathy","Organizational Empathy","Cultural Intelligence","Social Intelligence","Reading Organizational Dynamics","Reading Executive Dynamics","Reading the Room","Emotional Regulation","Emotional Maturity","Compassionate Leadership","Psychological Safety Advocacy","Trust Building","Executive Trust","Conflict De-escalation","Executive Diplomacy","Respectful Disagreement","Patience","Active Empathy","Relationship Maintenance","Organizational Harmony","Executive Calm","Ethical Courage","Inclusive Leadership","Diversity Advocacy","Executive Self-awareness","Emotional Resilience","Influence with Empathy","Social Adaptability","Human-centered Leadership","Listening Beyond Words","Presence Under Pressure","Graceful Decision Making","Relationship Stewardship","Human Legacy"]},
+    {ico:"🌍",name:"Industry Leadership & Legacy",t:"s",skills:["Thought Leadership","Industry Vision","Design Evangelism","Conference Keynotes","Public Writing","Book Authoring","Podcast Leadership","Community Building","Industry Mentorship","University Partnerships","Research Collaboration","Standards Contribution","Open-source Advocacy","Employer Branding","Executive Personal Branding","Global Networking","International Representation","Media Presence","Advisory Roles","Board Advisory","Industry Benchmarking","Innovation Advocacy","Ecosystem Development","Talent Legacy","Knowledge Legacy","Organizational Legacy","Company Legacy","Ethical Legacy","Global Perspective","Future Talent Development","Design Profession Advocacy","Executive Reputation","Societal Impact","World-class Leadership","Continuous Reinvention","Curiosity at Scale","Cross-generational Leadership","Enduring Influence","Legacy Stewardship"]},
+    {ico:"🌱",name:"Culture & Legacy",t:"s",skills:["Company Culture","Innovation Culture","Learning Culture","Leadership Culture","Feedback Culture","Psychological Safety","Inclusion Strategy","Diversity Leadership","Mentorship Programs","Community Legacy","Organizational Memory","Sustainable Leadership","Values Alignment","Long-term Impact","Legacy Leadership","Culture Architecture"]}
+  ],
+  diff:{title_en:"World-class Head of Design indicators", title_id:"Indikator Head of Design kelas dunia",
+    lead_en:"What a CEO looks for in a Head of Design at companies like Google, Airbnb, Meta.", lead_id:"Yang dicari CEO pada Head of Design di perusahaan seperti Google, Airbnb, Meta.",
+    groups:[
+      {ico:"👑 Leadership",items:["Visionary Leadership","Executive Presence","Enterprise Leadership","Leadership Legacy","Courageous Leadership"]},
+      {ico:"🏢 Organization",items:["Organization Design","Organizational Scaling","Culture Architecture","Leadership Pipeline","Sustainable Organization"]},
+      {ico:"💼 Business",items:["Corporate Strategy","Financial Literacy","Portfolio Strategy","Business Transformation","Enterprise Value Thinking"]},
+      {ico:"🤝 Influence",items:["CEO Partnership","Board Communication","Executive Negotiation","Enterprise Influence","Strategic Relationship Management"]},
+      {ico:"🧩 Thinking",items:["Systems Thinking","Strategic Judgment","Ecosystem Thinking","Future Forecasting","Wisdom"]}
+    ]}
+};
+// Part D — Freelancer, Studio (deduped)
+window.DATA = window.DATA || {};
+
+window.DATA.free = {
+  name:"Freelancer UI/UX Designer", level:"Career Track", track:"alt",
+  mission:"Build a sustainable design business, deliver quality to clients, and run every aspect of a project independently. Roughly 70% soft skill, 30% craft.",
+  mission_id:"Membangun bisnis desain berkelanjutan, memberi hasil berkualitas ke klien, dan mengelola seluruh aspek proyek mandiri. Kira-kira 70% soft skill, 30% craft.",
+  cats:[
+    {ico:"🎨",name:"UI/UX Design Excellence",t:"h",skills:["Design Thinking","UX Design","UI Design","Interaction Design","Information Architecture","User Flow","Wireframing","High-fidelity Design","Design Systems","Responsive Design","Mobile Design","Web Design","Accessibility","UX Writing","Microinteractions","Motion Basics","Prototyping","Figma Mastery","Visual Design","Design Quality"]},
+    {ico:"🔍",name:"UX Research",t:"h",skills:["User Interviews","Stakeholder Interviews","Competitive Analysis","Persona","Journey Mapping","JTBD","Surveys","Usability Testing","Research Synthesis","Insight Generation","Problem Framing","Opportunity Identification","Benchmark Studies","Research Reporting","Validation Planning"]},
+    {ico:"📈",name:"Product Thinking",t:"h",skills:["Product Discovery","MVP Definition","Product Strategy Basics","Feature Prioritization","Product Metrics","Success Metrics","Customer Value","Business Goals Alignment","Outcome Thinking","Product Roadmapping Basics"]},
+    {ico:"💻",name:"Technical Collaboration",t:"h",skills:["HTML/CSS Awareness","Frontend Collaboration","API Awareness","Technical Feasibility","Developer Handoff","QA Review","Responsive Implementation","Design Tokens","Component Thinking","Documentation"]},
+    {ico:"📦",name:"DesignOps",t:"h",skills:["File Organization","Design Libraries","Version Control","Workflow Optimization","Automation","Asset Management","Knowledge Management","Documentation Standards","QA Checklist","Delivery Standards"]},
+    {ico:"🤖",name:"AI Skills",t:"h",skills:["AI Literacy","Prompt Engineering","AI-assisted Research","AI-assisted UI Design","AI-assisted UX Writing","AI-assisted Prototyping","AI-assisted Documentation","AI-assisted Presentation","AI Image Generation","AI Quality Evaluation","AI Workflow Automation","AI Client Communication","Responsible AI","AI Productivity","Human-AI Collaboration"]},
+    {ico:"💰",name:"Freelance Business",t:"h",skills:["Pricing Strategy","Hourly Pricing","Fixed-price Projects","Value-based Pricing","Proposal Writing","Quotation Creation","Contract Basics","Invoice Management","Payment Tracking","Tax Awareness","Cash Flow Management","Budget Planning","Financial Goals","Profit Calculation","Business Sustainability"]},
+    {ico:"📣",name:"Marketing & Personal Branding",t:"h",skills:["Portfolio Website","Case Study Writing","Personal Branding","LinkedIn Optimization","Social Media Marketing","Content Marketing","Design Blogging","Networking","Referral Strategy","Community Building","Public Speaking","Design Workshops","SEO Basics","Email Outreach","Lead Generation"]},
+    {ico:"💼",name:"Sales",t:"h",skills:["Sales Funnel","Prospecting","Cold Outreach","Discovery Questions","Proposal Presentation","Objection Handling","Closing Deals","Upselling","Cross-selling","Client Retention","Follow-up Strategy","CRM Basics","Sales Forecasting","Relationship Selling","Long-term Partnership"]},
+    {ico:"⚙️",name:"Project Management",t:"h",skills:["Project Planning","Timeline Estimation","Milestone Planning","Risk Management","Resource Planning","Time Tracking","Agile Basics","Kanban","Sprint Planning","Task Prioritization","Delivery Planning","Change Request Management","Project Closure","Retrospectives"]},
+    {ico:"🚀",name:"Scaling Your Freelance Business",t:"h",skills:["Building a Niche","Productized Services","Retainer Agreements","Subscription Design Services","White-label Partnerships","Agency Collaboration","Hiring Contractors","Standard Operating Procedures (SOPs)","Service Packaging","Revenue Diversification","Digital Products","Online Courses","Design Templates","Passive Income Strategy","Client Success Programs","Referral Systems","Partnership Development","Business Automation","Exit Strategy","Agency Transition Readiness"]},
+    {ico:"🧠",name:"Self Management",t:"s",skills:["Self Leadership","Self Discipline","Self Awareness","Emotional Intelligence","Emotional Regulation","Accountability","Ownership","Initiative","Adaptability","Resilience","Stress Management","Time Management","Energy Management","Deep Work","Focus Management","Self Motivation","Continuous Learning","Growth Mindset","Learning Agility","Self Reflection","Confidence","Humility","Personal Responsibility","Consistency","Professionalism"]},
+    {ico:"💬",name:"Client Communication",t:"s",skills:["Active Listening","Discovery Questioning","Requirement Clarification","Executive Communication","Written Communication","Verbal Communication","Visual Communication","Storytelling","Design Storytelling","Articulating Design Decisions","Simplifying Complexity","Managing Expectations","Status Updates","Difficult Conversations","Negotiation","Persuasion","Conflict Resolution","Stakeholder Education","Workshop Facilitation","Meeting Leadership","Professional Follow-up","Scope Discussion","Scope Defense","Value Communication","Strategic Communication","Building Trust","Rapport Building","Executive Presence","Communication Under Pressure","Client Diplomacy","Remote Communication","Feedback Management","Closing Conversations"]},
+    {ico:"🤝",name:"Relationship Building",t:"s",skills:["Trust Building","Long-term Relationship Management","Referral Building","Partnership Building","Collaboration","Reliability","Professional Reputation","Reputation Management","LinkedIn Presence","Social Presence","Relationship Maintenance","Client Empathy","Business Empathy","Customer-centric Mindset","Respectful Communication","Gratitude","Follow-up Discipline","Long-term Thinking","Service Mindset","Customer Success Mindset","Human Connection"]},
+    {ico:"💡",name:"Business Mindset",t:"s",skills:["Business Acumen","Entrepreneurial Thinking","Opportunity Recognition","Opportunity Evaluation","Value-based Thinking","ROI Thinking","Commercial Awareness","Pricing Confidence","Negotiation Confidence","Financial Responsibility","Revenue Thinking","Profit Thinking","Cost Awareness","Risk Awareness","Strategic Thinking","Product Thinking","Customer Value Thinking","Business Storytelling","Sales Mindset","Consultative Selling","Strategic Positioning","Niche Thinking","Competitive Awareness","Long-term Business Planning","Investment Mindset","Growth Thinking","Portfolio Thinking","Decision Making","Business Judgment"]},
+    {ico:"🛠️",name:"Project Leadership",t:"s",skills:["Project Ownership","Planning","Prioritization","Deadline Management","Scope Management","Trade-off Thinking","Delivery Focus","Quality Mindset","Process Thinking","Crisis Management","Problem Solving","Client Escalation Handling","Delivery Communication","Commitment","Follow-through","Continuous Improvement","Operational Thinking","Execution Excellence"]},
+    {ico:"❤️",name:"Emotional & Social Intelligence",t:"s",skills:["Empathy","Customer Empathy","Active Empathy","Social Intelligence","Reading the Room","Patience","Diplomacy","Conflict De-escalation","Respectful Disagreement","Building Confidence","Positive Attitude","Emotional Resilience","Calm Under Pressure","Self-control","Cultural Awareness","Trust Development","Human-centered Communication","Relationship Stewardship"]},
+    {ico:"🌱",name:"Personal Growth",t:"s",skills:["Curiosity","Lifelong Learning","Industry Awareness","Technology Awareness","AI Curiosity","Writing","Community Contribution","Portfolio Storytelling","Confidence Building","Reflection","Habit Building","Personal Vision","Goal Setting","Legacy Thinking"]},
+    {ico:"📊",name:"Consultant Mindset",t:"s",skills:["Consultative Thinking","Problem Discovery","Opportunity Framing","Strategic Questioning","Business Diagnosis","Solution Recommendation","Advisory Skills","Strategic Influence","Executive Thinking","Product Advisory","Business Advisory","Facilitation","Decision Coaching","Value Creation","Client Success Thinking","Trusted Advisor Mindset","Executive Confidence","Outcome Orientation","Long-term Partnership Thinking","Strategic Consulting"]}
+  ],
+  diff:{title_en:"Freelancer Rp5M vs Rp100M+ differentiators", title_id:"Pembeda freelancer Rp5 jt vs Rp100 jt+",
+    lead_en:"The difference isn't Figma; it's these. The one most-forgotten skill: Consultative Selling.", lead_id:"Bedanya bukan Figma, tapi ini. Satu skill paling sering terlupakan: Consultative Selling.",
+    groups:[
+      {ico:"💬 Communication",items:["Articulating Design Decisions","Storytelling","Negotiation","Executive Communication","Active Listening"]},
+      {ico:"💼 Business",items:["Consultative Selling","Pricing Confidence","Value-based Thinking","Business Acumen","ROI Thinking"]},
+      {ico:"🤝 Relationship",items:["Trust Building","Client Retention","Personal Branding","Networking","Referral Building"]},
+      {ico:"🧩 Thinking",items:["Strategic Thinking","Product Thinking","Problem Discovery","Opportunity Framing","Decision Making"]},
+      {ico:"💎 10 most forgotten",items:["Consultative Selling","Articulating Design Decisions","Expectation Management","Negotiation","Pricing Confidence","Executive Communication","Building Trust","Business Acumen","Problem Discovery","Outcome Orientation"]}
+    ]}
+};
+
+window.DATA.studio = {
+  name:"Studio Owner / Founder", level:"Career Track", track:"alt",
+  mission:"Build a profitable, scalable design studio with a strong culture, trusted by global clients. You no longer sell design; you sell trust, systems, team, and outcomes.",
+  mission_id:"Membangun studio desain yang profitable, scalable, berbudaya kuat, dipercaya klien global. Kamu tak lagi menjual desain; kamu menjual kepercayaan, sistem, tim, dan outcome.",
+  cats:[
+    {ico:"🏢",name:"Business Foundation",t:"h",skills:["Business Model Design","Vision Setting","Mission Definition","Company Values","Business Strategy","Competitive Positioning","Market Positioning","Niche Selection","Value Proposition","Unique Selling Proposition (USP)","SWOT Analysis","Blue Ocean Strategy","Business Planning","Revenue Strategy","Growth Strategy","Pricing Strategy","Financial Planning","Company Roadmap","Business Validation","Company Branding"]},
+    {ico:"💰",name:"Finance",t:"h",skills:["Budget Planning","Cash Flow","Profit & Loss (P&L)","Pricing Models","Value-based Pricing","Retainer Pricing","Project Pricing","Cost Calculation","Gross Margin","Net Margin","Forecasting","Taxes","Payroll","Financial Reporting","Break-even Analysis","ROI Analysis","Investment Planning","Financial Risk","Emergency Fund Planning","Sustainable Growth"]},
+    {ico:"📣",name:"Marketing",t:"h",skills:["Brand Strategy","Studio Identity","Website Strategy","SEO","Content Marketing","LinkedIn Marketing","Instagram Marketing","YouTube Strategy","Email Marketing","Newsletter","Community Building","Public Speaking","Design Events","Case Study Marketing","Portfolio Marketing","PR Strategy","Podcast Marketing","Employer Branding","Growth Marketing","Demand Generation"]},
+    {ico:"💼",name:"Sales",t:"h",skills:["Lead Generation","Cold Outreach","Warm Outreach","Sales Funnel","CRM Management","Discovery Calls","Sales Qualification","Proposal Writing","Proposal Presentation","Scope Negotiation","Value Selling","Consultative Selling","Objection Handling","Contract Negotiation","Closing Deals","Upselling","Cross-selling","Client Retention","Referral Strategy","Strategic Partnerships"]},
+    {ico:"🎨",name:"Design Excellence",t:"h",skills:["UX Strategy","Product Strategy","Service Design","Design Systems","UX Research","Interaction Design","Accessibility","Information Architecture","Experience Strategy","Design Leadership","Design Governance","Design Quality","Design Review","Design Critique","DesignOps","Innovation","AI Product Design","AI UX","Future Design Trends","World-class Design Standards"]},
+    {ico:"⚙️",name:"Studio Operations",t:"h",skills:["SOP Development","Workflow Design","Capacity Planning","Resource Allocation","Project Planning","Delivery Management","QA Process","Documentation Standards","Asset Management","Tool Stack","Automation","Vendor Management","Legal Awareness","Contracts","Procurement","Compliance","Risk Management","Operational KPIs","Operational Excellence"]},
+    {ico:"📈",name:"Growth Strategy",t:"h",skills:["Agency Scaling","Productized Services","Subscription Services","Retainer Model","Enterprise Sales","Global Expansion","Partnerships","White-label Services","Strategic Alliances","New Revenue Streams","Online Courses","Digital Products","Templates Marketplace","Workshops","Consulting","Fractional Design Leadership","Venture Studio Partnerships","Accelerator Partnerships","Innovation Labs","Acquisition Readiness"]},
+    {ico:"🤖",name:"AI Transformation",t:"h",skills:["AI Strategy","AI Automation","AI DesignOps","AI-assisted Research","AI-assisted Design","AI-assisted QA","AI-assisted Documentation","AI-assisted Sales","AI-assisted Marketing","AI-assisted Project Management","AI Knowledge Base","AI Prompt Library","Responsible AI","AI Governance","AI Team Enablement","Emerging Technology","Agentic Workflow","Human-AI Collaboration","AI Productivity","AI-first Studio"]},
+    {ico:"🚀",name:"Advanced Scaling",t:"h",skills:["Multi-team Management","Studio Network","International Clients","Multi-country Operations","Multi-currency Finance","Localization Strategy","Remote-first Operations","Studio Expansion","M&A Awareness","Exit Strategy","Equity Planning","ESOP Awareness","Board Communication","Investor Relations","Venture Funding Awareness","Acquisition Integration","Business Continuity","Crisis Management","Enterprise Governance","CEO Leadership"]},
+    {ico:"👑",name:"Founder Mindset",t:"s",skills:["Visionary Thinking","Founder Mentality","Entrepreneurial Thinking","Business Ownership","Long-term Thinking","Opportunity Recognition","Opportunity Evaluation","Strategic Patience","Resilience","Adaptability","Decisiveness","Courage","Accountability","Ownership","Self Leadership","Discipline","Growth Mindset","Learning Agility","Emotional Stability","Executive Confidence","Humility","Ambition","Resourcefulness","Bias for Action","Continuous Improvement","Risk Tolerance","Ethical Leadership","Vision Consistency","Founder Energy Management","Legacy Thinking"]},
+    {ico:"💵",name:"Business Leadership",t:"s",skills:["Business Acumen","Business Model Thinking","Strategic Thinking","Financial Thinking","Profitability Thinking","Revenue Thinking","Value-based Thinking","ROI Thinking","Unit Economics Awareness","Cash Flow Mindset","Investment Thinking","Portfolio Thinking","Niche Positioning","Market Awareness","Customer Segmentation","Business Prioritization","Opportunity Cost Thinking","Risk Assessment","Business Storytelling","Company Positioning","Brand Positioning","Go-to-market Thinking","Partnership Thinking","Productized Service Thinking","Recurring Revenue Thinking","Diversification Thinking","Exit Thinking","Acquisition Awareness","Scalability Mindset","Company Valuation Awareness","Enterprise Thinking","CEO Mindset"]},
+    {ico:"🤝",name:"Sales & Client Leadership",t:"s",skills:["Discovery Leadership","Strategic Questioning","Client Qualification","Proposal Storytelling","Executive Presentation","Negotiation","High-ticket Sales","Trust Building","Stakeholder Management","Executive Stakeholder Management","Relationship Building","Long-term Client Partnership","Account Growth","Client Success Mindset","Expectation Management","Executive Diplomacy","Referral Building","Strategic Networking","Reputation Management","Crisis Communication","Executive Presence","Persuasion","Influence Without Authority","Strategic Influence","Advisory Mindset","Business Diagnosis","Solution Selling","Customer-centric Leadership"]},
+    {ico:"👥",name:"People Leadership",t:"s",skills:["Leadership Presence","Hiring Judgment","Talent Identification","Team Building","Culture Building","Leadership Development","Coaching","Mentoring","Delegation","Empowerment","Succession Planning","Performance Management","Career Development","Psychological Safety","Conflict Mediation","Team Motivation","Recognition Culture","Accountability Culture","Feedback Culture","High-performance Teams","Organizational Design","Team Scaling","Capability Building","Learning Culture","Diversity & Inclusion","Cross-cultural Leadership","Remote Leadership","Leadership Pipeline","Trust Leadership","Talent Retention","Organizational Health","Executive Coaching","Leadership Multiplication","Founder as Coach"]},
+    {ico:"🧩",name:"Strategic Thinking",t:"s",skills:["Systems Thinking","Future Thinking","Scenario Planning","First Principles Thinking","Second-order Thinking","Pattern Recognition","Decision Frameworks","Judgment","Complexity Management","Problem Framing","Opportunity Framing","Prioritization","Trade-off Analysis","Resource Optimization","Market Thinking","Business Thinking","Organizational Thinking","Customer Thinking","Ecosystem Thinking","Innovation Thinking","Strategic Curiosity","Risk Thinking","Long-term Planning","Strategic Adaptability","Mental Models","Vision Execution","Wisdom"]},
+    {ico:"💬",name:"Executive Communication",t:"s",skills:["Vision Communication","Company Storytelling","Brand Storytelling","Executive Storytelling","Keynote Speaking","Podcast Communication","Media Communication","Investor Communication","Team Communication","Difficult Conversations","Communication Strategy","Narrative Building","Organizational Messaging","Executive Listening","Board-ready Communication","Facilitation","Workshop Leadership","Simplifying Complexity","Active Listening","Persuasive Communication","Cross-functional Communication","Executive Writing","Community Communication","Employer Branding Communication","Internal Communication","External Communication","Reputation Communication"]},
+    {ico:"🌍",name:"Industry & Brand Leadership",t:"s",skills:["Thought Leadership","Personal Branding","Founder Branding","Studio Branding","Community Leadership","Conference Speaking","Writing","Content Strategy","Podcasting","Networking","University Relations","Industry Benchmarking","Media Relations","Global Mindset","International Networking","Industry Reputation","Design Advocacy","Community Contribution","Talent Attraction","Public Reputation","Industry Influence","Legacy Building","World-class Mindset"]},
+    {ico:"🔧",name:"Scaling & Operations (Soft)",t:"s",skills:["Delegation Strategy","System Thinking","SOP Mindset","Process Thinking","Automation Mindset","Time Leverage","Decision Velocity","Execution Excellence","Operational Discipline","Financial Discipline","Delivery Leadership","Quality Culture","Scalability Thinking","Operational Risk Management","Change Leadership","Knowledge Management","Documentation Culture","Metrics-driven Management","KPI Thinking","OKR Leadership","Founder Replacement Thinking","Exit Readiness","Sustainable Leadership","Organizational Resilience","Company Legacy"]}
+  ],
+  diff:{title_en:"Studio Rp100M vs Rp1B / month differentiators", title_id:"Pembeda studio Rp100 jt vs Rp1 M / bulan",
+    lead_en:"The difference is rarely design skill. Top 10 most crucial founder competencies.", lead_id:"Bedanya jarang di skill desain. 10 kompetensi founder paling krusial.",
+    groups:[
+      {ico:"👑 Founder",items:["Visionary Thinking","CEO Mindset","Founder Replacement Thinking","Strategic Patience","Legacy Thinking"]},
+      {ico:"💼 Business",items:["Business Acumen","Profitability Thinking","Unit Economics Awareness","Pricing Strategy","Recurring Revenue Thinking"]},
+      {ico:"🤝 Sales",items:["Consultative Selling","High-ticket Sales","Executive Negotiation","Strategic Networking","Client Relationship Management"]},
+      {ico:"👥 Leadership",items:["Hiring Great Designers","Leadership Development","Delegation","Building Design Culture","Leadership Multiplication"]},
+      {ico:"🚀 Scaling",items:["System Thinking","Process Thinking","Operational Excellence","AI-first Operations","Founder Personal Branding"]}
+    ]}
+};
+</script>
+
+
+<script>
+const ORDER=["junior","middle","senior","lead","manager","head","free","studio"];
+const SHORT={junior:"Junior",middle:"Middle",senior:"Senior",lead:"Lead",manager:"Manager",head:"Head",free:"Freelancer",studio:"Studio"};
+const D=window.DATA;
+let current="junior", term="", globalSearch=false, lang="en", show={h:true,s:true};
+const $=s=>document.querySelector(s);
+const catsEl=$("#cats"), introEl=$("#roleintro");
+const skillCount=r=>D[r].cats.reduce((a,c)=>a+c.skills.length,0);
+
+const I18N={
+  en:{eyebrow:"UI/UX · Competency Framework · Hard & Soft Skills",
+    title:'The UI/UX <em>career map</em>',
+    sub:"Eight career paths, every competency listed in full. Hard skills and Soft skills grouped together per role, exactly as separated by the original framework. Junior to Head of Design, plus Freelancer and Studio Owner tracks.",
+    searchPh:"Search a skill… (e.g. negotiation, figma, pricing)",
+    scopeThis:"In ", scopeAll:"All roles", globalsearch:"Search all roles",
+    catWord:"category", catSearch:"All roles · search results",
+    total:"total", shown:"shown", nores:"No matching skills. Try another keyword.",
+    filterLabel:"Show:", hard:"Hard skills", soft:"Soft skills",
+    hardGroup:"Hard Skills", softGroup:"Soft Skills", skills:"skills",
+    foot1:"by @niyuavril"},
+  id:{eyebrow:"UI/UX · Kerangka Kompetensi · Hard & Soft Skill",
+    title:'Peta <em>karier UI/UX</em>',
+    sub:"Delapan jalur karier, setiap kompetensi dilistkan utuh. Hard skill dan Soft skill dikelompokkan per role, persis seperti pemisahan di framework aslinya. Junior sampai Head of Design, plus jalur Freelancer dan Studio Owner.",
+    searchPh:"Cari skill… (mis. negotiation, figma, pricing)",
+    scopeThis:"Di ", scopeAll:"Semua role", globalsearch:"Cari semua role",
+    catWord:"kategori", catSearch:"Semua role · hasil pencarian",
+    total:"total", shown:"ditampilkan", nores:"Tidak ada skill yang cocok. Coba kata kunci lain.",
+    filterLabel:"Tampilkan:", hard:"Hard skill", soft:"Soft skill",
+    hardGroup:"Hard Skill", softGroup:"Soft Skill", skills:"skill",
+    foot1:"by @niyuavril"}
+};
+const t=()=>I18N[lang];
+const mission=r=>lang==="en"?D[r].mission:(D[r].mission_id||D[r].mission);
+
+function renderChrome(){
+  const L=t();
+  $("#t-eyebrow").textContent=L.eyebrow;
+  $("#t-title").innerHTML=L.title;
+  $("#t-sub").textContent=L.sub;
+  $("#search").placeholder=L.searchPh;
+  $("#t-globalsearch").textContent=L.globalsearch;
+  $("#scopeLbl").textContent=globalSearch?L.scopeAll:(L.scopeThis+SHORT[current]);
+  $("#nores").textContent=L.nores;
+  $("#t-filterlabel").textContent=L.filterLabel;
+  $("#t-hard").textContent=L.hard;
+  $("#t-soft").textContent=L.soft;
+  $("#t-foot1").textContent=L.foot1;
+}
+function renderCareer(){
+  $("#careerbar").innerHTML=ORDER.map(r=>{
+    const d=D[r];
+    return `<button class="rung${r===current?' active':''}${d.track==='alt'?' alt':''}" data-r="${r}"><span class="rl">${d.level}</span><span class="rn">${SHORT[r]}</span><span class="rc">${skillCount(r)} ${t().skills}</span></button>`;
+  }).join("");
+}
+function renderIntro(){ introEl.innerHTML=`<p class="mission">${mission(current)}</p>`; }
+function spotlight(el){
+  el.addEventListener("mousemove",e=>{const r=el.getBoundingClientRect();el.style.setProperty("--mx",((e.clientX-r.left)/r.width*100)+"%");el.style.setProperty("--my",((e.clientY-r.top)/r.height*100)+"%");});
+}
+function catEl(c, role, q){
+  const items=c.skills.filter(s=>!q||s.toLowerCase().includes(q));
+  if(items.length===0 && q) return null;
+  const lis=items.map(s=>{const hit=q&&s.toLowerCase().includes(q);return `<li class="${hit?'hit':''}">${s}</li>`;}).join("");
+  const el=document.createElement("div");
+  el.className="cat "+c.t;
+  const tag=globalSearch?`<span class="roletag">${SHORT[role]}</span> · `:"";
+  el.innerHTML=`<div class="cat-top"></div><div class="cat-head"><div class="cat-ico">${c.ico}</div><div><h3 class="cat-name">${c.name}</h3><div class="cat-meta"><span class="tdot"></span>${tag}${c.skills.length} ${t().skills}</div></div><span class="cat-count">${items.length}</span></div><div class="cat-body"><ul class="skills">${lis}</ul></div>`;
+  spotlight(el);
+  return {el,n:items.length};
+}
+function buildGrid(cats, role, q){
+  // returns {hardEls:[], softEls:[], hardN, softN}
+  const out={hardEls:[],softEls:[],hardN:0,softN:0};
+  cats.forEach(c=>{
+    if(c.t==="h"&&!show.h)return;
+    if(c.t==="s"&&!show.s)return;
+    const r=catEl(c,role,q); if(!r)return;
+    if(c.t==="h"){out.hardEls.push(r.el);out.hardN+=r.n;} else {out.softEls.push(r.el);out.softN+=r.n;}
+  });
+  return out;
+}
+function gridSection(els){
+  const g=document.createElement("section"); g.className="cats";
+  els.forEach(e=>g.appendChild(e)); return g;
+}
+function renderCats(){
+  const q=term.trim().toLowerCase(), L=t();
+  catsEl.innerHTML=""; let shown=0;
+  if(globalSearch && q){
+    let allH=[],allS=[];
+    ORDER.forEach(role=>{const b=buildGrid(D[role].cats,role,q);allH=allH.concat(b.hardEls);allS=allS.concat(b.softEls);shown+=b.hardN+b.softN;});
+    if(allH.length){const lbl=document.createElement("div");lbl.className="group-label hard";lbl.innerHTML=`<span class="gd"></span>${L.hardGroup}`;catsEl.appendChild(lbl);catsEl.appendChild(gridSection(allH));}
+    if(allS.length){const lbl=document.createElement("div");lbl.className="group-label soft";lbl.innerHTML=`<span class="gd"></span>${L.softGroup}`;catsEl.appendChild(lbl);catsEl.appendChild(gridSection(allS));}
+    $("#catlabel").textContent=L.catSearch;
+  } else {
+    const d=D[current], b=buildGrid(d.cats,current,q);
+    shown=b.hardN+b.softN;
+    if(b.hardEls.length){const lbl=document.createElement("div");lbl.className="group-label hard";lbl.innerHTML=`<span class="gd"></span>${L.hardGroup} <span class="gcount">· ${b.hardN} ${L.skills}</span>`;catsEl.appendChild(lbl);catsEl.appendChild(gridSection(b.hardEls));}
+    if(b.softEls.length){const lbl=document.createElement("div");lbl.className="group-label soft";lbl.innerHTML=`<span class="gd"></span>${L.softGroup} <span class="gcount">· ${b.softN} ${L.skills}</span>`;catsEl.appendChild(lbl);catsEl.appendChild(gridSection(b.softEls));}
+    $("#catlabel").textContent=d.name+" · "+L.catWord;
+  }
+  $("#nores").style.display=shown===0?"block":"none";
+  $("#shown").textContent=shown+" "+(q?L.shown:L.total);
+}
+function render(){renderChrome();renderCareer();renderIntro();renderCats();}
+
+$("#careerbar").addEventListener("click",e=>{const b=e.target.closest(".rung");if(!b)return;current=b.dataset.r;document.querySelectorAll(".rung").forEach(x=>x.classList.toggle("active",x===b));if(globalSearch){globalSearch=false;$("#globalsearch").checked=false;}renderChrome();renderIntro();renderCats();window.scrollTo({top:introEl.offsetTop-100,behavior:"smooth"});});
+$("#search").addEventListener("input",e=>{term=e.target.value;updateClear();renderCats();});
+$("#globalsearch").addEventListener("change",e=>{globalSearch=e.target.checked;renderChrome();renderCats();});
+function updateClear(){$("#searchBox").classList.toggle("has-text",term.length>0);}
+$("#clearBtn").addEventListener("click",()=>{term="";$("#search").value="";updateClear();$("#search").focus();renderCats();});
+$("#filters").addEventListener("click",e=>{const chip=e.target.closest(".chip");if(!chip)return;const k=chip.dataset.k;show[k]=!show[k];if(!show.h&&!show.s){show[k]=true;return;}chip.classList.toggle("off",!show[k]);renderCats();});
+$("#langtoggle").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;lang=b.dataset.lang;document.querySelectorAll("#langtoggle button").forEach(x=>x.classList.toggle("active",x===b));document.documentElement.lang=lang;render();});
+
+const hero=$("#hero");
+if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+  window.addEventListener("scroll",()=>{const y=window.scrollY,p=Math.min(y/500,1);hero.style.opacity=1-p;hero.style.transform=`translateY(${p*80}px) scale(${1-p*0.05})`;},{passive:true});
+}
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}}),{threshold:0.08});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+render();
+</script>
+</body>
+</html>
