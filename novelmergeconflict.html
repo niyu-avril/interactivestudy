@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MERGE CONFLICT — Novela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --desk-1:#111826; --desk-2:#0a0f18;
+    --paper:#f7f1e4; --paper-edge:#e8dfcc; --ink:#2b2620; --ink-soft:#6b6154;
+    --cover-1:#0e2a4a; --cover-2:#123a66; --cover-ink:#f2e9d8;
+    --blue-final-2:#8fbfe8; --blue-accent:#2f80ed;
+    --display:'Fraunces', Georgia, 'Times New Roman', serif;
+    --body:'Lora', Georgia, serif;
+    --mono:'JetBrains Mono', 'Courier New', monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden}
+  body{
+    background:
+      radial-gradient(120% 90% at 50% 0%, var(--desk-1) 0%, var(--desk-2) 70%);
+    font-family:var(--body);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#cfd6e0;
+    user-select:none;-webkit-user-select:none;
+  }
+
+  /* ---------- scene & book ---------- */
+  .scene{
+    perspective:2600px;
+    perspective-origin:50% 50%;
+    position:relative;
+  }
+  .book{
+    position:relative;
+    transform-style:preserve-3d;
+    filter:drop-shadow(0 30px 45px rgba(0,0,0,.55));
+  }
+  .page{
+    position:absolute;top:0;height:100%;
+    background:var(--paper);
+    overflow:hidden;
+  }
+  .page.slot-left{left:0;border-radius:8px 2px 2px 8px}
+  .page.slot-right{border-radius:2px 8px 8px 2px}
+  .page.is-empty{background:transparent;box-shadow:none;border-radius:0}
+  .page.is-empty *{display:none}
+
+  /* stacked paper edges on outer sides */
+  .page.slot-right:not(.is-empty):not(.is-cover)::after,
+  .page.slot-left:not(.is-empty):not(.is-cover)::after{
+    content:'';position:absolute;top:4px;bottom:4px;width:7px;pointer-events:none;
+    background:repeating-linear-gradient(90deg, var(--paper-edge) 0 1px, var(--paper) 1px 2.4px);
+  }
+  .page.slot-right:not(.is-empty):not(.is-cover)::after{right:0;border-radius:0 8px 8px 0}
+  .page.slot-left:not(.is-empty):not(.is-cover)::after{left:0;border-radius:8px 0 0 8px}
+
+  /* spine shading */
+  .page .spine{position:absolute;top:0;bottom:0;width:12%;pointer-events:none;opacity:.9}
+  .page.slot-right .spine{left:0;background:linear-gradient(90deg, rgba(72,58,38,.18), rgba(72,58,38,0) 80%)}
+  .page.slot-left  .spine{right:0;background:linear-gradient(-90deg, rgba(72,58,38,.16), rgba(72,58,38,0) 80%)}
+  .single .page .spine{width:8%}
+
+  .page-inner{
+    position:absolute;inset:0;
+    padding:7.5% 9% 12% 9%;
+    overflow:hidden;
+  }
+  .folio{
+    position:absolute;left:0;right:0;bottom:4.2%;
+    text-align:center;font-family:var(--mono);
+    font-size:10px;letter-spacing:.14em;color:var(--ink-soft);
+  }
+
+  /* ---------- typography inside pages ---------- */
+  .page-inner{color:var(--ink);font-size:var(--fs, 15px);line-height:1.62}
+  .page-inner p{margin:0 0 .85em;text-align:justify;text-justify:inter-word;hyphens:auto;-webkit-hyphens:auto}
+  .page-inner p.noindent{text-indent:0}
+  .page-inner em{font-style:italic}
+  .page-inner strong{font-weight:600}
+  .page-inner hr{border:0;height:1em;margin:.4em 0 1em;position:relative}
+  .page-inner hr::after{content:'✦ ✦ ✦';display:block;text-align:center;color:#b7a47f;font-size:.7em;letter-spacing:.6em;padding-left:.6em}
+  .page-inner h2{
+    font-family:var(--display);font-weight:700;font-size:1.5em;line-height:1.25;
+    margin:1.1em 0 .9em;color:#1d2f4e;text-align:left;
+  }
+  .page-inner h2 .bab-no{
+    display:block;font-family:var(--mono);font-weight:500;font-size:.5em;
+    letter-spacing:.28em;text-transform:uppercase;color:#9a7b3f;margin-bottom:.9em;
+  }
+  .page-inner h3{
+    font-family:var(--display);font-weight:600;font-size:1.02em;font-style:italic;
+    color:#4a5a76;margin:0 0 1.4em;line-height:1.5;
+  }
+  .page-inner p.log{
+    font-family:var(--mono);font-size:.76em;line-height:1.7;text-align:left;
+    background:rgba(47,128,237,.065);
+    border-left:3px solid var(--blue-accent);
+    padding:.55em .9em;margin:0 0 .18em;color:#2c3a52;border-radius:0 4px 4px 0;
+  }
+  .page-inner p.log.log-first{border-radius:0 8px 0 0;padding-top:.8em}
+  .page-inner p.log.log-last{border-radius:0 0 8px 0;padding-bottom:.8em;margin-bottom:1em}
+  .page-inner p.center{text-align:center;text-indent:0}
+  .page-inner p.tamat{
+    text-align:center;font-family:var(--display);font-weight:700;letter-spacing:.35em;
+    color:#1d2f4e;margin:1.6em 0;font-size:1.1em;
+  }
+
+  /* ---------- special pages ---------- */
+  .page.is-cover{background:linear-gradient(155deg, var(--cover-2) 0%, var(--cover-1) 55%, #0a1f38 100%)}
+  .page.is-cover .page-inner{padding:0;overflow:hidden}
+  .cover-wrap{position:absolute;inset:0;display:flex;flex-direction:column;padding:9% 10%}
+  .cover-top{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--blue-final-2);opacity:.85;text-transform:uppercase}
+  .cover-title{
+    font-family:var(--display);font-weight:900;color:var(--cover-ink);
+    font-size:clamp(30px, calc(var(--pw)*0.092), 58px);line-height:.98;letter-spacing:-.01em;
+    margin-top:.55em;
+  }
+  .cover-title .slash{color:var(--blue-final-2);font-weight:400;font-style:italic}
+  .cover-sub{
+    font-family:var(--display);font-style:italic;font-weight:400;color:#c8d9ec;
+    font-size:clamp(11px,calc(var(--pw)*0.026),15px);line-height:1.55;margin-top:1.2em;max-width:34ch;
+  }
+  .cover-swatches{margin-top:auto;display:flex;flex-direction:column;gap:6px}
+  .swatch{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:clamp(7.5px,calc(var(--pw)*0.019),10.5px);color:#bcd2e8}
+  .swatch i{width:2.2em;height:1.35em;border-radius:3px;flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+  .swatch.dep{opacity:.55;text-decoration:line-through;text-decoration-color:rgba(188,210,232,.6)}
+  .cover-author{
+    margin-top:16px;padding-top:12px;border-top:1px solid rgba(143,191,232,.28);
+    font-family:var(--mono);font-size:clamp(8px,calc(var(--pw)*0.02),10.5px);letter-spacing:.16em;color:var(--blue-final-2);
+    text-transform:uppercase;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;
+  }
+  .page.is-cover::before{ /* spine emboss */
+    content:'';position:absolute;top:0;bottom:0;left:0;width:14px;
+    background:linear-gradient(90deg, rgba(0,0,0,.4), rgba(255,255,255,.08) 55%, rgba(0,0,0,.12));
+    z-index:2;
+  }
+
+  .page.is-plain .page-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .dedication{font-family:var(--display);font-style:italic;color:#4a4234;font-size:.95em;line-height:2;max-width:26ch}
+  .dedication .chip{
+    display:inline-block;font-family:var(--mono);font-style:normal;font-size:.72em;
+    background:var(--blue-final-2);color:#123a66;border-radius:4px;padding:.15em .6em;letter-spacing:.06em;
+  }
+
+  .page.is-back{background:linear-gradient(155deg, #123a66 0%, var(--cover-1) 60%, #0a1f38 100%)}
+  .page.is-back .page-inner{display:flex;flex-direction:column;justify-content:center;padding:10%}
+  .back-blurb{font-family:var(--display);font-style:italic;color:#d5e3f2;font-size:clamp(11px,calc(var(--pw)*0.027),15px);line-height:1.9}
+  .back-meta{margin-top:2.2em;font-family:var(--mono);font-size:clamp(7.5px,calc(var(--pw)*0.019),10px);letter-spacing:.18em;color:var(--blue-final-2);text-transform:uppercase;line-height:2}
+
+  /* ---------- turning leaf ---------- */
+  .leaf{
+    position:absolute;top:0;height:100%;
+    transform-style:preserve-3d;
+    display:none;z-index:30;
+    will-change:transform;
+  }
+  .leaf.active{display:block}
+  .leaf .face{
+    position:absolute;inset:0;overflow:hidden;
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    background:var(--paper);
+  }
+  .leaf .face.back{transform:rotateY(180deg)}
+  .leaf .shade{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:5}
+  .leaf .face.front .shade{background:linear-gradient(90deg, rgba(40,30,15,.5), rgba(40,30,15,0) 55%)}
+  .leaf .face.back  .shade{background:linear-gradient(-90deg, rgba(40,30,15,.45), rgba(40,30,15,0) 55%)}
+  .under-shadow{
+    position:absolute;top:0;height:100%;pointer-events:none;z-index:20;opacity:0;
+    background:linear-gradient(90deg, rgba(0,0,0,.35), rgba(0,0,0,0) 60%);
+  }
+
+  /* ---------- chrome / UI ---------- */
+  .hud{
+    margin-top:18px;display:flex;align-items:center;gap:14px;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#8fa2bd;
+  }
+  .hud .bar{width:min(260px,40vw);height:2px;background:rgba(255,255,255,.13);border-radius:2px;overflow:hidden}
+  .hud .bar i{display:block;height:100%;width:0%;background:var(--blue-final-2);transition:width .35s ease}
+  .hint{
+    position:absolute;left:50%;bottom:-46px;transform:translateX(-50%);
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:#9db5d4;
+    white-space:nowrap;opacity:.9;transition:opacity .6s;pointer-events:none;
+    text-transform:uppercase;
+  }
+  .hint.gone{opacity:0}
+  .hint .arr{display:inline-block;animation:nudge 1.6s ease-in-out infinite}
+  @keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}
+  @media (prefers-reduced-motion:reduce){
+    .hint .arr{animation:none}
+  }
+
+  .loading{
+    position:fixed;inset:0;display:flex;flex-direction:column;gap:14px;
+    align-items:center;justify-content:center;background:var(--desk-2);z-index:99;
+    font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:#8fa2bd;text-transform:uppercase;
+    transition:opacity .5s;
+  }
+  .loading.gone{opacity:0;pointer-events:none}
+  .loading .dot{width:34px;height:46px;border:1.5px solid #3d5a80;border-radius:3px 6px 6px 3px;position:relative;overflow:hidden}
+  .loading .dot::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent, rgba(143,191,232,.5), transparent);animation:sweep 1.2s linear infinite}
+  @keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+
+  #source, #measure-host{position:absolute;left:-99999px;top:0;visibility:hidden}
+  #measure-host .page-inner{position:static}
+</style>
+</head>
+<body>
+
+<div class="loading" id="loading"><div class="dot"></div><div>menjilid halaman…</div></div>
+
+<div class="scene" id="scene">
+  <div class="book" id="book">
+    <div class="page slot-left"  id="pgL"><div class="page-inner"></div><div class="spine"></div><div class="folio"></div></div>
+    <div class="page slot-right" id="pgR"><div class="page-inner"></div><div class="spine"></div><div class="folio"></div></div>
+    <div class="under-shadow" id="underShadow"></div>
+    <div class="leaf" id="leaf">
+      <div class="face front"><div class="page-inner"></div><div class="spine"></div><div class="folio"></div><div class="shade"></div></div>
+      <div class="face back"><div class="page-inner"></div><div class="spine"></div><div class="folio"></div><div class="shade"></div></div>
+    </div>
+  </div>
+  <div class="hint" id="hint"><span class="arr">‹</span>&nbsp; geser untuk membuka &nbsp;<span style="opacity:.5">|</span>&nbsp; tap tepi halaman</div>
+</div>
+
+<div class="hud">
+  <span id="pgLabel">—</span>
+  <div class="bar"><i id="pgBar"></i></div>
+</div>
+
+<!-- ======================= NOVEL SOURCE ======================= -->
+<div id="source">
+
+<h2><span class="bab-no">Prolog</span>Notion Page yang Tidak Sengaja Ter-share</h2>
+<p>Namanya Laras Wicaksana, 30 tahun, Senior Product Designer di Arva — fintech Jakarta yang logonya sudah tiga kali rebranding dalam dua tahun (&ldquo;kali ini beneran final, guys,&rdquo; kata CEO-nya, setiap kali).</p>
+<p>Laras punya satu rahasia: sebuah halaman Notion pribadi berjudul <strong>&ldquo;Leadership Log — JANGAN DIBUKA (iya, kamu, Laras masa depan, jangan cringe)&rdquo;</strong>. Isinya catatan-catatan kecil setiap kali dia gagal, malu, atau tidak sengaja belajar sesuatu tentang jadi pemimpin.</p>
+<p>Halaman itu tidak sengaja ter-share ke seluruh workspace pada suatu Jumat sore.</p>
+<p>Tapi itu nanti. Kita mulai dari awal dulu.</p>
+
+<h2><span class="bab-no">Bab 1</span>Promosi yang Datang Seperti Notifikasi Jam 11 Malam</h2>
+<p>Semua dimulai hari Senin, pukul 09.47, ketika Head of Design Arva, Mas Pram, memanggil Laras ke ruang meeting bernama &ldquo;Deep Work&rdquo; — ruangan yang ironisnya paling berisik sekantor karena bersebelahan dengan pantry dan mesin kopi yang bunyinya seperti pesawat lepas landas.</p>
+<p>&ldquo;Laras,&rdquo; kata Mas Pram, dengan wajah orang yang mau menyampaikan kabar baik tapi tahu kabar baik itu sebenarnya jebakan. &ldquo;Aku resign.&rdquo;</p>
+<p>&ldquo;HAH?&rdquo;</p>
+<p>&ldquo;Dua minggu lagi. Dan aku sudah rekomendasiin kamu jadi Acting Design Lead.&rdquo;</p>
+<p>Mesin kopi di sebelah memilih momen itu untuk menggiling biji kopi. <em>GRRRRRRRRR.</em> Sangat sinematik.</p>
+<p>&ldquo;Mas. Aku belum siap. Aku bahkan belum siap tadi pagi milih outfit.&rdquo;</p>
+<p>&ldquo;Nggak ada orang yang siap, Ras. Kamu tahu kenapa aku pilih kamu?&rdquo; Mas Pram menyeruput kopinya. &ldquo;Bukan karena kamu designer paling jago. Iksan lebih jago illustration, Marsha lebih cepat. Aku pilih kamu karena waktu proyek Ramadan campaign hancur berantakan, kamu satu-satunya yang bilang &lsquo;ini salahku, aku yang approve timeline-nya&rsquo; di depan semua orang. Padahal bukan cuma salah kamu.&rdquo;</p>
+<p>&ldquo;Itu karena aku panik, Mas.&rdquo;</p>
+<p>&ldquo;Itu namanya <em>ownership</em>, Ras. Panik yang berkualitas.&rdquo; Dia berdiri. &ldquo;Oh iya, satu lagi. Minggu depan tim kita merger sama tim design dari Nara Studio. Kamu tahu kan, agency yang di-acquire Arva bulan lalu?&rdquo;</p>
+<p>&ldquo;...Berapa orang?&rdquo;</p>
+<p>&ldquo;Enam. Termasuk lead mereka. Namanya Dipta.&rdquo;</p>
+<p>&ldquo;Dipta yang mana?&rdquo;</p>
+<p>&ldquo;Dipta Anandra.&rdquo;</p>
+<p>Laras merasa lantai ruang Deep Work sedikit miring. Dipta Anandra. <em>Si</em> Dipta Anandra. Design lead yang portfolionya sering muncul di feed-nya, yang pernah jadi speaker di konferensi design dan bilang — dengan senyum menyebalkan yang di-zoom oleh kamera — <em>&ldquo;design system tanpa dokumentasi itu bukan system, itu koleksi pribadi.&rdquo;</em></p>
+<p>Kalimat yang secara teknis benar, dan justru karena itu sangat menyebalkan.</p>
+<p>&ldquo;Dia nggak jadi lead di sini kan, Mas?&rdquo;</p>
+<p>Mas Pram nyengir sambil jalan ke pintu. &ldquo;Itu yang seru, Ras. Manajemen belum mutusin. Enam bulan ke depan kalian... apa ya istilahnya... <em>co-exist</em> dulu.&rdquo;</p>
+<p>&ldquo;Mas. MAS. Itu namanya Hunger Games.&rdquo;</p>
+<p>&ldquo;Anggap aja probation berdua. Yang penting produk jalan.&rdquo; Pintu tertutup. Mesin kopi menggiling lagi. <em>GRRRRRRRR.</em></p>
+<hr>
+<p>Malamnya Laras membuka Notion dan menulis entri pertama di Leadership Log:</p>
+<blockquote>
+<p><strong>Leadership Log #1</strong></p>
+<p>Ternyata jadi pemimpin itu bukan dipilih karena paling jago. Dipilih karena berani pasang badan waktu semua orang sibuk pasang alibi. Catatan: panik boleh, asal paniknya sambil tanggung jawab.</p>
+<p>PS: Googling &ldquo;Dipta Anandra pacar&rdquo; — untuk riset kompetitor. MURNI riset.</p>
+</blockquote>
+
+<h2><span class="bab-no">Bab 2</span>Meeting Pertama, Bencana Pertama</h2>
+<p>Hari Senin berikutnya, dua tim bertemu untuk pertama kalinya di ruang meeting terbesar, &ldquo;War Room&rdquo; — nama yang akan terbukti sangat akurat.</p>
+<p>Tim Arva duduk di sisi kiri: Iksan (illustrator, hoodie hitam, bicara hanya jika ditanya atau jika ada yang salah pakai font), Marsha (UI designer tercepat sekaligus tersinis se-Jakarta Selatan), Bima (junior designer yang semangatnya 100% dan akurasinya 60%), dan Sari dari QA yang ikut &ldquo;cuma mau nonton.&rdquo;</p>
+<p>Tim Nara duduk di sisi kanan, rapi, seperti foto profil LinkedIn yang hidup.</p>
+<p>Dan di ujung meja, berdiri seorang laki-laki dengan kemeja linen yang entah kenapa tidak kusut padahal jam sudah menunjukkan pukul sepuluh. Dipta Anandra. Di dunia nyata dia lebih tinggi dari di YouTube, yang menurut Laras adalah pelanggaran etika.</p>
+<p>&ldquo;Jadi,&rdquo; Dipta membuka, &ldquo;sebelum kita mulai, aku sudah siapin proposal struktur design system gabungan. Aku ambil liberty untuk audit file Figma kalian weekend kemarin—&rdquo;</p>
+<p>&ldquo;Maaf,&rdquo; Laras mengangkat tangan, senyum profesional level 9. &ldquo;Kamu... audit file kami? Tanpa bilang?&rdquo;</p>
+<p>&ldquo;Aksesnya terbuka.&rdquo;</p>
+<p>&ldquo;Pintu rumah nggak dikunci bukan berarti undangan makan malam, Dipta.&rdquo;</p>
+<p>Seisi ruangan hening. Sari dari QA pelan-pelan mengeluarkan hape untuk merekam. Iksan berbisik &ldquo;font-nya sih rapi&rdquo; tanpa konteks.</p>
+<p>Dipta tersenyum tipis. &ldquo;Fair. Aku minta maaf, harusnya aku komunikasikan dulu. Tapi temuannya menarik: kalian punya 14 versi warna primary blue.&rdquo;</p>
+<p>&ldquo;Itu—&rdquo; Laras membuka mulut. Menutupnya lagi. Empat belas. Dia tahu persis. Tujuh di antaranya buatannya sendiri, di era gelap tahun 2024.</p>
+<p>&ldquo;Empat belas,&rdquo; ulang Dipta, &ldquo;dan semuanya dinamai &lsquo;Blue-Final&rsquo;, &lsquo;Blue-Final-2&rsquo;, &lsquo;Blue-FINAL-fix&rsquo;, dan favoritku: &lsquo;Blue-jangan-dipake-tapi-jangan-dihapus&rsquo;.&rdquo;</p>
+<p>Marsha tertawa keras lalu pura-pura batuk. Pengkhianat.</p>
+<p>Laras menarik napas. Dia bisa merasakan dua jalur di depannya, seperti prototype dengan dua flow: Flow A, perang terbuka, mempermalukan Dipta balik, menang debat, kehilangan enam calon rekan tim di hari pertama. Flow B...</p>
+<p>&ldquo;Oke,&rdquo; kata Laras, memilih Flow B dengan berat hati. &ldquo;Kamu benar. File kami berantakan. Kami sprint terus setahun terakhir dan bayar utangnya belum sempat.&rdquo; Dia berdiri, mengambil spidol. &ldquo;Tapi kalau kita mau bahas sistem gabungan, aku mau kita mulai dari yang lebih penting dulu daripada warna: gimana cara dua tim ini kerja bareng tanpa saling makan. Jadi hari ini agendanya aku ubah. Bukan design system. Kenalan dulu. Satu-satu. Nama, satu hal yang kalian banggakan dari kerjaan kalian, dan satu hal yang kalian takutin dari merger ini.&rdquo;</p>
+<p>Dipta mengangkat alis. &ldquo;Itu... nggak ada di agenda.&rdquo;</p>
+<p>&ldquo;Agenda itu tools, bukan tuhan.&rdquo; Laras menyerahkan spidol ke Bima. &ldquo;Kamu duluan, Bim.&rdquo;</p>
+<p>Bima berdiri, gemetar bahagia karena diberi panggung. &ldquo;Nama gue Bima. Yang gue banggain... eh... gue pernah bikin empty state yang dipuji CEO. Yang gue takutin dari merger...&rdquo; dia melirik tim Nara, &ldquo;...kalian keliatan kayak nggak pernah revisi. Itu serem.&rdquo;</p>
+<p>Tim Nara tertawa. Salah satu dari mereka, perempuan berkacamata bernama Tanti, menjawab, &ldquo;Kami revisi kok. Kami cuma nangisnya di layer yang di-hide.&rdquo;</p>
+<p>Es mencair. Meeting yang harusnya 60 menit jadi 100 menit, dan untuk pertama kalinya, tidak ada yang mengeluh meeting kepanjangan.</p>
+<p>Di pintu keluar, Dipta menahan langkah Laras. &ldquo;Trik yang bagus tadi. Ubah agenda.&rdquo;</p>
+<p>&ldquo;Bukan trik. Orang nggak bisa align soal warna kalau belum align soal rasa aman.&rdquo;</p>
+<p>Dipta menatapnya dua detik lebih lama dari yang diperlukan untuk percakapan profesional. &ldquo;Fourteen blues, Laras Wicaksana.&rdquo;</p>
+<p>&ldquo;Enam bulan, Dipta Anandra. Kita lihat siapa yang di-merge duluan.&rdquo;</p>
+<p>Dia berjalan pergi dengan kemenangan kecil di dada, lalu merusak semuanya dengan menabrak pintu kaca yang dia kira terbuka.</p>
+<hr>
+<p>Malamnya, di kasur, dengan niat yang dia beri label &ldquo;audit balasan&rdquo; dan bukan &ldquo;dendam&rdquo;, Laras membuka file design system Nara Studio yang ikut ter-share pasca-merger. Rapi. Menjijikkan rapinya. Auto layout di mana-mana. Dia scroll pelan, menghina dalam hati sambil diam-diam mencatat tekniknya.</p>
+<p>Lalu dia melihatnya: sebuah kursor lain bergerak di layar. Kursor dengan label nama: <strong>Dipta Anandra</strong>.</p>
+<p>Laras membeku. Kursornya sendiri — berlabel namanya, tentu saja, karena Figma adalah aplikasi tanpa belas kasihan — sedang parkir tepat di atas komponen milik Dipta. Jam sebelas malam. Di file dia. Seperti maling yang tertangkap basah bukan oleh CCTV, tapi oleh pemilik rumah yang ternyata juga sedang duduk di ruang tamu.</p>
+<p>Kursor Dipta berhenti. Lalu, pelan-pelan, bergerak mendekati kursornya.</p>
+<p>Laras panik dan menggeser kursornya ke pojok kiri. Kursor Dipta mengikuti. Dia lari ke kanan bawah. Kursor itu menyusul. Selama sepuluh detik penuh, dua orang dewasa dengan total pengalaman kerja belasan tahun bermain kejar-kejaran kursor dalam keheningan digital yang memekakkan.</p>
+<p>Kemudian sebuah komentar muncul di canvas, tepat di sebelah kursornya:</p>
+<p><em>&ldquo;Halo. Auditnya nemu apa?&rdquo;</em></p>
+<p>Laras menutup laptop seperti menutup portal ke neraka, mematikan lampu, dan berbaring dalam gelap dengan jantung berdebar karena alasan yang dia putuskan untuk tidak diperiksa lebih lanjut.</p>
+<blockquote>
+<p><strong>Leadership Log #2</strong></p>
+<p>Hari ini belajar: menang debat itu murah, dapetin trust itu mahal. Ngaku salah di depan tim baru rasanya kayak mati sedikit, tapi anehnya sesudahnya semua orang jadi lebih jujur.</p>
+<p>Juga belajar: pintu kaca War Room itu didorong, bukan ditarik.</p>
+<p>PS: Dia inget nama lengkapku. TIDAK PENTING. Sudah dicatat saja.</p>
+<p>PS lagi: Figma HARUS punya mode incognito. Akan kutulis feedback resmi. Ini demi kemanusiaan.</p>
+</blockquote>
+
+<h2><span class="bab-no">Bab 3</span>Bima dan Seni Memberi Feedback Tanpa Membunuh Semangat Orang</h2>
+<p>Rabu pagi, Bima submit desain onboarding baru dengan pesan Slack: <em>&ldquo;Kak Laras!! Ini masterpiece gue!! Semalem gue lembur sampe jam 3!!&rdquo;</em></p>
+<p>Laras membuka file-nya.</p>
+<p>Ada delapan belas screen. Enam belas di antaranya punya masalah. Salah satu tombol bertuliskan &ldquo;Lanjutkan&rdquo; memakai empat gradasi warna berbeda sekaligus, seperti tombol itu sedang mengalami krisis identitas. Ada ilustrasi maskot yang tersenyum terlalu lebar di halaman &ldquo;Akun Anda Diblokir&rdquo;.</p>
+<p>Laras mengetik: <em>&ldquo;Bim, ini banyak banget yang harus dibenerin—&rdquo;</em></p>
+<p>Dihapus.</p>
+<p>Dia teringat dirinya sendiri lima tahun lalu, ketika seorang lead senior meninggalkan 47 komentar di file-nya, semuanya dimulai dengan kata &ldquo;Kenapa&rdquo;. Laras pulang naik ojek sambil menangis dan hampir banting setir jadi barista.</p>
+<p>Dia menghapus draft chat-nya dan mengetik: <em>&ldquo;Bim, ke War Room yuk, 15 menit. Bawa laptop, bawa semangat yang tadi.&rdquo;</em></p>
+<p>Di ruangan, Laras membuka file Bima di layar besar. &ldquo;Oke. Sebelum aku ngomong apa-apa: kamu yang cerita dulu. Screen mana yang paling kamu banggain, dan kenapa?&rdquo;</p>
+<p>Bima menunjuk screen ketiga. &ldquo;Yang ini, Kak. Gue mikirin banget flow-nya biar user nggak bingung.&rdquo;</p>
+<p>&ldquo;Nah. Ini emang yang paling bagus.&rdquo; Laras menunjuk struktur informasinya. &ldquo;Hierarki kamu di sini udah bener. Berarti kamu <em>bisa</em>. Sekarang pertanyaanku: kalau standar screen ini kita jadiin patokan, screen mana aja yang belum sampai ke standar itu?&rdquo;</p>
+<p>Bima memandangi layar. Pelan-pelan wajahnya berubah. &ldquo;...Hampir semuanya, Kak.&rdquo;</p>
+<p>&ldquo;Yup. Dan itu bukan berarti kamu jelek. Itu berarti kamu ngebut. Delapan belas screen semalam itu bukan masterpiece, Bim, itu sprint panik.&rdquo; Laras memutar kursi menghadapnya. &ldquo;Aku butuh kamu tahu dua hal. Satu: aku nggak akan pernah marah karena kerjaan kamu belum sempurna. Dua: aku <em>akan</em> selalu jujur soal apa yang belum sempurna. Deal?&rdquo;</p>
+<p>&ldquo;Deal, Kak.&rdquo; Bima diam sebentar. &ldquo;Kak... kakak nggak kecewa?&rdquo;</p>
+<p>&ldquo;Kecewa itu kalau kamu bohong atau nggak peduli. Kamu peduli sampai jam 3 pagi. Itu bahan bakunya udah bener, tinggal arahnya kita rapiin. Sekarang, tugas kamu: pilih enam screen paling penting, kerjain sampai standar screen tiga. Sisanya kita bagi. Dan Bim—&rdquo; Laras menatapnya serius, &ldquo;—tidur. Designer yang tidur 7 jam lebih berguna daripada designer yang lembur heroik terus salah naro tombol.&rdquo;</p>
+<p>Bima keluar dari ruangan itu berjalan lebih tegak daripada saat masuk. Marsha, yang menguping dari meja sebelah, mengirim Slack ke Laras: <em>&ldquo;gila lo udah kayak ibu peri. dulu lo review desain gue kata pertamanya &lsquo;hah?&rsquo;&rdquo;</em></p>
+<p><em>&ldquo;orang bertumbuh, marsha.&rdquo;</em></p>
+<p><em>&ldquo;btw dipta dari tadi ngeliatin lo dari ujung ruangan pas lo coaching bima. kayak orang nonton dokumenter.&rdquo;</em></p>
+<p>Laras menoleh. Dipta cepat-cepat menunduk ke laptopnya, pura-pura sibuk, dengan kecepatan yang justru membuktikan segalanya.</p>
+<hr>
+<p>Dua hari kemudian, pukul empat sore, terdengar suara Bima dari ujung ruangan — pelan, tapi dengan frekuensi ketakutan yang bisa dideteksi semua designer dalam radius satu lantai:</p>
+<p>&ldquo;Eh. Eh eh eh. Kok merah semua.&rdquo;</p>
+<p>Bima, dengan niat mulia &ldquo;merapikan file&rdquo;, baru saja menghapus master component tombol utama. Empat ratus dua belas instance di seluruh file berubah menjadi kotak merah bertuliskan error, seperti aplikasi yang mendadak kena cacar.</p>
+<p>&ldquo;JANGAN CTRL+Z SAMBIL PANIK—&rdquo; teriak Marsha. Terlambat. Bima sudah menekan undo tujuh belas kali, yang entah bagaimana memperburuk keadaan dengan cara yang secara teknis seharusnya mustahil.</p>
+<p>Laras menghampiri, menarik kursi, dan berkata tenang: &ldquo;Oke. Nggak ada yang mati. Ini kenapa version history diciptakan. Bim, tarik napas. Perhatiin—&rdquo; dia membuka riwayat file, &ldquo;—dan lain kali kalau mau bersih-bersih, bilang dulu. Bukan karena kamu butuh izin. Karena kita butuh siap-siap.&rdquo;</p>
+<p>&ldquo;Siap, Kak.&rdquo; Bima terdiam. &ldquo;Kak. Tadi aku sempet mikir mau pura-pura wifi mati terus pulang.&rdquo;</p>
+<p>&ldquo;Semua orang pernah mikir gitu. Bedanya junior sama senior cuma satu: senior tahu restore version itu lebih cepat daripada pindah negara.&rdquo;</p>
+<blockquote>
+<p><strong>Leadership Log #3</strong></p>
+<p>Feedback itu kayak handoff design ke engineer: yang penting bukan cuma isinya bener, tapi diterimanya gimana. Mulai dari yang udah bagus bukan berarti lembek — itu ngasih orang standar internal buat nilai kerjaannya sendiri. Sekali dia bisa lihat gap-nya sendiri, aku nggak perlu jadi polisi selamanya.</p>
+<p>PS: Marsha halu. Nggak ada yang ngeliatin siapa-siapa.</p>
+<p>PS lagi: hari ini menyelamatkan 412 tombol dari kepunahan. Di CV akan kutulis &ldquo;memimpin pemulihan insiden infrastruktur.&rdquo;</p>
+</blockquote>
+
+<h2><span class="bab-no">Bab 4</span>Bu Ratna dan Permintaan Mustahil Hari Kamis</h2>
+<p>Setiap kantor punya satu tokoh legendaris. Di Arva, namanya Bu Ratna, VP of Product, yang kalimat pembukanya selalu &ldquo;ini cuma perubahan kecil&rdquo; dan kalimat itu belum pernah sekali pun benar.</p>
+<p>Kamis, pukul 16.30, Bu Ratna muncul di area design dengan aura orang yang baru keluar dari meeting direksi.</p>
+<p>&ldquo;Tim! Kabar bagus. Senin depan kita demo ke board. Dan direksi pengen liat... homepage yang lebih <em>wow</em>.&rdquo;</p>
+<p>Hening.</p>
+<p>&ldquo;Wow yang gimana, Bu?&rdquo; tanya Laras hati-hati.</p>
+<p>&ldquo;Ya <em>wow</em>. Yang pas dibuka tuh rasanya...&rdquo; Bu Ratna membuat gerakan tangan seperti kembang api, &ldquo;...gitu loh.&rdquo;</p>
+<p>Marsha berbisik, &ldquo;Gue akan resign lewat gerakan tangan juga nanti.&rdquo;</p>
+<p>Laras merasakan panik kolektif timnya naik seperti loading bar. Tim Nara saling pandang. Bima sudah membuka Figma seperti tentara yang mendengar sirine. Dan di sinilah, di tengah kekacauan itu, Dipta maju.</p>
+<p>&ldquo;Bu Ratna,&rdquo; katanya, tenang seperti pembawa acara berita. &ldquo;Boleh saya tanya satu hal? Waktu direksi bilang &lsquo;wow&rsquo;, masalah apa yang sebenarnya mau mereka selesaikan? Apakah mereka khawatir produk kita keliatan ketinggalan dibanding kompetitor, atau ada feedback dari user?&rdquo;</p>
+<p>Bu Ratna berpikir. &ldquo;Hmm. Kemarin Pak Hendra liat aplikasi kompetitor di HP anaknya. Katanya punya kita &lsquo;kayak aplikasi kantor pajak&rsquo;.&rdquo;</p>
+<p>&ldquo;Nah.&rdquo; Dipta mengangguk. &ldquo;Jadi masalahnya bukan homepage. Masalahnya <em>persepsi modern</em>. Itu bisa kita selesaikan lebih presisi — dan lebih cepat — daripada rombak homepage total dalam dua hari kerja.&rdquo;</p>
+<p>Laras menyambar bola itu tanpa jeda, seperti mereka sudah latihan. &ldquo;Betul, Bu. Kami bisa siapkan tiga perubahan visual yang dampaknya paling keliatan: motion halus di kartu portofolio, sistem warna yang lebih hidup, dan satu momen &lsquo;wow&rsquo; di layar pembuka. Itu realistis sampai Senin <em>tanpa</em> merusak fitur yang sudah stabil. Kalau rombak homepage penuh, jujur saja: yang Ibu bawa ke board Senin nanti bukan homepage baru, tapi homepage setengah jadi yang banyak bug. Ibu mau bawa yang mana ke Pak Hendra?&rdquo;</p>
+<p>Bu Ratna menimbang. Seisi ruangan menahan napas.</p>
+<p>&ldquo;...Yang nggak bug,&rdquo; katanya akhirnya. &ldquo;Oke. Tiga perubahan itu. Tapi beneran wow ya.&rdquo;</p>
+<p>&ldquo;Beneran wow, Bu. Wow yang ter-QA.&rdquo;</p>
+<p>&ldquo;Sip. Coba liat referensi motion-nya sekarang,&rdquo; kata Bu Ratna.</p>
+<p>Laras, penuh percaya diri, menyambungkan laptopnya ke TV ruangan. Dan seluruh ruangan — Bu Ratna, dua tim, dan Tuhan — disuguhi tab browser yang sedang terbuka: <em>&ldquo;kenapa jantung berdebar cepat saat dekat orang tertentu — Alodokter&rdquo;</em>.</p>
+<p>Hening yang sangat, sangat panjang.</p>
+<p>&ldquo;Itu—&rdquo; Laras menutup tab dengan kecepatan yang justru memberatkan barang bukti, &ldquo;—riset. Untuk fitur. Kesehatan. Kami lagi eksplorasi fitur kesehatan.&rdquo;</p>
+<p>&ldquo;Kita fintech,&rdquo; kata Marsha.</p>
+<p>&ldquo;Kesehatan <em>finansial</em>,&rdquo; kata Laras, dengan sisa-sisa martabatnya.</p>
+<p>&ldquo;Jantung berdebar memang salah satu gejala melihat portofolio investasi,&rdquo; kata Dipta, datar, tanpa mengangkat kepala dari laptopnya — dan entah bagaimana itu terasa lebih buruk daripada ditertawakan.</p>
+<p>Setelah Bu Ratna pergi, ruangan meledak jadi tawa lega. Marsha menepuk meja. &ldquo;GILA. Kalian berdua barusan kayak... duet pengacara.&rdquo;</p>
+<p>Di papan tulis, Laras dan Dipta refleks meraih spidol yang sama untuk mencatat action items. Jari mereka bersentuhan di atas tutupnya. Keduanya menarik tangan dengan kecepatan orang kesetrum kabel charger KW.</p>
+<p>&ldquo;Silakan,&rdquo; kata Dipta.</p>
+<p>&ldquo;Kamu duluan,&rdquo; kata Laras.</p>
+<p>&ldquo;AMBIL SPIDOLNYA SALAH SATU,&rdquo; kata Marsha. &ldquo;RUANGAN INI ADA MEETING LAGI JAM TIGA.&rdquo;</p>
+<p>Dipta dan Laras berpandangan. Ada satu detik canggung di mana keduanya sadar mereka barusan menyelesaikan kalimat satu sama lain.</p>
+<p>&ldquo;Lumayan,&rdquo; kata Laras, &ldquo;untuk orang yang audit Figma orang tanpa izin.&rdquo;</p>
+<p>&ldquo;Lumayan,&rdquo; balas Dipta, &ldquo;untuk orang yang punya empat belas warna biru.&rdquo;</p>
+<p>&ldquo;EMPAT BELASNYA SEKARANG TINGGAL SATU.&rdquo;</p>
+<p>&ldquo;Aku tahu. Aku liat changelog-nya. Rapi.&rdquo; Dia bilang itu sambil berjalan pergi, dan entah kenapa pujian satu kata itu — <em>rapi</em> — terngiang di kepala Laras lebih lama daripada seharusnya sebuah komentar tentang manajemen file.</p>
+<blockquote>
+<p><strong>Leadership Log #4</strong></p>
+<p>Stakeholder jarang minta solusi yang mereka butuhkan; mereka minta solusi yang pertama kebayang. Tugas kita bukan bilang &ldquo;tidak bisa&rdquo;, tapi nanya &ldquo;masalah aslinya apa&rdquo; — terus tawarin pilihan yang jujur konsekuensinya. Orang boleh milih apa aja, asal milihnya sambil melek.</p>
+<p>PS: Kami. Barusan aku nulis &ldquo;kami&rdquo; untuk aku dan Dipta. Sistem sarafku perlu di-refactor.</p>
+<p>PS lagi: menurut Alodokter itu namanya takikardia situasional. Situasinya pakai kemeja linen.</p>
+</blockquote>
+
+<h2><span class="bab-no">Bab 5</span>Jumat Demo, Hari di Mana Semua Tuhan QA Berpaling</h2>
+<p>Senin demo berjalan lancar. Direksi bilang &ldquo;wow&rdquo; sebanyak dua kali dan &ldquo;menarik&rdquo; sebanyak lima kali, yang dalam bahasa direksi adalah standing ovation.</p>
+<p>Maka semesta, yang tidak suka melihat tim design bahagia terlalu lama, menyiapkan Jumat berikutnya.</p>
+<p>Pukul 13.00, satu jam sebelum demo publik ke seluruh perusahaan — town hall, 200 orang, di-streaming — Sari dari QA berjalan ke meja Laras dengan langkah yang sudah dikenali semua orang sebagai <em>langkah pembawa berita kematian</em>.</p>
+<p>&ldquo;Kak. Fitur transfer. Kalau user ganti bahasa ke Inggris di tengah flow, tombol konfirmasinya... hilang.&rdquo;</p>
+<p>&ldquo;Hilang gimana?&rdquo;</p>
+<p>&ldquo;Hilang, Kak. Lenyap. Kayak mantan.&rdquo;</p>
+<p>Laras membuka build-nya. Benar. Tombol &ldquo;Konfirmasi&rdquo; menguap begitu saja. Dan yang lebih buruk: dia tahu kenapa. Dua minggu lalu, dialah yang meng-approve perubahan komponen tombol itu, buru-buru, hari Jumat sore, sambil setengah meeting. Approval-nya masih ada di riwayat. Namanya. Jam 17.41. Dengan komentar &ldquo;lgtm&rdquo; yang sekarang terlihat seperti barang bukti di persidangan.</p>
+<p>Grup Slack tim mulai panas. Engineer bertanya siapa yang approve. Bima, dengan setia yang menyakitkan, mengetik: <em>&ldquo;kayaknya itu dari sisi engineering deh—&rdquo;</em></p>
+<p>Laras mengetik lebih cepat:</p>
+<p><em>&ldquo;Itu approval-ku. Tanggal 19, jam 17.41, aku yang approve tanpa cek regression ke flow bilingual. Ini tanggung jawabku, bukan engineering, bukan QA. Sekarang fokus: kita punya 55 menit. Aku butuh: (1) Tanti &amp; Iksan — siapkan skrip demo alternatif yang skip ganti bahasa, (2) Bima — bikin slide known issue yang jujur tapi nggak bikin panik, (3) aku ngomong ke Bu Ratna sekarang, biar dia denger dari aku duluan, bukan dari penonton. Sari, kamu pahlawan hari ini. Gas.&rdquo;</em></p>
+<p>Dia berdiri, dan hampir menabrak Dipta yang sedang berdiri di belakangnya — entah sejak kapan — membawa dua cangkir kopi.</p>
+<p>&ldquo;Aku denger,&rdquo; kata Dipta. &ldquo;Timku bisa bantu regression check flow lain, biar nggak ada kejutan kedua. Dan ini—&rdquo; dia menyodorkan satu cangkir, &ldquo;—kamu belum makan siang. Aku merhatiin.&rdquo;</p>
+<p>&ldquo;Kamu <em>merhatiin</em>?&rdquo;</p>
+<p>&ldquo;Secara profesional,&rdquo; kata Dipta cepat. &ldquo;Kapasitas kognitif menurun 20% kalau glukosa rendah. Ada papernya.&rdquo;</p>
+<p>&ldquo;Kirim link papernya.&rdquo;</p>
+<p>&ldquo;Nanti. Setelah kamu selamat dari town hall.&rdquo;</p>
+<p>Town hall dimulai. Dan karena hari itu sudah ditakdirkan jadi episode komedi, laptop presentasi gagal masuk presenter mode — sehingga selama delapan detik penuh, dua ratus karyawan plus seluruh penonton streaming menatap desktop Laras: wallpaper moodboard berisi referensi tipografi, palet warna, dan — di pojok kanan bawah — screenshot Dipta sedang jadi pembicara konferensi, ditempeli catatan digital bertuliskan &ldquo;referensi grid&rdquo;.</p>
+<p>&ldquo;Referensi grid,&rdquo; bisik Marsha di barisan depan. &ldquo;Grid-nya di mana. Orangnya doang itu.&rdquo;</p>
+<p>Laras menekan tombol dengan kecepatan yang mencatatkan sejarah, lalu memutuskan untuk memproses rasa malunya nanti saja. Mungkin tahun depan.</p>
+<p>Selebihnya, demo berhasil dengan skrip alternatif. Dan di sesi tanya jawab, ketika seorang engineer dari tim lain bertanya dengan nada memancing, &ldquo;Tadi katanya ada bug di transfer? Itu lolos gimana ceritanya?&rdquo;, Laras mengambil mic sebelum siapa pun sempat gelagapan.</p>
+<p>&ldquo;Ceritanya: saya approve perubahan komponen tanpa cek ulang, hari Jumat sore, sambil multitasking. Pelajarannya sudah kami tulis: mulai minggu depan nggak ada approval komponen inti di atas jam empat sore Jumat, dan setiap perubahan komponen wajib regression check bilingual. Yang nemuin bug ini QA kami satu jam sebelum demo — jadi kalau mau kasih applause, kasihnya ke Sari.&rdquo;</p>
+<p>Dua ratus orang bertepuk tangan untuk Sari, yang berdiri dan membungkuk seperti pemain teater. Krisis berubah jadi momen paling manusiawi di town hall itu.</p>
+<p>Malamnya, kantor sudah sepi. Laras masih di meja, menulis post-mortem. Dipta muncul membawa dua kotak nasi goreng dari warung seberang.</p>
+<p>&ldquo;Kamu tau,&rdquo; katanya, duduk tanpa diundang, &ldquo;waktu kamu ambil mic tadi, aku setengah yakin kamu bakal nyalahin sistem. &lsquo;Prosesnya yang bolong&rsquo;, &lsquo;tools-nya kurang&rsquo;, semacam itu. Itu jalur aman. Semua lead ngelakuin itu.&rdquo;</p>
+<p>&ldquo;Sistemnya emang bolong. Tapi yang pegang bolongnya aku.&rdquo; Laras menusuk nasi gorengnya. &ldquo;Kalau aku nyalahin proses, minggu depan nggak ada satu pun anak timku yang berani ngaku salah. Ngapain, kan? Contohnya aja nggak ada.&rdquo;</p>
+<p>Dipta memandanginya lama. &ldquo;Di Nara dulu, aku pernah nyalahin klien di depan tim. Buat kelihatan kuat. Kliennya emang nyebelin, jadi semua ketawa, semua setuju. Tapi enam bulan kemudian aku sadar timku jadi tim yang jago banget... nyari kambing hitam. Aku yang ngajarin. Butuh setahun benerinnya.&rdquo;</p>
+<p>Itu pertama kalinya Dipta cerita tentang kegagalannya. Lampu kantor otomatis mati karena tidak mendeteksi gerakan — keduanya terlalu tenggelam mengobrol untuk bergerak — dan selama tiga detik mereka duduk dalam gelap, tertawa, sebelum Laras melambaikan tangan ke sensor.</p>
+<p>&ldquo;Ras.&rdquo;</p>
+<p>&ldquo;Hm?&rdquo;</p>
+<p>&ldquo;Empat belas warna biru itu... yang mana yang paling kamu suka? Jujur.&rdquo;</p>
+<p>Laras berpikir. &ldquo;Blue-Final-2. Nggak sesuai standar aksesibilitas, kontras kurang, semua alasan teknis bilang buang. Tapi itu biru langit Jakarta jam 6 sore pas hujan baru berhenti. Aku bikin itu di hari pertama kerja di sini.&rdquo;</p>
+<p>Dipta mengangguk pelan. Tidak menertawakan. Tidak mengoreksi soal kontras.</p>
+<p>Mereka makan dalam diam yang nyaman. Lalu Dipta menoleh, mengangkat tangan, dan — dengan fokus seorang QA engineer menemukan inkonsistensi — mengusap ujung ibu jarinya di sudut bibir Laras.</p>
+<p>&ldquo;Sambal,&rdquo; katanya pelan, seolah satu kata itu penjelasan yang memadai untuk fakta bahwa waktu barusan berhenti berjalan selama dua detik.</p>
+<p>&ldquo;...Makasih.&rdquo; Suara Laras keluar satu oktaf di atas pengaturan pabrik.</p>
+<p>&ldquo;Mm.&rdquo; Dia kembali makan seperti tidak terjadi apa-apa, sementara Laras duduk di sana, mengalami system restart menyeluruh.</p>
+<p>&ldquo;Simpen di file pribadi,&rdquo; katanya. &ldquo;Sistem boleh ketat. Kenangan nggak usah ikut standar.&rdquo;</p>
+<blockquote>
+<p><strong>Leadership Log #5</strong></p>
+<p>Hari ini aku belajar bedanya blame dan accountability. Blame itu nyari siapa yang salah biar aku aman. Accountability itu ngaku duluan biar TIM yang aman. Aneh: makin cepat aku bilang &ldquo;ini salahku&rdquo;, makin besar respect yang balik. Kayak hukum fisika yang nggak diajarin di sekolah.</p>
+<p>PS: Dia bawain nasi goreng. Pakai acar dipisah. DIA MERHATIIN AKU NGGAK SUKA ACAR. Secara profesional, katanya. PROFESIONAL NDASMU.</p>
+<p>PS lagi: dia hapus sambal di bibirku. PAKE JEMPOL. Aku butuh HR. Aku butuh pemadam kebakaran. Aku butuh keduanya dalam satu meeting.</p>
+</blockquote>
+
+<h2><span class="bab-no">Bab 6</span>Seni Melepas (Atau: Laras dan Sindrom Ibu-Ibu yang Nggak Bisa Liat Anaknya Motong Bawang)</h2>
+<p>Masalah berikutnya datang bukan dari luar, tapi dari dalam diri Laras sendiri, dan bentuknya adalah kalender.</p>
+<p>&ldquo;Kak,&rdquo; kata Marsha suatu pagi, menaruh laptop di depan Laras. &ldquo;Coba liat kalender lo. Liat. LIAT.&rdquo;</p>
+<p>Kalender Laras berwarna seperti kecelakaan di pabrik konfeti. Back-to-back dari jam 9 sampai jam 6. Review Bima. Review Tanti. Review Iksan. Approval aset. Approval copy. Meeting stakeholder. Satu slot bertuliskan &ldquo;MAKAN (kalau sempat)&rdquo;.</p>
+<p>&ldquo;Lo tau apa kesamaan semua meeting ini?&rdquo; tanya Marsha. &ldquo;Semuanya butuh LO. Lo udah jadi... apa istilahnya... single point of failure. Lo bottleneck, Kak. Kita semua nunggu antrian approval lo kayak nunggu BPJS.&rdquo;</p>
+<p>&ldquo;Karena kalau nggak aku cek, nanti—&rdquo;</p>
+<p>&ldquo;Nanti apa? Salah? TERUS KENAPA? Bima udah tiga bulan lo coaching. Tanti itu dulu LEAD REVIEWER di Nara. Gue udah lima tahun kerja. Tapi tiap piksel harus lewat lo. Lo tau rasanya gimana buat kami? Rasanya kayak... nggak dipercaya.&rdquo;</p>
+<p>Kalimat itu menampar. Laras selama ini mengira dirinya <em>melindungi</em> tim. Ternyata dari sisi sana, kelihatannya seperti <em>mengawasi</em>.</p>
+<p>Sorenya, dia mengajak Dipta ngopi di rooftop. Sudah jadi kebiasaan aneh mereka — dua rival yang curhatnya justru satu sama lain, karena tidak ada orang lain yang mengerti rasanya duduk di kursi yang sama.</p>
+<p>&ldquo;Gimana caranya kamu delegasi tanpa deg-degan?&rdquo; tanya Laras.</p>
+<p>&ldquo;Nggak ada caranya. Deg-degannya tetap ada. Yang berubah cuma: aku belajar bedain kerjaan jadi tiga. Yang cuma aku yang bisa, yang orang lain bisa dengan arahan, dan yang orang lain bisa lebih bagus dari aku tapi aku gengsi ngakuinnya.&rdquo; Dipta menyeruput kopinya. &ldquo;Kategori tiga itu yang paling banyak. Dan paling sakit.&rdquo;</p>
+<p>&ldquo;Terus kalau mereka salah?&rdquo;</p>
+<p>&ldquo;Ya salah. Terus belajar. Sama kayak kamu dulu salah dan sekarang duduk di sini.&rdquo; Dia menoleh. &ldquo;Ras, kamu inget nggak siapa yang dulu pertama kali kasih kamu proyek gede padahal kamu belum siap?&rdquo;</p>
+<p>Laras ingat. Mas Pram. Proyek redesign pertamanya. Dia mengacaukan setengahnya. Mas Pram membereskan sisanya tanpa drama, lalu memberinya proyek lagi.</p>
+<p>&ldquo;Delegasi itu bukan bagi-bagi kerjaan,&rdquo; kata Dipta. &ldquo;Delegasi itu bagi-bagi kesempatan buat gagal dengan aman. Sama kayak yang pernah dikasih ke kita.&rdquo;</p>
+<p>Minggu berikutnya, Laras merombak sistem. Tanti jadi pemegang keputusan design system — dia bahkan tidak perlu approval Laras untuk perubahan level komponen. Marsha memimpin redesign Discover secara penuh. Bima — dan ini yang membuat tangannya gemetar saat mengetik pengumumannya — memegang sendiri fitur notifikasi, dari riset sampai handoff.</p>
+<p>Tiga hari pertama, Laras menahan diri untuk tidak membuka file mereka, dengan tingkat penderitaan yang setara berhenti merokok. Dia bahkan minta Marsha mengganti password... tidak jadi, itu berlebihan. Tapi dia menulis di sticky note yang ditempel di monitor: <strong>&ldquo;TANYA &lsquo;BUTUH BANTUAN?&rsquo; — JANGAN &lsquo;SINI AKU AJA&rsquo;.&rdquo;</strong></p>
+<p>Hari keempat, Bima presentasi konsep notifikasinya ke stakeholder. Sendirian. Ada satu momen dia gugup, kehilangan kata, dan Laras — duduk di barisan belakang — merasakan seluruh ototnya ingin melompat menyelamatkan. Dipta, yang duduk di sebelahnya, tanpa menoleh, menahan lengan Laras dengan satu jari.</p>
+<p>&ldquo;Tunggu,&rdquo; bisiknya.</p>
+<p>Dua detik. Tiga detik. Bima menarik napas, tersenyum, dan berkata, &ldquo;Maaf, saya ulang ya — soalnya bagian ini favorit saya.&rdquo; Ruangan tertawa hangat. Dia melanjutkan dengan lancar.</p>
+<p>Laras baru sadar dia menahan napas dari tadi. Dan bahwa jari Dipta masih di lengannya. Dan bahwa tidak satu pun dari mereka menariknya.</p>
+<p><em>Fokus, Laras. Fokus ke notifikasi.</em></p>
+<p>Sepuluh menit kemudian, masih dengan sisa adrenalin, Laras merekam voice note untuk Marsha berisi laporan pandangan mata yang sangat profesional: &ldquo;MARSHA. DIA NAHAN TANGANKU PAKE SATU JARI. SATU. JARI. TERUS BILANG &lsquo;TUNGGU&rsquo; PAKE SUARA YANG— pokoknya HR harus tahu suara kayak gitu itu ilegal—&rdquo;</p>
+<p>Voice note itu terkirim ke channel <strong>#design-all</strong>.</p>
+<p>Empat puluh anggota. Termasuk Dipta.</p>
+<p>Laras menghapusnya dalam sebelas detik. Sebelas detik adalah durasi yang lebih dari cukup bagi Sari — yang refleks QA-nya mencakup segala aspek kehidupan — untuk mengunduhnya terlebih dahulu, &ldquo;untuk dokumentasi&rdquo;.</p>
+<p>Dipta tidak pernah menyinggungnya. Tapi keesokan paginya dia lewat di samping meja Laras, mengangkat satu jari dengan wajah paling tidak berdosa di Asia Tenggara, dan berkata, &ldquo;Morning.&rdquo;</p>
+<p>Laras melempar bantalan sticky notes ke arahnya. Meleset dua meter. Tentu saja meleset — dia designer, bukan atlet.</p>
+<blockquote>
+<p><strong>Leadership Log #6</strong></p>
+<p>Ternyata micromanage itu bukan tanda peduli, tapi tanda takut — dan tim bisa membaui takut dari jarak dua sprint. Kerjaan lead bukan mastiin nggak ada yang jatuh; kerjaan lead mastiin jatuhnya nggak fatal dan bangunnya cepet. Hari ini Bima kepeleset di depan stakeholder dan bangkit SENDIRI. Rasanya lebih bangga daripada semua desain yang pernah kubikin.</p>
+<p>PS: Insiden Jari tidak akan dibahas. Insiden Voice Note juga tidak akan dibahas. Minggu ini penuh insiden dan TIDAK SATU PUN berhubungan dengan design.</p>
+</blockquote>
+
+<h2><span class="bab-no">Bab 7</span>Perang Dingin Komponen (dan Rumor yang Merusak Segalanya)</h2>
+<p>Bulan keempat. Segalanya berjalan terlalu lancar, yang mana dalam struktur cerita mana pun berarti sesuatu akan meledak.</p>
+<p>Ledakan pertama: <strong>Perang Tabel.</strong></p>
+<p>Tim lama Arva dan tim eks-Nara akhirnya bentrok serius soal satu komponen: tabel data. Iksan dan Marsha ingin mempertahankan tabel versi Arva (&ldquo;udah teruji, user udah biasa&rdquo;). Tanti dan tim Nara mau versi mereka (&ldquo;lebih fleksibel, lebih accessible&rdquo;). Diskusi di Slack thread mencapai 94 balasan, termasuk satu GIF pinguin jatuh yang dikirim Sari &ldquo;untuk mencairkan suasana&rdquo; dan justru membuat suasana lebih dingin.</p>
+<p>Ledakan kedua datang saat Laras sedang menengahi ledakan pertama. Marsha menariknya ke pantry, wajah serius.</p>
+<p>&ldquo;Kak. Gue denger dari anak HR. Manajemen udah mau mutusin posisi Design Lead permanen bulan depan. Dan katanya...&rdquo; Marsha menurunkan suara, &ldquo;...Dipta udah dua kali meeting privat sama Bu Ratna minggu ini. Berdua doang. Nggak ada di kalender resmi.&rdquo;</p>
+<p>Sesuatu di dada Laras jatuh dengan bunyi yang hampir terdengar.</p>
+<p>&ldquo;Mungkin bahas proyek.&rdquo;</p>
+<p>&ldquo;Proyek apa yang nggak boleh masuk kalender, Kak?&rdquo;</p>
+<p>Dan seperti racun yang bekerja pelan, sepanjang hari itu Laras mulai membaca ulang semuanya. Kopi-kopi itu. Nasi goreng itu. Curhat-curhat rooftop itu. <em>Deg-degan delegasi</em> itu. Bagaimana kalau semua itu... pengumpulan data? Bagaimana kalau selama ini dia curhat kelemahannya, ketakutannya, kesalahannya — ke kompetitor langsungnya — yang mencatat semuanya untuk materi meeting privat dengan Bu Ratna?</p>
+<p>Sore itu, di rapat mediasi Perang Tabel, Laras datang dengan hati yang sudah pakai armor.</p>
+<p>&ldquo;Oke,&rdquo; katanya dingin. &ldquo;Karena diskusi kalian nggak nyampe-nyampe, aku putusin: kita pakai tabel Arva. Final. Next agenda.&rdquo;</p>
+<p>Ruangan hening. Tanti mengangkat tangan pelan. &ldquo;Kak, boleh tau pertimbangannya? Karena kami udah siapin data perbandingan accessibility—&rdquo;</p>
+<p>&ldquo;Pertimbangannya kita nggak punya waktu buat debat 94 reply lagi. Kadang keputusan harus diambil. Titik.&rdquo;</p>
+<p>Dipta, di ujung meja, menatapnya dengan ekspresi yang tidak bisa dibaca. &ldquo;Bisa ngobrol sebentar? Setelah ini.&rdquo;</p>
+<p>&ldquo;Aku ada meeting.&rdquo;</p>
+<p>&ldquo;Ras.&rdquo;</p>
+<p>&ldquo;<em>Meeting</em>, Dipta.&rdquo;</p>
+<p>Dia keluar dari ruangan dengan kemenangan yang rasanya seperti kekalahan. Karena dia tahu — tentu saja dia tahu — bahwa keputusan barusan bukan <em>decision confidence</em>. Itu keputusan orang ngambek. Dia baru saja mengorbankan proses yang dia bangun empat bulan demi rasa aman lima menit.</p>
+<p>Malamnya, jam sembilan, dia masih di kantor. Ada ketukan di meja. Dipta. Membawa laptop, bukan kopi. Wajah serius.</p>
+<p>&ldquo;Dua hal,&rdquo; katanya. &ldquo;Pertama: keputusan tabel tadi salah. Bukan pilihannya — bisa aja tabel Arva emang lebih tepat. Cara mutusinnya. Kamu bikin Tanti dan lima orang lainnya belajar bahwa data nggak ada gunanya kalau bos lagi bad mood. Empat bulan kamu bangun psychological safety, tadi kamu retakkin dalam sembilan puluh detik. Aku ngomong ini bukan buat nyerang. Aku ngomong ini karena kalau posisinya kebalik, aku berharap kamu ngomong ke aku.&rdquo;</p>
+<p>Laras menatapnya, rahang mengeras. &ldquo;Dan yang kedua?&rdquo;</p>
+<p>&ldquo;Yang kedua, aku denger rumor yang beredar. Soal aku dan Bu Ratna.&rdquo; Dipta membuka laptopnya, memutarnya menghadap Laras. Di layar: draft dokumen berjudul <strong>&ldquo;Proposal Struktur Design Org — Draft 3, CONFIDENTIAL&rdquo;</strong>.</p>
+<p>&ldquo;Bu Ratna minta aku bantu susun proposal struktur organisasi design pasca-merger. Nggak boleh masuk kalender resmi karena menyangkut posisi orang, dan HR belum announce. Dan alasan dia minta <em>aku</em>, bukan kamu—&rdquo; Dipta menarik napas, &ldquo;—karena salah satu skenario di dokumen ini adalah aku <em>nggak ambil</em> posisi lead. Aku yang usul skenario itu. Bu Ratna mau mastiin aku serius sebelum dibawa ke direksi.&rdquo;</p>
+<p>Laras membaca layar. Di halaman tiga, di bawah heading &ldquo;Skenario B (Rekomendasi D. Anandra)&rdquo;, tertulis:</p>
+<p><em>&ldquo;Design Lead: Laras Wicaksana. Justifikasi: dalam 4 bulan, retensi tim 100%, velocity naik, dan — paling sulit diukur namun paling saya rasakan — tim ini menjadi tempat orang berani salah. Saya bisa membangun sistem. Dia membangun manusia. Perusahaan pasca-merger butuh yang kedua. Saya mengusulkan diri sebagai Principal Designer, jalur IC, di bawah struktur beliau.&rdquo;</em></p>
+<p>Laras membaca paragraf itu tiga kali. Ada yang panas di belakang matanya.</p>
+<p>&ldquo;Kenapa,&rdquo; suaranya serak, &ldquo;kamu nggak bilang dari awal?&rdquo;</p>
+<p>&ldquo;Karena nggak boleh, Ras. Dan karena...&rdquo; Dipta mengusap wajahnya, dan untuk pertama kalinya kelihatan lelah, kelihatan manusia, &ldquo;...karena aku takut kamu pikir aku ngalah karena hal lain. Karena kita. Karena apa pun ini.&rdquo; Dia menunjuk ruang kosong di antara mereka berdua, ruang yang selama empat bulan diisi kopi dan curhat dan satu Insiden Jari. &ldquo;Aku nggak ngalah. Aku milih. Aku lebih bahagia bikin sistem daripada mimpin rapat. Empat bulan ngeliat kamu kerja bikin aku sadar bedanya orang yang <em>bisa</em> jadi lead sama orang yang <em>harusnya</em> jadi lead.&rdquo;</p>
+<p>Hening panjang. Mesin kopi di kejauhan, entah kenapa menyala sendiri, menggiling dengan setia. <em>GRRRRRR.</em></p>
+<p>&ldquo;Aku ngambek tadi siang,&rdquo; kata Laras akhirnya. &ldquo;Keputusan tabel itu sampah. Besok aku buka lagi diskusinya, aku minta maaf ke Tanti di depan semua orang.&rdquo;</p>
+<p>&ldquo;Aku tahu kamu bakal gitu.&rdquo;</p>
+<p>&ldquo;Dan Dipta.&rdquo; Laras menatapnya. &ldquo;Kalau kamu ambil jalur IC... berarti kamu bukan kompetitorku lagi.&rdquo;</p>
+<p>&ldquo;Secara struktural, bukan.&rdquo;</p>
+<p>&ldquo;Berarti secara struktural...&rdquo; Laras memilih kata-katanya seperti memilih font untuk headline, hati-hati, sadar semuanya akan kelihatan, &ldquo;...nggak ada conflict of interest kalau misalnya, suatu hari, hipotetis, kita makan malam yang bukan nasi goreng depan kantor.&rdquo;</p>
+<p>Dipta tersenyum, pelan-pelan, seperti loading yang akhirnya selesai. &ldquo;Aku perlu bilang ya secara verbal, atau anggukan cukup untuk dokumentasi?&rdquo;</p>
+<p>&ldquo;Verbal. Aku butuh paper trail.&rdquo;</p>
+<p>&ldquo;Ya, Laras Wicaksana. Hipotetis banget ya.&rdquo;</p>
+<p>Jarak di antara mereka menyusut tanpa ada yang secara resmi memutuskannya. Dari sedekat ini Laras bisa melihat detail yang tidak pernah dia sadari — bahwa mata Dipta warnanya lebih dekat ke #3B2F2F daripada hitam murni. Sebuah observasi yang otaknya pilih untuk lakukan di momen paling tidak strategis sepanjang sejarah kognisi manusia.</p>
+<p>&ldquo;Ras,&rdquo; kata Dipta pelan, suaranya turun ke rentang frekuensi yang seharusnya butuh izin khusus di lingkungan kerja, &ldquo;aku mau—&rdquo;</p>
+<p><em>NGUUUUUNGGGG.</em></p>
+<p>Pak Ujang, OB lantai lima, menyalakan vacuum cleaner tepat di sebelah meja mereka, dengan ketenangan seseorang yang sudah menyaksikan seribu drama kantor dan tidak terkesan oleh satu pun.</p>
+<p>&ldquo;Lanjut aja, Mbak, Mas,&rdquo; katanya, menyedot remah di bawah kursi mereka. &ldquo;Saya nggak dengerin.&rdquo;</p>
+<p>Mereka mundur ke kursi masing-masing dengan sinkronisasi yang, dalam konteks lain, akan sangat membanggakan.</p>
+<blockquote>
+<p><strong>Leadership Log #7</strong></p>
+<p>Dua pelajaran mahal hari ini. Satu: keputusan yang diambil pas emosi itu bukan ketegasan, itu pelampiasan pakai jas. Ketegasan yang asli tetap bisa jelasin &ldquo;kenapa&rdquo;-nya besok pagi tanpa malu. Dua: rumor itu kayak bug — makin lama didiemin makin mahal fix-nya. Harusnya aku tanya langsung dari awal. Konfrontasi yang jujur itu lebih murah daripada asumsi yang sopan.</p>
+<p>PS: Aku ada makan malam hipotetis hari Sabtu.</p>
+<p>PS lagi: Pak Ujang, kalau suatu hari Bapak baca ini — timing Bapak luar biasa. Luar biasa <em>jahat</em>.</p>
+</blockquote>
+
+
+<h2><span class="bab-no">Bab 8</span>Makan Malam (Sangat) Hipotetis</h2>
+<p>Sabtu, pukul empat sore, tiga jam sebelum makan malam, apartemen Laras resmi berubah menjadi war room.</p>
+<p>&ldquo;Outfit ketiga,&rdquo; kata Marsha lewat video call, dengan nada art director yang deadline-nya besok pagi. &ldquo;Coba yang hijau.&rdquo;</p>
+<p>&ldquo;Yang hijau terlalu &lsquo;aku berusaha&rsquo;.&rdquo;</p>
+<p>&ldquo;Lo EMANG berusaha.&rdquo;</p>
+<p>&ldquo;Dia nggak boleh TAHU aku berusaha!&rdquo;</p>
+<p>&ldquo;Ras. Sayang. Lo udah ganti baju tiga kali dan barusan nge-crop mirror selfie pake rule of thirds. Battle ini udah kalah dari kemarin sore.&rdquo;</p>
+<p>Sementara itu, di seberang kota, Dipta tiba di restoran dua puluh lima menit terlalu awal, meluruskan posisi garpu dan pisau ke grid imajiner, meminta pelayan menukar kursi yang engselnya goyang (&ldquo;toleransinya nol koma&rdquo;), lalu meng-googling &ldquo;topik obrolan selain kerjaan&rdquo; dan menutup tab itu karena malu pada dirinya sendiri.</p>
+<hr>
+<p>Menu datang. Keduanya membacanya dalam diam yang terlalu lama untuk ukuran manusia normal memilih makanan.</p>
+<p>&ldquo;Kerning-nya—&rdquo; kata mereka berdua, bersamaan.</p>
+<p>&ldquo;—sempit banget di section pasta,&rdquo; lanjut Laras.</p>
+<p>&ldquo;Dan itu bukan italic. Itu regular yang dipaksa miring. Faux italic. Di restoran seharga ini.&rdquo; Dipta menggeleng pelan, berduka.</p>
+<p>Pelayan, yang datang untuk mencatat pesanan dan malah mendengar dua orang mengkritik tipografi menunya dengan nada penuh luka, mundur perlahan dan memutuskan untuk kembali lima menit lagi.</p>
+<p>Aturan malam itu — ditetapkan Laras di menit pertama — adalah <em>no kerjaan</em>. Aturan itu bertahan empat menit. Pada menit kedua belas, mereka sudah mendesain ulang program loyalti restoran di atas tisu, lengkap dengan tier membership dan critical user journey. Pada menit kedua puluh, manajer restoran ikut berdiri di samping meja, mengangguk-angguk, dan pada akhirnya dessert mereka gratis &ldquo;sebagai fee konsultasi.&rdquo;</p>
+<p>&ldquo;Kita nggak bisa dibawa ke tempat umum,&rdquo; kata Laras, menyendok tiramisu hasil kerja profesional mereka.</p>
+<p>&ldquo;Kita cuma bisa dibawa ke tempat yang butuh redesign.&rdquo;</p>
+<p>Lalu tagihan datang, dan keduanya — dua orang dewasa dengan penghasilan stabil — men-scan QRIS pada detik yang sama, menghasilkan pembayaran ganda, notifikasi refund, dan negosiasi split bill yang di tengah jalannya Dipta berkata, &ldquo;Udah, gampang, nanti kubikinin spreadsheet—&rdquo;</p>
+<p>&ldquo;JANGAN SPREADSHEET. INI <em>DATE</em>.&rdquo;</p>
+<p>Kata itu jatuh ke tengah meja dan berdiri di sana, menyala.</p>
+<p>Dipta menaruh ponselnya. Pelan. &ldquo;Jadi resminya ini date.&rdquo;</p>
+<p>Laras menatap tiramisu-nya seperti tiramisu itu bisa memberikan bantuan hukum. &ldquo;...Iya. Udah dari tadi. Dari jam tujuh. Keputusannya udah di-approve, tinggal kamu yang belum baca notifikasinya.&rdquo;</p>
+<p>&ldquo;Aku selalu baca notifikasi,&rdquo; kata Dipta, dan senyumnya kali ini bukan senyum tipis yang menyebalkan itu. Ini versi yang jarang dirilis. Beta feature. &ldquo;Aku cuma mau dengar kamu yang announce.&rdquo;</p>
+<hr>
+<p>Di luar, Jakarta memutuskan untuk hujan — hujan tipis yang membuat trotoar berkilau dan taksi menghilang dari muka bumi sesuai hukum alam yang berlaku.</p>
+<p>Payung di tas Laras hanya cukup untuk satu setengah manusia, dan mereka adalah dua manusia utuh, jadi matematika memaksa bahu mereka menempel sepanjang jalan menuju halte. Tidak ada satu pun dari mereka yang mengajukan keberatan resmi.</p>
+<p>&ldquo;Langitnya,&rdquo; kata Dipta di tengah jalan, menunjuk dengan dagunya. Biru gelap sehabis hujan, dengan sisa oranye lampu kota di tepinya. &ldquo;Blue-Final-2.&rdquo;</p>
+<p>&ldquo;Bukan.&rdquo; Laras menggeleng. &ldquo;Blue-Final-2 lebih terang. Yang ini belum ada di file.&rdquo;</p>
+<p>&ldquo;Berarti harus dibikin.&rdquo; Dipta berhenti berjalan. Menatapnya. Hujan menetes dari tepi payung, membentuk perimeter kecil di sekeliling mereka berdua, seperti auto layout dengan padding enam belas. &ldquo;Namanya apa?&rdquo;</p>
+<p>Laras menatapnya balik, dan untuk pertama kali dalam hidupnya, tidak memikirkan naming convention.</p>
+<p>&ldquo;Namain nanti,&rdquo; katanya, dan menarik kerah kemeja linen itu ke bawah.</p>
+<p>Ciuman pertama mereka terjadi di bawah payung yang terlalu kecil, di trotoar yang basah, dengan satu tangan Dipta berpindah ke pinggangnya — menariknya mendekat dengan keyakinan yang tidak pernah dia tunjukkan di ruang meeting mana pun — dan tangan satunya tetap memegang payung dengan tanggung jawab struktural yang mengagumkan. Dia mencium seperti dia mengerjakan segala hal lainnya: tidak buru-buru, teliti, seperti orang yang sudah lama merencanakan dan tetap terkejut bahwa hasilnya melampaui rencana.</p>
+<p>Ketika mereka akhirnya berpisah untuk kebutuhan mendasar seperti oksigen, Laras berkata, dengan napas yang gagal QA, &ldquo;Oke. Approved.&rdquo;</p>
+<p>&ldquo;Tanpa revisi?&rdquo;</p>
+<p>&ldquo;Jangan sombong. Ada catatan minor.&rdquo;</p>
+<p>&ldquo;Sebutkan.&rdquo;</p>
+<p>&ldquo;Ulangi sekali lagi. Buat konsistensi.&rdquo;</p>
+<p>Dia mengulanginya. Dua kali. Demi konsistensi. Di kejauhan, halte menunggu dengan sabar, dan tidak ada satu pun dari mereka yang buru-buru sampai.</p>
+<blockquote>
+<p><strong>Leadership Log #8</strong></p>
+<p>Entri ini tidak mengandung pelajaran leadership.</p>
+<p>Koreksi: satu. Kadang keputusan terbaik itu diambil bukan setelah semua datanya lengkap, tapi setelah kamu berhenti pura-pura datanya belum lengkap.</p>
+<p>PS: Warna langit malam ini sudah kubikin di file pribadi. Namanya masih kupikirin. Sementara ini: Blue-Sabtu.</p>
+</blockquote>
+
+<h2><span class="bab-no">Bab 9</span>Presentasi Board (Atau: Malam di Mana Slide 12 Hampir Menghancurkan Segalanya)</h2>
+<p>Undangan itu datang lewat email dengan subjek yang membuat tangan Laras dingin: <strong>&ldquo;Board Meeting Q3 — Design Org Presentation, Presenter: Laras Wicaksana, Durasi: 15 menit.&rdquo;</strong></p>
+<p>Lima belas menit. Di depan board. Termasuk Pak Hendra, yang terkenal punya tiga mode: main HP (buruk), diam menatap (lebih buruk), dan bertanya &ldquo;terus dampaknya ke revenue apa?&rdquo; (kiamat).</p>
+<p>Laras menyiapkan 34 slide.</p>
+<p>&ldquo;TIGA PULUH EMPAT?&rdquo; Dipta hampir menyemburkan kopinya saat sesi latihan, Kamis malam, di War Room yang sudah sepi. &ldquo;Ras. Lima belas menit. Board. Mereka baca 400 halaman dokumen sebelum meeting kamu. Kasihanilah mereka.&rdquo;</p>
+<p>&ldquo;Tapi semuanya penting! Slide 12 itu penjelasan metodologi design token—&rdquo;</p>
+<p>&ldquo;Nggak ada satu pun anggota board yang bangun pagi mikirin design token. Sini.&rdquo; Dipta memutar laptopnya. &ldquo;Aturan mainnya beda di ruangan itu. Bukan &lsquo;ini yang kami kerjakan&rsquo;. Tapi: &lsquo;ini masalah bisnisnya, ini yang kami lakukan, ini hasilnya dalam angka, ini yang kami butuhkan dari Bapak-Ibu&rsquo;. Empat beat. Kayak cerita. Board itu manusia — capek, sibuk, dan diam-diam pengen ada satu presentasi yang nggak bikin mereka pura-pura ngerti.&rdquo;</p>
+<p>Mereka membongkar 34 slide jadi 9. Setiap slide satu kalimat besar. Angka retensi tim. Kecepatan rilis fitur sebelum dan sesudah merger. Satu slide berisi kutipan asli dari user: <em>&ldquo;aplikasinya sekarang kayak dibikin orang yang sayang sama saya.&rdquo;</em> — yang menurut Dipta &ldquo;lebih kuat dari semua chart yang pernah dibuat manusia.&rdquo;</p>
+<p>&ldquo;Terus kalau Pak Hendra nanya yang aku nggak bisa jawab?&rdquo;</p>
+<p>&ldquo;Bilang nggak tahu.&rdquo;</p>
+<p>&ldquo;DI DEPAN BOARD?&rdquo;</p>
+<p>&ldquo;&lsquo;Saya belum punya datanya, saya kirim Jumat.&rsquo; Tujuh kata. Kamu tahu betapa jarangnya board denger kalimat itu? Mereka dengerin orang ngarang jawaban tiap hari. Orang yang berani bilang belum tahu itu justru yang mereka percaya angkanya pas dia BILANG tahu.&rdquo; Dipta bersandar. &ldquo;Kredibilitas itu compound interest, Ras. Nabungnya lama, tapi sekali kamu bohong dikit, saldonya hangus semua.&rdquo;</p>
+<p>Jam sebelas malam, latihan ronde keempat. Laras mulai lancar. Di tengah run-through, dia berhenti.</p>
+<p>&ldquo;Kenapa kamu bantuin aku sampai jam segini? Besok kamu juga ada deadline.&rdquo;</p>
+<p>Dipta menatapnya dari kursinya, kepala miring. &ldquo;Karena kalau kamu menang di ruangan itu, yang menang tim. Anggaran naik, headcount nambah, Bima bisa disekolahin conference.&rdquo; Dia diam sebentar. &ldquo;Dan karena aku suka ngeliat kamu pas lagi sepenuhnya jadi kamu. Itu bonus pribadi.&rdquo;</p>
+<p>&ldquo;...Kembali ke slide tujuh,&rdquo; kata Laras, yang telinganya memerah dengan kecepatan yang melanggar batas WCAG.</p>
+<p>Di ronde kelima, Dipta berdiri, berjalan ke belakangnya, dan meluruskan bahunya dengan dua tangan — hangat, mantap, dan sama sekali tidak membantu untuk konsentrasi.</p>
+<p>&ldquo;Postur. Board membaca bahasa tubuh sebelum membaca slide. Berdiri kayak orang yang angkanya bener.&rdquo;</p>
+<p>&ldquo;Susah berdiri kayak orang yang angkanya bener kalau kamu megang bahuku.&rdquo;</p>
+<p>&ldquo;Justru ini latihan distraksi,&rdquo; kata Dipta, tanpa melepas, dan Laras bisa mendengar senyum dalam suaranya. &ldquo;Kalau kamu bisa presentasi dalam kondisi ini, Pak Hendra itu level tutorial.&rdquo;</p>
+<p>Hari-H, Laras berdiri di depan board dengan sembilan slide dan jantung 140 bpm. Pak Hendra menaruh HP-nya di menit kedua — kejadian yang menurut sekretaris board belum pernah terjadi sejak 2023. Di menit ketujuh, clicker mati, dan Laras — tanpa kehilangan irama — menyeberangi ruangan dan menekan panah di laptop setiap ganti slide, yang entah bagaimana justru membuatnya tampak lebih berkuasa, seperti dirigen yang turun menghampiri orkestranya. Di menit kesebelas, pertanyaan kiamat datang: &ldquo;Dampak ke revenue?&rdquo;</p>
+<p>&ldquo;Untuk fitur Discover baru, konversi naik dari data A/B test — angkanya di appendix, halaman dua. Untuk dampak design org secara keseluruhan ke revenue, Pak, saya jujur: belum ada model atribusinya, dan saya nggak mau ngarang angka di ruangan ini. Yang bisa saya tunjukkan adalah leading indicator-nya — kecepatan rilis dan retensi talent — dan saya bisa siapkan proposal model atribusinya dalam dua minggu kalau Bapak berkenan.&rdquo;</p>
+<p>Pak Hendra menatapnya lama. Mode diam menatap. Kiamat kecil.</p>
+<p>Lalu: &ldquo;Dua minggu. Kirim ke saya langsung.&rdquo; Dan kepada seisi ruangan: &ldquo;Tuh. Gitu loh jawab pertanyaan.&rdquo;</p>
+<p>Di luar ruangan, Laras mengirim satu pesan ke Dipta: <em>&ldquo;PAK HENDRA NARUH HP-NYA.&rdquo;</em></p>
+<p>Balasan datang tiga detik kemudian: <em>&ldquo;Aku tahu. Aku nyogok sekretaris board buat live report. Makan malam hipotetis kedua, Sabtu?&rdquo;</em></p>
+<blockquote>
+<p><strong>Leadership Log #9</strong></p>
+<p>Presentasi ke eksekutif itu bukan nunjukin semua kerja keras kita — itu justru egois, sama kayak masak 12 jam terus maksa tamu makan semuanya. Tugasnya: hormati waktu mereka, mulai dari masalah bisnis, kasih angka, dan kalau nggak tahu bilang nggak tahu. Ternyata &ldquo;saya belum punya datanya&rdquo; itu bukan kelemahan. Itu bukti bahwa pas aku bilang PUNYA data, datanya beneran ada.</p>
+<p>PS: Dia nyogok sekretaris board. Aku jatuh cinta sama orang yang melanggar minimal dua kode etik demi live report presentasiku. Akan dibahas dengan psikolog. Atau Marsha. Sama aja sih.</p>
+</blockquote>
+
+<h2><span class="bab-no">Bab 10</span>Reorganisasi (Atau: Minggu Terburuk dalam Karier Semua Orang)</h2>
+<p>Kalau hidup adalah product roadmap, maka bab ini adalah kuartal di mana semua yang berlabel &ldquo;low risk&rdquo; meledak bersamaan.</p>
+<p>Pengumumannya datang hari Selasa, lewat all-hands mendadak: kondisi makro memburuk, funding round mundur, dan Arva harus melakukan efisiensi. Setiap departemen diminta memangkas budget 20%. Untuk design, artinya satu hal yang tidak bisa dihindari dengan motion halus atau warna yang lebih hidup: satu posisi harus dilepas.</p>
+<p>Bu Ratna memanggil Laras. &ldquo;Keputusannya di kamu. Kamu yang paling tahu timmu. Jumat, satu nama.&rdquo;</p>
+<p>Empat hari. Satu nama. Sembilan wajah yang setiap pagi menyapanya di standup.</p>
+<p>Laras pulang malam itu dan tidak menulis apa pun di Leadership Log. Tidak ada pelajaran yang terasa pantas ditulis.</p>
+<p>Rabu, dia melakukan hal yang paling tidak keren yang bisa dilakukan seorang lead: dia berjalan ke meja Dipta, dan berkata, &ldquo;Aku nggak sanggup mutusin ini sendirian. Bukan minta kamu yang mutusin. Aku cuma butuh mikir keras di depan orang yang nggak akan bocorin dan nggak akan menghakimi prosesnya.&rdquo;</p>
+<p>&ldquo;Rooftop,&rdquo; kata Dipta, langsung berdiri. &ldquo;Bawa jaket. Ini bakal lama.&rdquo;</p>
+<p>Di rooftop, mereka membedah semuanya. Bukan performa individu — semua orang perform. Mereka membedah <em>struktur</em>: fungsi apa yang paling bisa diserap fungsi lain, skill apa yang paling terduplikasi pasca-merger, posisi apa yang kalau hilang paling tidak mematikan jalur karier orangnya di pasar.</p>
+<p>Dan pelan-pelan, jawabannya mengerucut ke tempat yang paling tidak ingin dilihat Laras: peran ilustrasi khusus. Peran Iksan. Iksan yang sudah lima tahun di Arva. Iksan yang mengajarinya shortcut Figma di minggu pertamanya. Iksan yang bicara hanya jika ditanya atau ada yang salah pakai font.</p>
+<p>&ldquo;Ada opsi lain,&rdquo; kata Dipta pelan. &ldquo;Secara politik, lebih aman buat kamu kalau yang dilepas anak eks-Nara. Tim lama nggak akan protes. Nggak ada yang nyalahin kamu.&rdquo;</p>
+<p>&ldquo;Tapi itu salah. Tanti dan timnya justru yang nutup skill gap paling besar.&rdquo; Laras memeluk lututnya. &ldquo;Kalau aku mutusin berdasarkan &lsquo;aman buat aku&rsquo;, aku nggak pantes duduk di kursi ini.&rdquo;</p>
+<p>&ldquo;Aku tahu. Aku cuma mastiin kamu yang bilang, bukan aku.&rdquo;</p>
+<p>Kamis, Laras melakukan sesuatu yang tidak diminta siapa pun: dia menghabiskan seharian menelepon. Kenalan di tiga perusahaan. Mantan bosnya. Seorang design manager di studio animasi yang pernah bilang &ldquo;kalau ada illustrator jago, kabarin.&rdquo; Dia menyusun daftar, portofolio Iksan dia rapikan sendiri malam itu — pekerjaan yang secara teknis bukan tugasnya, secara moral bukan pilihan.</p>
+<p>Jumat pagi, percakapan paling berat dalam kariernya. Dia tidak mendelegasikannya ke HR. Dia duduk di depan Iksan, dan mengatakan semuanya dengan jujur: keputusannya, alasannya yang sebenarnya — struktur, bukan performa — dan bahwa ini keputusannya, bukan &ldquo;keputusan manajemen&rdquo; yang abstrak dan tak bisa dimintai tanggung jawab.</p>
+<p>Iksan diam lama. Lalu berkata, &ldquo;Lo tau bagian yang paling nggak gue sangka? Bukan keputusannya. Gue udah nebak dari hari Selasa, gue bisa baca struktur juga.&rdquo; Dia menunjuk map berisi kontak dan portofolio yang sudah dirapikan. &ldquo;Ini. Lo nggak harus ngelakuin ini.&rdquo;</p>
+<p>&ldquo;Harus, Ksan. Cuma &lsquo;harus&rsquo;-nya bukan dari job desc.&rdquo;</p>
+<p>Dua minggu kemudian, Iksan diterima di studio animasi itu — dengan gaji lebih tinggi, mengerjakan hal yang selama ini cuma dia kerjakan diam-diam di akun pribadinya. Di hari terakhirnya, dia menulis di kanal Slack umum: <em>&ldquo;gue keluar dari tim ini dengan cara yang bikin gue justru makin percaya sama tim ini. kalian nggak ngerti betapa langkanya itu. jaga lead kalian.&rdquo;</em></p>
+<p>Sari mengganti emoji reaction-nya tiga kali karena tidak ada emoji untuk &ldquo;menangis tapi bangga di kantor.&rdquo;</p>
+<p>Malam setelah hari terakhir Iksan, Dipta menunggu di parkiran, bersandar di mobilnya. Tanpa kopi. Tanpa kalimat pintar. Laras berjalan mendekat, dan untuk pertama kalinya sejak Selasa, membiarkan wajahnya berhenti profesional. Dipta membuka lengannya, dan Laras masuk ke sana, dan menangis di kemeja linen yang untuk sekali ini diizinkan kusut.</p>
+<p>&ldquo;Kamu udah ngelakuin semuanya dengan benar,&rdquo; kata Dipta ke rambutnya.</p>
+<p>&ldquo;Terus kenapa rasanya tetap kayak gini?&rdquo;</p>
+<p>&ldquo;Karena kalau rasanya nggak kayak gini, berarti kamu orang yang salah untuk kerjaan ini.&rdquo;</p>
+<blockquote>
+<p><strong>Leadership Log #10</strong></p>
+<p>Nggak ada framework buat minggu ini. Cuma ini yang kupegang: keputusan berat itu ujiannya bukan di keputusannya, tapi di caranya. Jujur soal alasan. Nggak sembunyi di balik kata &ldquo;manajemen&rdquo;. Dan kalau keputusanmu bikin hidup orang lebih susah, kewajibanmu belum selesai pas meeting-nya selesai. Integritas itu mahal pas lagi susah doang — pas lagi gampang mah semua orang punya.</p>
+<p>PS: Nggak ada PS. Minggu ini nggak lucu. Minggu depan semoga lucu lagi.</p>
+</blockquote>
+
+<h2><span class="bab-no">Bab 11</span>Halaman Notion yang Tidak Sengaja Ter-share ke Seluruh Workspace</h2>
+<p>Ingat prolog? Ini dia.</p>
+<p>Jumat sore, sebulan setelah minggu terburuk itu, Laras sedang merapikan workspace Notion tim — memindahkan dokumen, membereskan permission, pekerjaan admin yang dia lakukan sambil setengah mendengarkan podcast. Dan di tengah drag-and-drop yang ceroboh itu, halaman <strong>&ldquo;Leadership Log — JANGAN DIBUKA&rdquo;</strong> berpindah folder.</p>
+<p>Ke folder <strong>&ldquo;Design Team — Public Resources&rdquo;</strong>.</p>
+<p>Dia baru sadar dua jam kemudian, ketika Slack-nya meledak.</p>
+<p><strong>Marsha:</strong> KAK. LOG. NOTION. CEK. SEKARANG.</p>
+<p><strong>Marsha:</strong> KAK ASTAGA</p>
+<p><strong>Marsha:</strong> &ldquo;PROFESIONAL NDASMU&rdquo; ITU AKU NGAKAK SAMPE DILIATIN ORANG FINANCE</p>
+<p>Laras membuka Notion dengan tangan gemetar. Views: 87. Dari total 60 karyawan. Beberapa orang membacanya dua kali.</p>
+<p>Dia ingin pindah negara. Dia mempertimbangkan opsi mengganti nama dan memulai hidup baru sebagai petani stroberi di Ciwidey. Sembilan bulan catatan pribadi — kegagalannya, ketakutannya, Insiden Jari, INSIDEN JARI — terbuka untuk publik seperti file Figma tanpa password.</p>
+<p>Tapi lalu dia mulai membaca reply di thread Slack.</p>
+<p><strong>Bima:</strong> kak, log #3 itu tentang aku ya? aku save screenshot-nya. aku baca tiap mau nyerah. makasih kak.</p>
+<p><strong>Tanti:</strong> log #7... jadi waktu itu kakak minta maaf ke aku bukan karena formalitas. oke aku nangis dikit.</p>
+<p><strong>Sari:</strong> &ldquo;wow yang ter-QA&rdquo; masuk log?? GUE MASUK LORE?? btw voice note yang itu masih saya simpan. untuk dokumentasi.</p>
+<p><strong>Bu Ratna:</strong> Laras, saya baca semuanya. Dua hal: (1) ini harusnya jadi onboarding material untuk semua lead baru, (2) jadi SIAPA pemilik jari di log #6?</p>
+<p>Dan di paling bawah, satu reply dari akun yang selama ini tidak pernah berkomentar apa pun di kanal umum:</p>
+<p><strong>Dipta:</strong> Jarinya milik saya. Dan untuk melengkapi dokumentasi: makan malamnya sudah tidak hipotetis sejak bulan Maret. Mohon arahan selanjutnya, Bu Ratna.</p>
+<p>Kantor — menurut kesaksian tujuh saksi mata — berteriak serentak seperti nonton final piala dunia.</p>
+<p>Laras menaruh kepalanya di meja. Di sebelahnya, muncul secangkir kopi, sepiring pisang goreng dari pantry, dan Dipta yang duduk dengan wajah orang paling tenang di gedung.</p>
+<p>&ldquo;Kamu bisa bilang &lsquo;itu typo&rsquo;,&rdquo; gumam Laras dari dalam pelukan meja.</p>
+<p>&ldquo;Bisa. Tapi kamu yang ngajarin satu kantor bahwa jujur itu lebih murah daripada asumsi yang sopan.&rdquo; Dia menyeruput kopinya. &ldquo;Aku cuma leading by example.&rdquo;</p>
+<p>&ldquo;Aku benci kamu.&rdquo;</p>
+<p>&ldquo;Log #8 bilang sebaliknya.&rdquo;</p>
+<p>&ldquo;KAMU BACA SAMPAI DELAPAN?&rdquo;</p>
+<p>&ldquo;Laras. <em>Semua orang</em> baca sampai delapan. Log #8 itu sekarang literatur kantor. Bu Ratna quote bagian &lsquo;ulangi buat konsistensi&rsquo; di story WhatsApp-nya. Anak engineering bikin sticker-nya.&rdquo;</p>
+<p>Laras mengeluarkan suara yang belum pernah dikeluarkan mamalia mana pun.</p>
+<p>Hari Senin, HR mengirimkan formulir &ldquo;Deklarasi Hubungan Antar-Karyawan&rdquo; ke email mereka berdua. Dipta mengisinya hari itu juga — lengkap, rapi, dengan lampiran timeline &ldquo;untuk transparansi&rdquo; — yang menurut kesaksian staf HR merupakan dokumen deklarasi paling menyeluruh dalam sejarah perusahaan, termasuk footnote berisi definisi operasional kata &ldquo;hipotetis&rdquo;.</p>
+
+<h2><span class="bab-no">Epilog</span>Satu Tahun Kemudian</h2>
+<p>Undangan all-hands terakhir tahun itu punya satu agenda tambahan di baris paling bawah: <em>&ldquo;Design Org Update — L. Wicaksana, Design Lead.&rdquo;</em></p>
+<p>Permanen. Tanpa &ldquo;Acting&rdquo;. SK-nya turun bulan Juli, dan Marsha membingkainya sebagai lelucon, dan Laras diam-diam tidak pernah menurunkan bingkainya.</p>
+<p>Timnya kini sebelas orang. Tanti memimpin design system dan baru saja menerbitkan dokumentasi publik yang di-bookmark orang-orang dari perusahaan lain. Bima — Bima yang dulu membuat maskot tersenyum di halaman &ldquo;Akun Diblokir&rdquo; — bulan lalu berdiri di panggung konferensi design pertamanya, dan di slide terakhirnya menulis: <em>&ldquo;untuk lead pertamaku, yang ngajarin bahwa berani salah itu skill.&rdquo;</em> Laras menonton dari barisan tengah dan menghabiskan satu paket tisu.</p>
+<p>Iksan mengirim stiker WhatsApp buatannya setiap kali serial animasinya rilis episode baru. Sari masih menemukan bug satu jam sebelum demo, karena beberapa hal di alam semesta memang konstan.</p>
+<p>Dan di meja paling ujung, seorang Principal Designer dengan kemeja linen yang tidak pernah kusut sedang membangun design system generasi ketiga — dan setiap sore pukul enam, tanpa pernah absen, berjalan ke meja Design Lead membawa dua cangkir kopi.</p>
+<p>(Dan di file pribadi Dipta — yang tidak dia tahu pernah tidak sengaja terlihat sekilas — ada satu page tersembunyi berisi eksplorasi bentuk lingkaran kecil, dengan anotasi ukuran dalam milimeter dan satu komentar untuk dirinya sendiri: &ldquo;jangan buru-buru. dia nggak suka di-rush. tapi jangan kelamaan. dia lebih nggak suka nunggu.&rdquo; Laras memutuskan untuk pura-pura tidak tahu. Untuk sekali ini, dia rela di-surprise tanpa riset.)</p>
+<p>&ldquo;Log berapa sekarang?&rdquo; tanya Dipta suatu sore, melirik layar Notion Laras.</p>
+<p>&ldquo;Enam puluh dua.&rdquo; Laras mengetik kalimat terakhir. &ldquo;Dan jangan berharap. Permission-nya udah kukunci. Aku belajar dari kesalahan.&rdquo;</p>
+<p>&ldquo;Itu inti dari semua log-mu, kan.&rdquo;</p>
+<p>Laras menoleh. Di luar jendela, langit Jakarta sedang biru yang itu — biru jam enam sore setelah hujan baru berhenti. Blue-Final-2. Masih tidak lolos standar kontras. Masih tersimpan di file pribadi.</p>
+<p>Beberapa hal memang tidak perlu ikut design system.</p>
+<blockquote>
+<p><strong>Leadership Log #62</strong></p>
+<p>Setahun jadi lead, dan ini rangkuman paling jujur yang kupunya: nggak ada satu momen pun di mana aku merasa &ldquo;sudah jadi pemimpin&rdquo;. Yang ada cuma ribuan momen kecil milih jalan yang lebih susah — ngaku duluan, dengerin duluan, percaya duluan. Leadership itu bukan title di SK. Leadership itu kata kerja, dan kata kerja harus dikerjain ulang setiap hari, kayak standup.</p>
+<p>PS: Dia baru aja naruh kopi di mejaku dan bilang &ldquo;log-nya udah 62 tapi kamu belum pernah nulis tentang aku secara resmi.&rdquo; Baiklah. Secara resmi: Dipta Anandra, terima kasih sudah jadi orang yang bikin aku pengen jadi versi terbaik dari diriku — dan tetap sayang sama 14 warna biruku.</p>
+<p>Status: bukan hipotetis. Sudah lama bukan.</p>
+</blockquote>
+<p class="tamat">— TAMAT —</p>
+<hr>
+<h2><span class="bab-no">Catatan Penulis</span>Boleh Dibaca, Boleh Diskip</h2>
+<p>Kalau kamu iseng menghitung, hampir setiap bab menyembunyikan beberapa hal sekaligus: ownership dan accountability (Bab 1 &amp; 5), psychological safety dan facilitating meetings (Bab 2), coaching dan constructive feedback (Bab 3), influence without authority dan negosiasi stakeholder (Bab 4), crisis communication dan leading by example (Bab 5), delegation dan empowerment (Bab 6), conflict mediation, decision confidence, dan bahaya keputusan emosional (Bab 7), pengambilan keputusan yang datanya sebenarnya sudah lama lengkap (Bab 8), executive presentation, storytelling, dan kredibilitas (Bab 9), integritas dan keputusan sulit (Bab 10), serta vulnerability sebagai kekuatan (Bab 11).</p>
+<p>Tapi seperti kata Laras: leadership itu kata kerja. Selamat mengerjakan ulang setiap hari.</p>
+<p class="center"><em>(Warna biru di titik terakhir kalimat ini adalah Blue-Final-2. Jangan dihapus.)</em></p>
+
+</div><!-- /source -->
+
+<div id="measure-host"><div class="page" style="position:static"><div class="page-inner" id="measurer"></div></div></div>
+
+<script>
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const source=$('source'), measureHost=$('measure-host'),
+        measurePage=measureHost.querySelector('.page'), measurer=$('measurer'),
+        scene=$('scene'), book=$('book'), pgL=$('pgL'), pgR=$('pgR'),
+        leaf=$('leaf'), underShadow=$('underShadow'),
+        faceF=leaf.querySelector('.face.front'), faceB=leaf.querySelector('.face.back'),
+        hint=$('hint'), pgLabel=$('pgLabel'), pgBar=$('pgBar'), loading=$('loading');
+
+  /* ---------------- special pages ---------------- */
+  const SWATCHES=[
+    ['Blue-Final','#1e56a0',0],
+    ['Blue-Final-2','#8fbfe8',0],
+    ['Blue-FINAL-fix','#2f80ed',0],
+    ['Blue-final-REAL(2)','#3d6db5',1],
+    ['Blue-jangan-dipake-tapi-jangan-dihapus','#16406e',1],
+  ];
+  const coverHTML =
+    '<div class="cover-wrap">'+
+      '<div class="cover-top">arva design library · colors / primary · 14 styles</div>'+
+      '<div class="cover-title">MERGE<br><span class="slash">/</span>CONFLICT</div>'+
+      '<div class="cover-sub">Dua design lead. Satu posisi. Empat belas warna biru yang semuanya bernama &ldquo;final&rdquo;.</div>'+
+      '<div class="cover-swatches">'+ SWATCHES.map(s=>
+        '<div class="swatch'+(s[2]?' dep':'')+'"><i style="background:'+s[1]+'"></i><span>'+s[0]+'</span></div>').join('')+
+      '</div>'+
+      '<div class="cover-author"><span>novela romansa komedi</span><span>edisi annisa</span></div>'+
+    '</div>';
+  const dedicationHTML =
+    '<div class="dedication">untuk semua designer<br>yang pernah menulis<br><span class="chip">Blue-Final-2</span><br>dan diam-diam menyimpannya.<br><br>edisi khusus untuk <strong>Annisa</strong> —<br>dibaca di sela dua sprint.</div>';
+  const backHTML =
+    '<div class="back-blurb">&ldquo;Empat belas warna biru. Dua design lead. Satu kursi. Dan sebuah halaman Notion yang seharusnya tidak pernah ter-share.&rdquo;<br><br>'+
+    'Laras Wicaksana baru saja jadi Acting Design Lead ketika timnya di-merge dengan tim Dipta Anandra — orang paling rapi, paling tenang, dan paling menyebalkan di industri. Enam bulan. Satu posisi. Nol niat jatuh cinta.<br><br>Peringatan isi: mengandung kejar-kejaran kursor Figma, voice note salah channel, dan satu payung yang terlalu kecil untuk dua orang.</div>'+
+    '<div class="back-meta">merge conflict · fiksi kantor / design / slow-burn<br>isbn 978-blue-final-2 · dicetak di war room</div>';
+
+  /* ---------------- atomize source ---------------- */
+  const atoms=[];
+  Array.from(source.children).forEach(node=>{
+    const t=node.tagName;
+    if(t==='H2') atoms.push({tag:'h2',cls:'',html:node.innerHTML,br:true,split:false});
+    else if(t==='HR') atoms.push({tag:'hr',cls:'',html:'',br:false,split:false});
+    else if(t==='BLOCKQUOTE'){
+      const ps=Array.from(node.children);
+      ps.forEach((p,i)=>{
+        let cls='log'; if(i===0)cls+=' log-first'; if(i===ps.length-1)cls+=' log-last';
+        atoms.push({tag:'p',cls,html:p.innerHTML,br:false,split:true});
+      });
+    }
+    else if(t==='P') atoms.push({tag:'p',cls:node.className||'',html:node.innerHTML,br:false,split:true});
+  });
+
+  /* ---------------- pagination ---------------- */
+  let pages=[], layout={}, single=false;
+
+  function makeEl(tag,cls,html){
+    const el=document.createElement(tag);
+    if(cls) el.className=cls;
+    el.innerHTML=html;
+    return el;
+  }
+  function fitsWith(el){
+    measurer.appendChild(el);
+    const ok = measurer.scrollHeight <= measurer.clientHeight+1;
+    measurer.removeChild(el);
+    return ok;
+  }
+  function splitTokens(html){ return html.match(/<[^>]+>|\s+|[^\s<]+/g)||[html]; }
+  function balance(tokens,k){
+    // returns [part1html, part2html] with tag stack closed/reopened
+    const stack=[];
+    for(let i=0;i<k;i++){
+      const tk=tokens[i];
+      if(tk[0]==='<'){
+        const close=/^<\/(\w+)/.exec(tk), open=/^<(\w+)/.exec(tk);
+        if(close) stack.pop();
+        else if(open && !/\/>$/.test(tk)) stack.push(tk);
+      }
+    }
+    let p1=tokens.slice(0,k).join('');
+    for(let i=stack.length-1;i>=0;i--){ p1+='</'+/^<(\w+)/.exec(stack[i])[1]+'>'; }
+    let rest=tokens.slice(k);
+    while(rest.length && /^\s+$/.test(rest[0])) rest.shift();
+    const p2=stack.join('')+rest.join('');
+    return [p1,p2];
+  }
+
+  function paginate(){
+    measurePage.style.width=layout.pw+'px';
+    measurePage.style.height=layout.ph+'px';
+    measurer.style.width='100%'; measurer.style.height='100%';
+    measurer.innerHTML='';
+
+    const contentPages=[]; // {html, startAtom}
+    let startAtom=0, pageEmpty=true;
+
+    const flush=()=>{
+      contentPages.push({type:'content',html:measurer.innerHTML,startAtom});
+      measurer.innerHTML=''; pageEmpty=true;
+    };
+
+    const queue=atoms.map((a,i)=>({...a,idx:i}));
+    for(let q=0;q<queue.length;q++){
+      const a=queue[q];
+      if(a.br && !pageEmpty) flush();
+      if(pageEmpty) startAtom=a.idx;
+      const el=makeEl(a.tag,a.cls,a.html);
+      if(fitsWith(el)){ measurer.appendChild(el); pageEmpty=false; continue; }
+      if(!a.split){
+        if(!pageEmpty){ flush(); q--; continue; }
+        measurer.appendChild(el); flush(); continue; // force
+      }
+      // splittable
+      const tokens=splitTokens(a.html);
+      let lo=1, hi=tokens.length-1, best=0;
+      while(lo<=hi){
+        const mid=(lo+hi)>>1;
+        const [p1]=balance(tokens,mid);
+        if(fitsWith(makeEl(a.tag,a.cls,p1))){ best=mid; lo=mid+1; } else hi=mid-1;
+      }
+      if(best===0){
+        if(!pageEmpty){ flush(); q--; continue; }
+        measurer.appendChild(el); flush(); continue; // pathological, force
+      }
+      const [p1,p2]=balance(tokens,best);
+      measurer.appendChild(makeEl(a.tag,a.cls,p1));
+      pageEmpty=false; flush();
+      queue.splice(q+1,0,{...a,html:p2,br:false});
+    }
+    if(!pageEmpty) flush();
+
+    // assemble book
+    pages=[{type:'cover',html:coverHTML},{type:'plain',html:dedicationHTML}];
+    contentPages.forEach((p,i)=>pages.push({...p,folio:i+1}));
+    if(pages.length%2!==0) pages.push({type:'blank',html:''}); // back must land on even index
+    pages.push({type:'back',html:backHTML});
+  }
+
+  /* ---------------- layout ---------------- */
+  function computeLayout(){
+    const vw=innerWidth, vh=innerHeight-64;
+    single = vw<640;
+    let pw,ph;
+    if(single){
+      pw=Math.min(vw-20,440); ph=Math.min(vh-16,pw*1.6);
+      pw=Math.min(pw,ph/1.32);
+    }else{
+      pw=Math.min((vw-64)/2,480); ph=Math.min(vh-24,pw*1.44);
+      pw=Math.min(pw,ph/1.26);
+    }
+    pw=Math.round(pw); ph=Math.round(ph);
+    layout={pw,ph};
+    const fs=Math.max(12.5,Math.min(16.5,pw*0.0355));
+    const rs=document.documentElement.style;
+    rs.setProperty('--fs',fs.toFixed(1)+'px');
+    rs.setProperty('--pw',pw+'px');
+    book.style.width=(single?pw:pw*2)+'px';
+    book.style.height=ph+'px';
+    scene.classList.toggle('single',single);
+    [pgL,pgR,faceF.parentElement].forEach(()=>{});
+    pgL.style.width=pw+'px'; pgL.style.display=single?'none':'block';
+    pgR.style.width=pw+'px'; pgR.style.left=single?'0':pw+'px';
+    leaf.style.width=pw+'px';
+    underShadow.style.width=pw+'px';
+  }
+
+  /* ---------------- rendering ---------------- */
+  function renderInto(el,idx){
+    const inner=el.querySelector('.page-inner'), folio=el.querySelector('.folio');
+    el.classList.remove('is-cover','is-plain','is-back','is-empty');
+    const p=(idx>=0&&idx<pages.length)?pages[idx]:null;
+    if(!p){ el.classList.add('is-empty'); inner.innerHTML=''; folio.textContent=''; return; }
+    if(p.type==='cover') el.classList.add('is-cover');
+    if(p.type==='plain'||p.type==='blank') el.classList.add('is-plain');
+    if(p.type==='back') el.classList.add('is-back');
+    inner.innerHTML=p.html;
+    folio.textContent=p.folio?('— '+p.folio+' —'):'';
+  }
+
+  // navigation state
+  let s=0;        // spread index (spread mode)
+  let list=[],pos=0; // single mode: display list of page indexes
+  function buildList(){ list=pages.map((p,i)=>i).filter(i=>pages[i].type!=='blank'); }
+  const sMax=()=> (pages.length-1)/2 | 0;
+
+  function renderCurrent(){
+    if(single){ renderInto(pgR,list[pos]); }
+    else{ renderInto(pgL,2*s-1); renderInto(pgR,2*s); }
+    updateHUD();
+  }
+  function updateHUD(){
+    const total=pages.filter(p=>p.folio).length;
+    let label;
+    if(single){
+      const p=pages[list[pos]];
+      label=p.type==='cover'?'sampul':p.type==='back'?'sampul belakang':p.folio?('hal '+p.folio+' / '+total):'···';
+      pgBar.style.width=(pos/(list.length-1)*100)+'%';
+    }else{
+      const r=pages[2*s];
+      label=s===0?'sampul':(r&&r.type==='back')?'sampul belakang':(function(){
+        const l=pages[2*s-1],rr=pages[2*s];
+        const a=l&&l.folio, b=rr&&rr.folio;
+        return (a||b)?('hal '+(a||b)+(b&&a?'–'+b:'')+' / '+total):'···';
+      })();
+      pgBar.style.width=(s/sMax()*100)+'%';
+    }
+    pgLabel.textContent=label;
+  }
+
+  const canNext=()=> single? pos<list.length-1 : s<sMax();
+  const canPrev=()=> single? pos>0 : s>0;
+
+  /* ---------------- flip engine ---------------- */
+  let turn=null, animating=false;
+  function beginTurn(dir){
+    if(animating) return false;
+    if(dir>0&&!canNext()) return false;
+    if(dir<0&&!canPrev()) return false;
+    hint.classList.add('gone');
+    turn={dir};
+    if(single){
+      const cur=list[pos], tgt=list[pos+dir];
+      if(dir>0){
+        renderInto(pgR,tgt);                    // under = next
+        renderInto(faceF,cur); renderInto(faceB,-1); faceB.classList.remove('is-empty'); faceB.querySelector('.page-inner').innerHTML='';
+        leaf.style.left='0'; leaf.style.transformOrigin='left center';
+      }else{
+        renderInto(pgR,cur);                    // under stays current
+        renderInto(faceF,tgt); renderInto(faceB,-1); faceB.classList.remove('is-empty'); faceB.querySelector('.page-inner').innerHTML='';
+        leaf.style.left='0'; leaf.style.transformOrigin='left center';
+      }
+      underShadow.style.left=single?'0':layout.pw+'px';
+      underShadow.style.background='linear-gradient(90deg, rgba(0,0,0,.38), rgba(0,0,0,0) 60%)';
+    }else{
+      if(dir>0){
+        renderInto(pgR,2*s+2);
+        renderInto(faceF,2*s); renderInto(faceB,2*s+1);
+        leaf.style.left=layout.pw+'px'; leaf.style.transformOrigin='left center';
+        underShadow.style.left=layout.pw+'px';
+        underShadow.style.background='linear-gradient(90deg, rgba(0,0,0,.38), rgba(0,0,0,0) 60%)';
+      }else{
+        renderInto(pgL,2*s-3);
+        renderInto(faceF,2*s-1); renderInto(faceB,2*s-2);
+        leaf.style.left='0'; leaf.style.transformOrigin='right center';
+        underShadow.style.left='0';
+        underShadow.style.background='linear-gradient(-90deg, rgba(0,0,0,.38), rgba(0,0,0,0) 60%)';
+      }
+    }
+    leaf.classList.add('active');
+    setProgress(0.0001);
+    return true;
+  }
+  function setProgress(p){
+    if(!turn) return;
+    let a;
+    if(single) a = turn.dir>0 ? -180*p : -180*(1-p);
+    else       a = turn.dir>0 ? -180*p :  180*p;
+    leaf.style.transform='rotateY('+a+'deg)';
+    const sh=Math.sin(p*Math.PI);
+    faceF.querySelector('.shade').style.opacity=(sh*.5).toFixed(3);
+    faceB.querySelector('.shade').style.opacity=(sh*.45).toFixed(3);
+    underShadow.style.opacity=(sh*.55).toFixed(3);
+    turn.p=p;
+  }
+  function endTurn(done){
+    const dir=turn.dir; turn=null;
+    leaf.classList.remove('active');
+    underShadow.style.opacity=0;
+    if(done){ if(single) pos+=dir; else s+=dir; }
+    renderCurrent();
+  }
+  function animateTo(target,dur){
+    animating=true;
+    const from=turn.p||0, t0=performance.now();
+    const ease=t=>1-Math.pow(1-t,3);
+    (function step(now){
+      const t=Math.min(1,(now-t0)/dur);
+      setProgress(from+(target-from)*ease(t));
+      if(t<1) requestAnimationFrame(step);
+      else { animating=false; endTurn(target===1); }
+    })(t0);
+  }
+  function flip(dir){ if(beginTurn(dir)) animateTo(1,520); }
+
+  /* ---------------- pointer input ---------------- */
+  let drag=null;
+  book.style.touchAction='none';
+  book.addEventListener('pointerdown',e=>{
+    if(animating||turn) return;
+    drag={x0:e.clientX,y0:e.clientY,t0:performance.now(),lastX:e.clientX,lastT:performance.now(),v:0,started:false,moved:0};
+    book.setPointerCapture(e.pointerId);
+  });
+  book.addEventListener('pointermove',e=>{
+    if(!drag) return;
+    const dx=e.clientX-drag.x0;
+    drag.moved=Math.max(drag.moved,Math.abs(dx),Math.abs(e.clientY-drag.y0));
+    const now=performance.now();
+    drag.v=(e.clientX-drag.lastX)/Math.max(1,now-drag.lastT);
+    drag.lastX=e.clientX; drag.lastT=now;
+    if(!drag.started){
+      if(Math.abs(dx)<10) return;
+      const dir=dx<0?1:-1;
+      if(!beginTurn(dir)){ drag=null; return; }
+      drag.started=true; drag.dir=dir;
+    }
+    const span=(single?layout.pw:layout.pw*2)*0.85;
+    const p=Math.min(1,Math.max(0.0001,(drag.dir>0?-dx:dx)/span));
+    setProgress(p);
+  });
+  function release(e){
+    if(!drag) return;
+    const d=drag; drag=null;
+    if(d.started&&turn){
+      const fast=(d.dir>0&&d.v<-0.55)||(d.dir<0&&d.v>0.55);
+      animateTo((turn.p>0.28||fast)?1:0,(turn.p>0.28||fast)?420:300);
+    }else if(d.moved<9&&performance.now()-d.t0<400){
+      const rect=book.getBoundingClientRect(), rx=(e.clientX-rect.left)/rect.width;
+      if(rx>0.6) flip(1); else if(rx<0.4) flip(-1);
+    }
+  }
+  book.addEventListener('pointerup',release);
+  book.addEventListener('pointercancel',()=>{ if(drag&&drag.started&&turn) animateTo(0,250); drag=null; });
+  addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' ') flip(1);
+    else if(e.key==='ArrowLeft') flip(-1);
+  });
+
+  /* ---------------- init & resize ---------------- */
+  function anchorAtom(){
+    const idx=single?list[pos]:(pages[2*s]?2*s:2*s-1);
+    const p=pages[idx];
+    return p&&p.startAtom!=null?p.startAtom:(idx<=1?-1:1e9);
+  }
+  function seekAnchor(a){
+    if(a===-1){ s=0; pos=0; return; }
+    let target=pages.length-1;
+    for(let i=0;i<pages.length;i++){
+      if(pages[i].startAtom!=null&&pages[i].startAtom>a){ target=i-1; break; }
+      if(pages[i].startAtom!=null) target=i;
+    }
+    buildList();
+    if(single){ pos=Math.max(0,list.indexOf(target)); if(pos<0)pos=0; }
+    else s=Math.min(sMax(),Math.ceil(target/2));
+  }
+  function rebuild(keep){
+    const a=keep?anchorAtom():-1;
+    computeLayout(); paginate(); buildList(); seekAnchor(a); renderCurrent();
+  }
+  let rT;
+  addEventListener('resize',()=>{ clearTimeout(rT); rT=setTimeout(()=>rebuild(true),220); });
+
+  function start(){ rebuild(false); loading.classList.add('gone'); }
+  if(document.fonts&&document.fonts.ready){
+    let fired=false; const go=()=>{ if(!fired){fired=true; start();} };
+    document.fonts.ready.then(go); setTimeout(go,2500);
+  } else start();
+})();
+</script>
+</body>
+</html>
